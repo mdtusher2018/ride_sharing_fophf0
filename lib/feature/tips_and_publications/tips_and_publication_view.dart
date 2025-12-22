@@ -27,11 +27,7 @@ class _TipsAndPublicationPageState extends State<TipsAndPublicationPage> {
         backgroundColor: AppColors.white,
         elevation: 0,
         centerTitle: true,
-        title: CommonText(
-          'Tips & Publications',
-          size: 18.sp,
-          fontWeight: FontWeight.w600,
-        ),
+        title: CommonText('My Tips', size: 18.sp, fontWeight: FontWeight.w600),
       ),
       body: Padding(
         padding: EdgeInsets.all(16.w),

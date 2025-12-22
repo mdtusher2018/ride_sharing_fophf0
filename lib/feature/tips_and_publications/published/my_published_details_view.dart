@@ -388,37 +388,80 @@ class _PassengerCard extends StatelessWidget {
   }
 
   Widget accetpRejectButton() {
-    return SizedBox(
-      height: 35,
-      child: Row(
-        spacing: 8.w,
-        children: [
-          Expanded(
-            child: CommonButton(
-              'Cancel Trip',
-              color: Colors.transparent,
-              textColor: Colors.red,
-              boarder: Border.all(color: Colors.red, width: 2),
-              onTap: () {},
-              height: 20,
-              textSize: 12,
-              boarderRadious: 6,
-            ),
+    return Column(
+      children: [
+        ListView.builder(
+          itemCount: 2,
+          padding: EdgeInsets.all(0),
+          shrinkWrap: true,
+          itemBuilder: (context, index) {
+            return Padding(
+              padding: EdgeInsets.symmetric(vertical: 4),
+              child: Row(
+                children: [
+                  Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(
+                        Iconsax.box_1_outline,
+                        color: AppColors.textSecondary,
+                      ),
+                      CommonText(
+                        " 1",
+                        size: 14,
+                        color: AppColors.textSecondary,
+                      ),
+                    ],
+                  ),
+                  Spacer(),
+                  CommonText(
+                    "21*56*35 (25kg)",
+                    size: 14,
+                    color: AppColors.textSecondary,
+                  ),
+                  Spacer(),
+                  CommonText("\$180", color: AppColors.primary, size: 14),
+                  Spacer(),
+                ],
+              ),
+            );
+          },
+        ),
+        SizedBox(height: 10.h),
+        SizedBox(
+          height: 35,
+          child: Row(
+            spacing: 8.w,
+            children: [
+              Expanded(
+                child: CommonButton(
+                  'Cancel Trip',
+                  color: Colors.transparent,
+                  textColor: Colors.red,
+
+                  boarder: Border.all(color: Colors.red, width: 2),
+                  onTap: () {},
+                  height: 20,
+                  textSize: 12,
+                  boarderRadious: 6,
+                ),
+              ),
+              Expanded(
+                child: CommonButton(
+                  'Accept',
+                  color: Colors.transparent,
+                  textColor: Colors.green,
+                  boarder: Border.all(color: Colors.green, width: 2),
+                  onTap: () {},
+                  height: 20,
+                  textSize: 12,
+                  boarderRadious: 6,
+                ),
+              ),
+            ],
           ),
-          Expanded(
-            child: CommonButton(
-              'Accept',
-              color: Colors.transparent,
-              textColor: Colors.green,
-              boarder: Border.all(color: Colors.green, width: 2),
-              onTap: () {},
-              height: 20,
-              textSize: 12,
-              boarderRadious: 6,
-            ),
-          ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 

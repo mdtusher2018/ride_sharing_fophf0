@@ -85,7 +85,7 @@ class MyTipDetailsPage extends StatelessWidget {
                     SizedBox(height: 12.h),
                     Column(
                       children: [
-                        TipHeaderCard(isTripStartPage: false,),
+                        TipHeaderCard(isTripStartPage: false),
                         SizedBox(height: 16.h),
                         Card(
                           color: AppColors.white,
@@ -233,6 +233,7 @@ class MyTipDetailsPage extends StatelessWidget {
                               child: CommonButton(
                                 "Cancel Trip",
                                 color: AppColors.error,
+                                onTap: () => showCancelRideSheet(context),
                               ),
                             ),
                           ],
@@ -246,6 +247,167 @@ class MyTipDetailsPage extends StatelessWidget {
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  void showCancelRideSheet(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (_) => const CancelRideBottomSheet(),
+    );
+  }
+}
+
+class CancelRideBottomSheet extends StatefulWidget {
+  const CancelRideBottomSheet({super.key});
+
+  @override
+  State<CancelRideBottomSheet> createState() => _CancelRideBottomSheetState();
+}
+
+class _CancelRideBottomSheetState extends State<CancelRideBottomSheet> {
+  int selectedIndex = 0;
+
+  final List<String> reasons = [
+    'Select wrong dropoff',
+    'Selected wrong pickup',
+    'Selected wrong vehicle',
+    'Wait time was too long',
+    'Other',
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    return SafeArea(
+      child: Container(
+        padding: EdgeInsets.all(16.w),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            /// Handle
+            Container(
+              width: 40.w,
+              height: 4.h,
+              decoration: BoxDecoration(
+                color: Colors.grey.shade400,
+                borderRadius: BorderRadius.circular(10),
+              ),
+            ),
+
+            SizedBox(height: 16.h),
+
+            CommonText(
+              'Cancel Ride?',
+              size: 18.sp,
+              fontWeight: FontWeight.w600,
+            ),
+
+            SizedBox(height: 16.h),
+
+            /// Reasons
+            ...List.generate(
+              reasons.length,
+              (index) => _ReasonTile(
+                title: reasons[index],
+                isSelected: selectedIndex == index,
+                onTap: () {
+                  setState(() => selectedIndex = index);
+                },
+              ),
+            ),
+
+            SizedBox(height: 20.h),
+
+            /// Keep Trip
+            CommonButton(
+              'Keep my trip',
+              color: Colors.green,
+              textColor: Colors.white,
+              textalign: TextAlign.center,
+              height: 48,
+              onTap: () => Navigator.pop(context),
+            ),
+
+            SizedBox(height: 12.h),
+
+            /// Cancel Ride
+            CommonButton(
+              'Cancel Ride',
+              color: Colors.transparent,
+              textColor: Colors.black,
+              boarder: Border.all(color: Colors.red, width: 2),
+              onTap: () {
+                // TODO: handle cancellation with reason
+                Navigator.pop(context);
+              },
+            ),
+
+            SizedBox(height: 10.h),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _ReasonTile extends StatelessWidget {
+  final String title;
+  final bool isSelected;
+  final VoidCallback onTap;
+
+  const _ReasonTile({
+    required this.title,
+    required this.isSelected,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        margin: EdgeInsets.only(bottom: 12.h),
+        padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 14.h),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(12.r),
+          boxShadow: [
+            BoxShadow(color: Colors.black.withOpacity(0.06), blurRadius: 10),
+          ],
+        ),
+        child: Row(
+          children: [
+            Container(
+              width: 20,
+              height: 20,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(4),
+                border: Border.all(
+                  color: isSelected ? Colors.green : Colors.grey,
+                  width: 1.5,
+                ),
+                color: isSelected ? Colors.green : Colors.transparent,
+              ),
+              child: isSelected
+                  ? const Icon(Icons.check, size: 14, color: Colors.white)
+                  : null,
+            ),
+            SizedBox(width: 12.w),
+            Expanded(
+              child: CommonText(title, size: 14, fontWeight: FontWeight.w500),
+            ),
+          ],
+        ),
       ),
     );
   }

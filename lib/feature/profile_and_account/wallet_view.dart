@@ -1,8 +1,10 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:velozaje/res/common_appbar.dart';
 import 'package:velozaje/res/common_image.dart';
 import 'package:velozaje/res/common_text.dart';
+import 'package:velozaje/utills/app_colors.dart';
 
 class WalletPage extends StatelessWidget {
   const WalletPage({super.key});
@@ -16,10 +18,32 @@ class WalletPage extends StatelessWidget {
         padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: const [
+          children: [
             WalletBalanceCard(),
             SizedBox(height: 24),
-            SectionHeader(title: 'Recent Activity'),
+            Row(
+              children: [
+                Expanded(child: SectionHeader(title: 'Recent Activity')),
+                Container(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 16.w,
+                    vertical: 4.h,
+                  ),
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [AppColors.primary, Color(0xFF166729)],
+                    ),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+
+                  child: CommonText(
+                    "Earned : \$2500",
+                    color: AppColors.white,
+                    isBold: true,
+                  ),
+                ),
+              ],
+            ),
             SizedBox(height: 12),
             ActivityList(),
           ],

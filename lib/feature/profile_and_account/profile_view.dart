@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:velozaje/feature/profile_and_account/change_password_view.dart';
 
 import 'package:velozaje/feature/profile_and_account/contact_view.dart';
 import 'package:velozaje/feature/profile_and_account/payment_methord_view.dart';
@@ -120,14 +121,14 @@ class ProfilePage extends StatelessWidget {
                   'Change Password',
                   "assest/icon/changepassword.png",
                   ontap: () {
-                    // Navigator.push(
-                    //   context,
-                    //   MaterialPageRoute(
-                    //     builder: (context) {
-                    //       return ();
-                    //     },
-                    //   ),
-                    // );
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) {
+                          return ChangePasswordPage();
+                        },
+                      ),
+                    );
                   },
                 ),
               ],
