@@ -28,6 +28,26 @@ class _TravelPageState extends State<TravelPage> {
   final TextEditingController destinationController = TextEditingController();
   final TextEditingController pickupController = TextEditingController();
 
+  // Declare controllers for each input field
+  List<TextEditingController> weightControllers = [];
+
+  void _initializeControllers() {
+    // Ensure the list is cleared before adding new controllers
+    weightControllers.clear();
+
+    for (int i = 0; i < packageCount; i++) {
+      // Create a new controller for each "weight card"
+      weightControllers.add(TextEditingController());
+    }
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _initializeControllers();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -183,120 +203,20 @@ class _TravelPageState extends State<TravelPage> {
 
                     if (!isTravelSelected) ...[
                       SizedBox(height: 12.h),
-                      SizedBox(
-                        height: 75,
-                        child: Row(
-                          children: [
-                            Expanded(
-                              child: Container(
-                                padding: EdgeInsets.symmetric(
-                                  horizontal: 12.w,
-                                  vertical: 10.h,
-                                ),
-                                decoration: BoxDecoration(
-                                  color: AppColors.grey.withOpacity(0.3),
-                                  borderRadius: BorderRadius.circular(6.r),
-                                ),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    CommonText("Weight (kg)", size: 10.sp),
 
-                                    TextField(
-                                      keyboardType: TextInputType.number,
-                                      controller: weightController,
-                                      decoration: InputDecoration(
-                                        hintText: "0",
-                                        isDense: true,
-                                        border: InputBorder.none,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-
-                            SizedBox(width: 12.w),
-                            Expanded(
-                              child: Row(
-                                children: [
-                                  Expanded(
-                                    child: Container(
-                                      height: double.infinity,
-                                      decoration: BoxDecoration(
-                                        color: AppColors.grey.withOpacity(0.3),
-                                        borderRadius: BorderRadius.circular(
-                                          6.r,
-                                        ),
-                                      ),
-                                      child: Center(
-                                        child: TextField(
-                                          textAlign: TextAlign.center,
-                                          keyboardType: TextInputType.number,
-                                          controller: weightController,
-                                          decoration: InputDecoration(
-                                            hintText: "L",
-                                            isDense: true,
-                                            border: InputBorder.none,
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                  CommonText(" x "),
-                                  Expanded(
-                                    child: Container(
-                                      height: double.infinity,
-                                      decoration: BoxDecoration(
-                                        color: AppColors.grey.withOpacity(0.3),
-                                        borderRadius: BorderRadius.circular(
-                                          6.r,
-                                        ),
-                                      ),
-                                      child: Center(
-                                        child: TextField(
-                                          keyboardType: TextInputType.number,
-                                          controller: weightController,
-                                          textAlign: TextAlign.center,
-                                          decoration: InputDecoration(
-                                            hintText: "W",
-
-                                            isDense: true,
-                                            border: InputBorder.none,
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                  CommonText(" x "),
-                                  Expanded(
-                                    child: Container(
-                                      height: double.infinity,
-                                      decoration: BoxDecoration(
-                                        color: AppColors.grey.withOpacity(0.3),
-                                        borderRadius: BorderRadius.circular(
-                                          6.r,
-                                        ),
-                                      ),
-                                      child: Center(
-                                        child: TextField(
-                                          textAlign: TextAlign.center,
-                                          keyboardType: TextInputType.number,
-                                          controller: weightController,
-                                          decoration: InputDecoration(
-                                            hintText: "H",
-                                            isDense: true,
-                                            border: InputBorder.none,
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
+                      ListView.separated(
+                        padding: EdgeInsets.all(0),
+                        physics: NeverScrollableScrollPhysics(),
+                        separatorBuilder: (context, index) {
+                          return SizedBox(height: 10.h);
+                        },
+                        shrinkWrap: true, // Prevents infinite height error
+                        itemCount: packageCount,
+                        itemBuilder: (context, index) {
+                          return weightCard(
+                            index,
+                          ); // Add a weightCard for each count
+                        },
                       ),
                     ],
 
@@ -330,6 +250,113 @@ class _TravelPageState extends State<TravelPage> {
                   ],
                 ),
               ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget weightCard(int index) {
+    return SizedBox(
+      height: 75,
+      child: Row(
+        children: [
+          Expanded(
+            child: Container(
+              padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 10.h),
+              decoration: BoxDecoration(
+                color: AppColors.grey.withOpacity(0.3),
+                borderRadius: BorderRadius.circular(6.r),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  CommonText("Weight (kg)", size: 10.sp),
+
+                  TextField(
+                    keyboardType: TextInputType.number,
+                    controller: weightControllers[index],
+                    decoration: InputDecoration(
+                      hintText: "0",
+                      isDense: true,
+                      border: InputBorder.none,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          SizedBox(width: 12.w),
+          Expanded(
+            child: Row(
+              children: [
+                Expanded(
+                  child: Container(
+                    height: double.infinity,
+                    decoration: BoxDecoration(
+                      color: AppColors.grey.withOpacity(0.3),
+                      borderRadius: BorderRadius.circular(6.r),
+                    ),
+                    child: Center(
+                      child: TextField(
+                        textAlign: TextAlign.center,
+                        keyboardType: TextInputType.number,
+                        controller: TextEditingController(),
+                        decoration: InputDecoration(
+                          hintText: "L",
+                          isDense: true,
+                          border: InputBorder.none,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                CommonText(" x "),
+                Expanded(
+                  child: Container(
+                    height: double.infinity,
+                    decoration: BoxDecoration(
+                      color: AppColors.grey.withOpacity(0.3),
+                      borderRadius: BorderRadius.circular(6.r),
+                    ),
+                    child: Center(
+                      child: TextField(
+                        keyboardType: TextInputType.number,
+                        controller: TextEditingController(),
+                        textAlign: TextAlign.center,
+                        decoration: InputDecoration(
+                          hintText: "W",
+                          isDense: true,
+                          border: InputBorder.none,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                CommonText(" x "),
+                Expanded(
+                  child: Container(
+                    height: double.infinity,
+                    decoration: BoxDecoration(
+                      color: AppColors.grey.withOpacity(0.3),
+                      borderRadius: BorderRadius.circular(6.r),
+                    ),
+                    child: Center(
+                      child: TextField(
+                        textAlign: TextAlign.center,
+                        keyboardType: TextInputType.number,
+                        controller: TextEditingController(),
+                        decoration: InputDecoration(
+                          hintText: "H",
+                          isDense: true,
+                          border: InputBorder.none,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
         ],
@@ -478,7 +505,12 @@ class _TravelPageState extends State<TravelPage> {
               children: [
                 InkWell(
                   onTap: () {
-                    if (packageCount > 1) setState(() => packageCount--);
+                    if (packageCount > 0) {
+                      setState(() {
+                        packageCount--;
+                      });
+                    }
+                    // Initialize the controllers when package count changes
                   },
                   child: Container(
                     padding: EdgeInsets.all(4),
@@ -493,7 +525,10 @@ class _TravelPageState extends State<TravelPage> {
                 CommonText(packageCount.toString(), size: 14.sp),
                 InkWell(
                   onTap: () {
-                    setState(() => packageCount++);
+                    setState(() {
+                      packageCount++;
+                    });
+                    _initializeControllers();
                   },
                   child: Container(
                     padding: EdgeInsets.all(4),
