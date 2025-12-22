@@ -7,18 +7,16 @@ import 'package:velozaje/feature/tips_and_publications/tips_and_publication_view
 
 class RootPage extends StatefulWidget {
   const RootPage({super.key});
-
+  static int currentIndex = 0;
   @override
   State<RootPage> createState() => _RootPageState();
 }
 
 class _RootPageState extends State<RootPage> {
-  int _currentIndex = 0;
-
   final List<Widget> _pages = [
     HomePage(),
     TipsAndPublicationPage(),
-    PublishProcessPage(),
+
     ChatListPage(),
     ProfilePage(),
   ];
@@ -26,13 +24,16 @@ class _RootPageState extends State<RootPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: _pages[_currentIndex],
+      body: _pages[RootPage.currentIndex],
 
+      // Bottom Navigation Bar
       bottomNavigationBar: Container(
-        height: 72,
-        decoration: const BoxDecoration(
+        height: 80,
+        decoration: BoxDecoration(
           color: Colors.white,
-          boxShadow: [BoxShadow(color: Colors.black12, blurRadius: 8)],
+          boxShadow: const [
+            BoxShadow(color: Colors.black12, blurRadius: 12, spreadRadius: 2),
+          ],
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -42,43 +43,57 @@ class _RootPageState extends State<RootPage> {
               selected: 'assest/nav/home_selected.png',
               unselected: 'assest/nav/home_unselected.png',
             ),
-
             _navItem(
               index: 1,
               selected: 'assest/nav/calendar_selected.png',
               unselected: 'assest/nav/calendar_unselected.png',
             ),
-
-            // Center Plus Button
-            GestureDetector(
-              onTap: () {
-                setState(() => _currentIndex = 2);
-              },
-              child: Container(
-                width: 58,
-                height: 58,
-                decoration: const BoxDecoration(
-                  color: Colors.green,
-                  shape: BoxShape.circle,
-                ),
-                child: Center(child: Icon(Icons.add, color: Colors.white)),
-              ),
-            ),
-
+            SizedBox(),
             _navItem(
-              index: 3,
+              index: 2,
               selected: 'assest/nav/chat_selected.png',
               unselected: 'assest/nav/chat_unselected.png',
             ),
-
             _navItem(
-              index: 4,
+              index: 3,
               selected: 'assest/nav/profile_selected.png',
               unselected: 'assest/nav/profile_unselected.png',
             ),
           ],
         ),
       ),
+
+      // Floating Action Button (FAB)
+      floatingActionButton: GestureDetector(
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) {
+                return PublishProcessPage();
+              },
+            ),
+          );
+        },
+        child: Container(
+          width: 72,
+          height: 72,
+          decoration: BoxDecoration(
+            color: Colors.green,
+            shape: BoxShape.circle,
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.2),
+                blurRadius: 8,
+                spreadRadius: 2,
+                offset: Offset(0, 4),
+              ),
+            ],
+          ),
+          child: Center(child: Icon(Icons.add, color: Colors.white, size: 32)),
+        ),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
     );
   }
 
@@ -89,12 +104,12 @@ class _RootPageState extends State<RootPage> {
   }) {
     return GestureDetector(
       onTap: () {
-        setState(() => _currentIndex = index);
+        setState(() => RootPage.currentIndex = index);
       },
       child: Image.asset(
-        _currentIndex == index ? selected : unselected,
-        width: 26,
-        height: 26,
+        RootPage.currentIndex == index ? selected : unselected,
+        width: 30, // Slightly larger icons
+        height: 30, // Slightly larger icons
       ),
     );
   }

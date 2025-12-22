@@ -15,7 +15,7 @@ class _SplashScreenState extends State<SplashScreen> {
   void initState() {
     super.initState();
 
-    // Set a timer to navigate to the next screen after 3 seconds
+    
     Timer(Duration(seconds: 3), () {
       Navigator.pushReplacement(
         context,

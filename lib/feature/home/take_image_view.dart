@@ -3,12 +3,14 @@ import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:velozaje/feature/tips_and_publications/publish_confirm_view.dart';
 import 'package:velozaje/utills/app_colors.dart';
 import 'package:velozaje/feature/home/genarate_search_view.dart';
 
 class TakePhotoPage extends StatefulWidget {
-  const TakePhotoPage({super.key});
+  const TakePhotoPage({super.key, this.forPublish = false});
   static late List<CameraDescription> cameras;
+  final bool forPublish;
 
   @override
   State<TakePhotoPage> createState() => _TakePhotoPageState();
@@ -47,13 +49,21 @@ class _TakePhotoPageState extends State<TakePhotoPage> {
   Future<void> _takePicture() async {
     await _initializeCameraFuture;
     final XFile image = await _cameraController.takePicture();
-
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (_) => GenerateSearchPage(imageFile: File(image.path)),
-      ),
-    );
+    if (widget.forPublish) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (_) => PublishConfirmPage(imageFile: File(image.path)),
+        ),
+      );
+    } else {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (_) => GenerateSearchPage(imageFile: File(image.path)),
+        ),
+      );
+    }
   }
 
   /// 🖼️ Pick From Gallery

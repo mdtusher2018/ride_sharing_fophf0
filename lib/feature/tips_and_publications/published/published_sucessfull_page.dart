@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:velozaje/feature/root_view.dart';
 import 'package:velozaje/utills/app_colors.dart';
 import 'package:velozaje/res/common_button.dart';
 import 'package:velozaje/res/common_image.dart';
@@ -35,7 +36,22 @@ class PublishedSucessfullPage extends StatelessWidget {
               color: AppColors.textSecondary,
             ),
             SizedBox(height: 20.h),
-            CommonButton("View My Trips"),
+            CommonButton(
+              "View My Trips",
+              onTap: () {
+                RootPage.currentIndex = 2;
+                Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) {
+                      return RootPage();
+                    },
+                  ),
+                  (route) => false, // This will remove all previous routes
+                );
+              },
+            ),
+
             Spacer(flex: 3),
           ],
         ),

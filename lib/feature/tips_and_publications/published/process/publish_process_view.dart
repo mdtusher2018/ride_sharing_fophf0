@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:velozaje/feature/home/take_image_view.dart';
 import 'package:velozaje/feature/home/widgets/date_time_picker.dart';
 import 'package:velozaje/res/common_button.dart';
 import 'package:velozaje/res/common_image.dart';
 import 'package:velozaje/res/common_text.dart';
+import 'package:velozaje/res/common_text_field_with_title.dart';
 import 'package:velozaje/utills/app_colors.dart';
 
-enum PublishStep { publishForm, routeSelection, vehicleSpace }
+enum PublishStep { publishForm, routeSelection, vehicleSpace, setPrice }
 
 class PublishProcessPage extends StatefulWidget {
   PublishProcessPage({super.key});
@@ -20,6 +22,13 @@ class _PublishProcessPageState extends State<PublishProcessPage> {
       TextEditingController();
   final TextEditingController destinationController = TextEditingController();
   final TextEditingController dateTime = TextEditingController();
+
+  final TextEditingController priceController = TextEditingController(
+    text: "280",
+  );
+  final TextEditingController tripDetailsController = TextEditingController();
+  bool automaticReservation = true;
+
   PublishStep currentStep = PublishStep.publishForm;
 
   int selectedSeats = 1; // default 1 seat
@@ -83,6 +92,8 @@ class _PublishProcessPageState extends State<PublishProcessPage> {
         return _routeSelectionView();
       case PublishStep.vehicleSpace:
         return _vehicleSpaceView();
+      case PublishStep.setPrice:
+        return _setPriceView(); // 👈 NEW
     }
   }
 
@@ -243,7 +254,15 @@ class _PublishProcessPageState extends State<PublishProcessPage> {
             SizedBox(height: 16.h),
             _trunkSpace(),
             SizedBox(height: 30.h),
-            CommonButton("Continue", height: 44),
+            CommonButton(
+              "Continue",
+              height: 44,
+              onTap: () {
+                setState(() {
+                  currentStep = PublishStep.setPrice;
+                });
+              },
+            ),
             SizedBox(height: 30.h),
           ],
         ),
@@ -393,6 +412,122 @@ class _PublishProcessPageState extends State<PublishProcessPage> {
     );
   }
 
+  Widget _setPriceView() {
+    return Container(
+      padding: EdgeInsets.all(16.w),
+      constraints: BoxConstraints(
+        maxHeight: MediaQuery.sizeOf(context).height * 0.75,
+      ),
+      decoration: BoxDecoration(
+        color: AppColors.white,
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)),
+      ),
+      child: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            /// Handle
+            Center(
+              child: Container(
+                width: 40.w,
+                height: 4.h,
+                margin: EdgeInsets.only(bottom: 16.h),
+                decoration: BoxDecoration(
+                  color: Colors.grey.shade400,
+                  borderRadius: BorderRadius.circular(10),
+                ),
+              ),
+            ),
+
+            CommonText("Set your price", size: 18, isBold: true),
+            SizedBox(height: 8.h),
+
+            CommonText(
+              "Price per seat",
+              size: 12,
+              color: AppColors.textSecondary,
+            ),
+            SizedBox(height: 6.h),
+
+            Row(
+              children: [
+                Expanded(
+                  child: TextField(
+                    controller: priceController,
+                    keyboardType: TextInputType.number,
+                    style: TextStyle(
+                      fontSize: 24.sp,
+                      fontWeight: FontWeight.bold,
+                    ),
+
+                    decoration: InputDecoration(
+                      contentPadding: EdgeInsets.all(0),
+                      prefixText: "\$ ",
+                    ),
+                  ),
+                ),
+              ],
+            ),
+
+            SizedBox(height: 16.h),
+
+            /// Trip Details
+            CommonText("", isBold: true),
+            SizedBox(height: 8.h),
+
+            CommonTextfieldWithTitle(
+              "Trip Details",
+              TextEditingController(),
+              maxLine: 3,
+              hintText:
+                  "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum",
+            ),
+
+            SizedBox(height: 16.h),
+
+            /// Automatic Reservation
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                CommonText(
+                  "Automatic Reservation",
+                  fontWeight: FontWeight.w500,
+                  size: 14,
+                ),
+                Switch(
+                  value: automaticReservation,
+                  activeColor: AppColors.primary,
+                  onChanged: (val) {
+                    setState(() => automaticReservation = val);
+                  },
+                ),
+              ],
+            ),
+
+            SizedBox(height: 24.h),
+
+            CommonButton(
+              "Continue",
+              height: 44,
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) {
+                      return TakePhotoPage(forPublish: true);
+                    },
+                  ),
+                );
+              },
+            ),
+
+            SizedBox(height: 20.h),
+          ],
+        ),
+      ),
+    );
+  }
+
   // Route Tile
   Widget _routeTile({bool isSelected = false}) {
     return Container(
@@ -456,6 +591,4 @@ class _PublishProcessPageState extends State<PublishProcessPage> {
       ),
     );
   }
-
-
 }

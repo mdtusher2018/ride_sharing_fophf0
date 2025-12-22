@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
 import 'package:velozaje/feature/profile_and_account/change_password_view.dart';
 
 import 'package:velozaje/feature/profile_and_account/contact_view.dart';
@@ -187,8 +188,12 @@ class ProfilePage extends StatelessWidget {
                 _tile(
                   'Language',
                   "assest/icon/language.png",
-                  trailing: 'English',
-                  ontap: () {},
+                  trailing: Get.locale?.languageCode == 'es'
+                      ? 'Español'
+                      : 'English',
+                  ontap: () {
+                    Get.bottomSheet(_languageBottomSheet());
+                  },
                 ),
               ],
             ),
@@ -254,6 +259,35 @@ class ProfilePage extends StatelessWidget {
   }
 
   // ---------- HELPERS ----------
+
+  Widget _languageBottomSheet() {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: const BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          ListTile(
+            title: const Text('English'),
+            onTap: () {
+              Get.updateLocale(const Locale('en', 'US'));
+              Get.back();
+            },
+          ),
+          ListTile(
+            title: const Text('Español'),
+            onTap: () {
+              Get.updateLocale(const Locale('es', 'ES'));
+              Get.back();
+            },
+          ),
+        ],
+      ),
+    );
+  }
 
   Widget _card({required Widget child}) {
     return Card(
