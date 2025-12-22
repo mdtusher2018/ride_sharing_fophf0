@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:icons_plus/icons_plus.dart';
+import 'package:velozaje/feature/home/saved_place_view.dart';
+import 'package:velozaje/feature/home/widgets/saved_place_card.dart';
 
 import 'package:velozaje/utills/app_colors.dart';
 import 'package:velozaje/feature/home/take_image_view.dart';
@@ -23,6 +25,9 @@ class _TravelPageState extends State<TravelPage> {
   final TextEditingController dateTime = TextEditingController();
   final TextEditingController sizeController = TextEditingController();
   final TextEditingController weightController = TextEditingController();
+  final TextEditingController destinationController = TextEditingController();
+  final TextEditingController pickupController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -117,13 +122,27 @@ class _TravelPageState extends State<TravelPage> {
 
                     SizedBox(height: 16.h),
 
-                    /// Pickup Location
-                    _locationTile("Pick-up location"),
+                    _locationTile(
+                      "Pick-up location",
+                      controller: pickupController,
+                      icon: Container(
+                        width: 20,
+                        height: 20,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          border: Border.all(width: 7),
+                        ),
+                      ),
+                    ),
 
                     SizedBox(height: 12.h),
 
                     /// Destination
-                    _locationTile("Destination"),
+                    _locationTile(
+                      "Destination",
+                      icon: Icon(Icons.location_on),
+                      controller: destinationController,
+                    ),
 
                     SizedBox(height: 12.h),
 
@@ -164,29 +183,129 @@ class _TravelPageState extends State<TravelPage> {
 
                     if (!isTravelSelected) ...[
                       SizedBox(height: 12.h),
-                      Row(
-                        children: [
-                          _packageInfoBox(
-                            title: "Weight (kg)",
-                            hint: "0",
-                            controller: weightController,
-                          ),
-                          SizedBox(width: 12.w),
-                          _packageInfoBox(
-                            title: "Size (cm)",
-                            hint: "L x W x H",
-                            controller: sizeController,
-                          ),
-                        ],
+                      SizedBox(
+                        height: 75,
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: Container(
+                                padding: EdgeInsets.symmetric(
+                                  horizontal: 12.w,
+                                  vertical: 10.h,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: AppColors.grey.withOpacity(0.3),
+                                  borderRadius: BorderRadius.circular(6.r),
+                                ),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    CommonText("Weight (kg)", size: 10.sp),
+
+                                    TextField(
+                                      keyboardType: TextInputType.number,
+                                      controller: weightController,
+                                      decoration: InputDecoration(
+                                        hintText: "0",
+                                        isDense: true,
+                                        border: InputBorder.none,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+
+                            SizedBox(width: 12.w),
+                            Expanded(
+                              child: Row(
+                                children: [
+                                  Expanded(
+                                    child: Container(
+                                      height: double.infinity,
+                                      decoration: BoxDecoration(
+                                        color: AppColors.grey.withOpacity(0.3),
+                                        borderRadius: BorderRadius.circular(
+                                          6.r,
+                                        ),
+                                      ),
+                                      child: Center(
+                                        child: TextField(
+                                          textAlign: TextAlign.center,
+                                          keyboardType: TextInputType.number,
+                                          controller: weightController,
+                                          decoration: InputDecoration(
+                                            hintText: "L",
+                                            isDense: true,
+                                            border: InputBorder.none,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  CommonText(" x "),
+                                  Expanded(
+                                    child: Container(
+                                      height: double.infinity,
+                                      decoration: BoxDecoration(
+                                        color: AppColors.grey.withOpacity(0.3),
+                                        borderRadius: BorderRadius.circular(
+                                          6.r,
+                                        ),
+                                      ),
+                                      child: Center(
+                                        child: TextField(
+                                          keyboardType: TextInputType.number,
+                                          controller: weightController,
+                                          textAlign: TextAlign.center,
+                                          decoration: InputDecoration(
+                                            hintText: "W",
+
+                                            isDense: true,
+                                            border: InputBorder.none,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  CommonText(" x "),
+                                  Expanded(
+                                    child: Container(
+                                      height: double.infinity,
+                                      decoration: BoxDecoration(
+                                        color: AppColors.grey.withOpacity(0.3),
+                                        borderRadius: BorderRadius.circular(
+                                          6.r,
+                                        ),
+                                      ),
+                                      child: Center(
+                                        child: TextField(
+                                          textAlign: TextAlign.center,
+                                          keyboardType: TextInputType.number,
+                                          controller: weightController,
+                                          decoration: InputDecoration(
+                                            hintText: "H",
+                                            isDense: true,
+                                            border: InputBorder.none,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ],
 
                     SizedBox(height: 16.h),
 
                     /// Saved Places
-                    _savedPlaceTile(issBookMarks: true),
+                    savedPlaceCard(issBookMarks: true),
                     SizedBox(height: 10.h),
-                    _savedPlaceTile(),
+                    savedPlaceCard(),
 
                     SizedBox(height: 10.h),
                     _savedPlaceCard(),
@@ -241,18 +360,31 @@ class _TravelPageState extends State<TravelPage> {
   }
 
   /// 📍 Location Tile
-  Widget _locationTile(String title) {
+  Widget _locationTile(
+    String title, {
+    required TextEditingController controller,
+    required Widget icon,
+  }) {
     return Container(
       padding: EdgeInsets.all(14.w),
+      height: 60,
       decoration: BoxDecoration(
         color: AppColors.grey.withOpacity(0.3),
         borderRadius: BorderRadius.circular(12.r),
       ),
       child: Row(
         children: [
-          Icon(Icons.location_on),
+          icon,
           SizedBox(width: 12.w),
-          CommonText(title, size: 14.sp),
+          Expanded(
+            child: TextField(
+              controller: controller,
+              decoration: InputDecoration(
+                hintText: title,
+                border: InputBorder.none,
+              ),
+            ),
+          ),
         ],
       ),
     );
@@ -381,120 +513,52 @@ class _TravelPageState extends State<TravelPage> {
     );
   }
 
-  Widget _packageInfoBox({
-    required String title,
-    required String hint,
-    required TextEditingController controller,
-  }) {
-    return Expanded(
+  /// ⭐ Saved Place Tile
+  Widget _savedPlaceCard() {
+    return InkWell(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) {
+              return SavedPlacePage();
+            },
+          ),
+        );
+      },
       child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 10.h),
+        padding: EdgeInsets.all(14.w),
+        margin: EdgeInsets.symmetric(horizontal: 4),
         decoration: BoxDecoration(
-          color: AppColors.grey.withOpacity(0.3),
-          borderRadius: BorderRadius.circular(6.r),
+          color: AppColors.white,
+          borderRadius: BorderRadius.circular(8.r),
+          boxShadow: [BoxShadow(color: Colors.black38, blurRadius: 3)],
         ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        child: Row(
           children: [
-            CommonText(title, size: 10.sp),
-
-            TextField(
-              keyboardType: TextInputType.number,
-              controller: controller,
-              decoration: InputDecoration(
-                hintText: hint,
-                isDense: true,
-                border: InputBorder.none,
+            Container(
+              padding: EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: AppColors.grey.withOpacity(0.4),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Icon(Icons.star),
+            ),
+            SizedBox(width: 12.w),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  CommonText(
+                    "Saved Places",
+                    size: 14.sp,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ],
               ),
             ),
           ],
         ),
-      ),
-    );
-  }
-
-  /// ⭐ Saved Place Tile
-  Widget _savedPlaceTile({bool issBookMarks = false}) {
-    return Container(
-      padding: EdgeInsets.all(14.w),
-      margin: EdgeInsets.symmetric(horizontal: 4),
-      decoration: BoxDecoration(
-        color: AppColors.white,
-        borderRadius: BorderRadius.circular(8.r),
-        boxShadow: [BoxShadow(color: Colors.black38, blurRadius: 3)],
-      ),
-      child: Row(
-        children: [
-          Container(
-            padding: EdgeInsets.all(8),
-            decoration: BoxDecoration(
-              color: AppColors.grey.withOpacity(0.4),
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: Icon(Iconsax.clock_bold, color: Colors.grey),
-          ),
-          SizedBox(width: 12.w),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                CommonText(
-                  "Titumir University",
-                  size: 14.sp,
-                  fontWeight: FontWeight.w500,
-                ),
-                CommonText("Mohakhali, Dhaka", size: 12.sp),
-              ],
-            ),
-          ),
-          Column(
-            children: [
-              Icon(
-                (issBookMarks) ? Icons.star : Icons.star_border,
-                color: issBookMarks ? Colors.yellow : AppColors.grey,
-              ),
-              CommonText("5.5 km", size: 10),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-
-  /// ⭐ Saved Place Tile
-  Widget _savedPlaceCard() {
-    return Container(
-      padding: EdgeInsets.all(14.w),
-      margin: EdgeInsets.symmetric(horizontal: 4),
-      decoration: BoxDecoration(
-        color: AppColors.white,
-        borderRadius: BorderRadius.circular(8.r),
-        boxShadow: [BoxShadow(color: Colors.black38, blurRadius: 3)],
-      ),
-      child: Row(
-        children: [
-          Container(
-            padding: EdgeInsets.all(8),
-            decoration: BoxDecoration(
-              color: AppColors.grey.withOpacity(0.4),
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: Icon(Icons.star),
-          ),
-          SizedBox(width: 12.w),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                CommonText(
-                  "Saved Places",
-                  size: 14.sp,
-                  fontWeight: FontWeight.w500,
-                ),
-              ],
-            ),
-          ),
-        ],
       ),
     );
   }

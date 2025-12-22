@@ -14,6 +14,9 @@ class FindingDriversPage extends StatefulWidget {
 }
 
 class _FindingDriversPageState extends State<FindingDriversPage> {
+  TextEditingController pickupController = TextEditingController();
+  TextEditingController destinationController = TextEditingController();
+
   @override
   void initState() {
     // TODO: implement initState
@@ -123,7 +126,8 @@ class _FindingDriversPageState extends State<FindingDriversPage> {
                           /// Pickup Location
                           _locationTile(
                             "Pick-up location",
-                            Container(
+                            controller: pickupController,
+                            icon: Container(
                               width: 20,
                               height: 20,
                               decoration: BoxDecoration(
@@ -136,7 +140,11 @@ class _FindingDriversPageState extends State<FindingDriversPage> {
                           SizedBox(height: 12.h),
 
                           /// Destination
-                          _locationTile("Destination", Icon(Icons.location_on)),
+                          _locationTile(
+                            "Destination",
+                            icon: Icon(Icons.location_on),
+                            controller: destinationController,
+                          ),
 
                           SizedBox(height: 40.h),
                         ],
@@ -153,9 +161,14 @@ class _FindingDriversPageState extends State<FindingDriversPage> {
   }
 
   /// 📍 Location Tile
-  Widget _locationTile(String title, Widget icon) {
+  Widget _locationTile(
+    String title, {
+    required TextEditingController controller,
+    required Widget icon,
+  }) {
     return Container(
       padding: EdgeInsets.all(14.w),
+      height: 60,
       decoration: BoxDecoration(
         color: AppColors.grey.withOpacity(0.3),
         borderRadius: BorderRadius.circular(12.r),
@@ -164,7 +177,15 @@ class _FindingDriversPageState extends State<FindingDriversPage> {
         children: [
           icon,
           SizedBox(width: 12.w),
-          CommonText(title, size: 14.sp),
+          Expanded(
+            child: TextField(
+              controller: controller,
+              decoration: InputDecoration(
+                hintText: title,
+                border: InputBorder.none,
+              ),
+            ),
+          ),
         ],
       ),
     );

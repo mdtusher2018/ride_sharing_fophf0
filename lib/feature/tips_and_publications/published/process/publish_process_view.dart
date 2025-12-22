@@ -16,17 +16,22 @@ class PublishProcessPage extends StatefulWidget {
 }
 
 class _PublishProcessPageState extends State<PublishProcessPage> {
+  final TextEditingController pickuplocationController =
+      TextEditingController();
+  final TextEditingController destinationController = TextEditingController();
   final TextEditingController dateTime = TextEditingController();
   PublishStep currentStep = PublishStep.publishForm;
 
   int selectedSeats = 1; // default 1 seat
   String selectedTrunk = "Small"; // default trunk
   int selectedRouteIndex = -1; // default selected route
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Stack(
         children: [
+          // Background Image
           Container(
             color: Colors.grey,
             width: MediaQuery.sizeOf(context).width,
@@ -38,6 +43,7 @@ class _PublishProcessPageState extends State<PublishProcessPage> {
             ),
           ),
 
+          // Back Button
           Positioned(
             top: 40.h,
             left: 16.w,
@@ -60,22 +66,15 @@ class _PublishProcessPageState extends State<PublishProcessPage> {
               ),
             ),
           ),
-          Positioned(
-            bottom: 0,
-            right: 0,
-            left: 0,
-            child: Positioned(
-              bottom: 0,
-              right: 0,
-              left: 0,
-              child: _buildBottomView(),
-            ),
-          ),
+
+          // Bottom View
+          Positioned(bottom: 0, right: 0, left: 0, child: _buildBottomView()),
         ],
       ),
     );
   }
 
+  // Handles step transitions and updates the view based on the current step
   Widget _buildBottomView() {
     switch (currentStep) {
       case PublishStep.publishForm:
@@ -87,6 +86,7 @@ class _PublishProcessPageState extends State<PublishProcessPage> {
     }
   }
 
+  // Publish Form View
   Widget _publishFormView() {
     return Container(
       padding: EdgeInsets.all(16.w),
@@ -102,13 +102,14 @@ class _PublishProcessPageState extends State<PublishProcessPage> {
           spacing: 10.h,
           children: [
             Align(
-              alignment: AlignmentGeometry.centerLeft,
+              alignment: Alignment.centerLeft,
               child: CommonText("Where are you going?", size: 18, isBold: true),
             ),
             SizedBox(),
             _locationTile(
               "Pick-up location",
-              Container(
+              controller: pickuplocationController,
+              icon: Container(
                 width: 20,
                 height: 20,
                 decoration: BoxDecoration(
@@ -117,20 +118,19 @@ class _PublishProcessPageState extends State<PublishProcessPage> {
                 ),
               ),
             ),
-
-            /// Destination
-            _locationTile("Destination", Icon(Icons.location_on)),
-
+            _locationTile(
+              "Destination",
+              controller: destinationController,
+              icon: Icon(Icons.location_on),
+            ),
             InkWell(
               onTap: () async {
                 final DateTime? result = await showDateTimePickerDialog(
                   context,
                 );
-
                 if (result != null) {
-                  print("Selected DateTime: $result");
                   setState(() {
-                    dateTime.text = dateTime.text =
+                    dateTime.text =
                         "${result.day}/${result.month}/${result.year} ${result.hour}:${result.minute}";
                   });
                 }
@@ -147,7 +147,7 @@ class _PublishProcessPageState extends State<PublishProcessPage> {
                     SizedBox(width: 8.w),
                     Expanded(
                       child: CommonText(
-                        (dateTime.text.isNotEmpty)
+                        dateTime.text.isNotEmpty
                             ? dateTime.text
                             : "Time & Date",
                         size: 13.sp,
@@ -164,6 +164,9 @@ class _PublishProcessPageState extends State<PublishProcessPage> {
               onTap: () {
                 setState(() {
                   currentStep = PublishStep.routeSelection;
+                  pickuplocationController.clear();
+                  destinationController.clear();
+                  dateTime.clear();
                 });
               },
             ),
@@ -174,6 +177,7 @@ class _PublishProcessPageState extends State<PublishProcessPage> {
     );
   }
 
+  // Route Selection View
   Widget _routeSelectionView() {
     return Container(
       padding: EdgeInsets.all(16.w),
@@ -186,36 +190,37 @@ class _PublishProcessPageState extends State<PublishProcessPage> {
       ),
       child: SingleChildScrollView(
         child: Column(
-          spacing: 12.h,
           children: [
-            ...List.generate(3, (index) {
-              return GestureDetector(
-                onTap: () {
-                  setState(() {
-                    selectedRouteIndex = index;
-                  });
-                },
-                child: _routeTile(isSelected: selectedRouteIndex == index),
-              );
-            }),
-
-            SizedBox(height: 10.h),
-
+            Column(
+              spacing: 12.h,
+              children: List.generate(3, (index) {
+                return GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      selectedRouteIndex = index;
+                    });
+                  },
+                  child: _routeTile(isSelected: selectedRouteIndex == index),
+                );
+              }),
+            ),
+            SizedBox(height: 16.h),
             CommonButton(
               "Continue",
-              height: 40,
               onTap: () {
                 setState(() {
                   currentStep = PublishStep.vehicleSpace;
                 });
               },
             ),
+            SizedBox(height: 16.h),
           ],
         ),
       ),
     );
   }
 
+  // Vehicle Space View
   Widget _vehicleSpaceView() {
     return Container(
       padding: EdgeInsets.all(16.w),
@@ -231,149 +236,164 @@ class _PublishProcessPageState extends State<PublishProcessPage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             CommonText("Vehicle & Space", size: 18, isBold: true),
-
             SizedBox(height: 12.h),
-
-            /// Vehicle card
-            Card(
-              color: AppColors.white,
-              child: Padding(
-                padding: EdgeInsets.all(16),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: CommonImage(path: "assest/image/car_1.png"),
-                    ),
-                    Expanded(
-                      child: Column(
-                        children: [
-                          CommonText("Volkswagen Jetta", size: 14),
-                          CommonText("2008", size: 14),
-                          CommonText(
-                            "kkp-35-466",
-                            size: 12,
-                            color: AppColors.textSecondary,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-
+            _vehicleCard(),
             SizedBox(height: 16.h),
-
-            /// Empty Seats
-            CommonText("Empty Seats", isBold: true),
-            SizedBox(height: 8.h),
-            Container(
-              padding: EdgeInsets.all(8),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10),
-                color: AppColors.grey.withOpacity(0.3),
-              ),
-              child: Row(
-                children: List.generate(4, (index) {
-                  final seatNumber = index + 1;
-                  final selected = selectedSeats == seatNumber;
-
-                  return Expanded(
-                    child: GestureDetector(
-                      onTap: () {
-                        setState(() {
-                          selectedSeats = seatNumber;
-                        });
-                      },
-                      child: Container(
-                        margin: EdgeInsets.symmetric(horizontal: 4.w),
-                        padding: EdgeInsets.symmetric(vertical: 10.h),
-                        decoration: BoxDecoration(
-                          color: selected
-                              ? AppColors.white
-                              : Colors.transparent,
-                          borderRadius: BorderRadius.circular(10.r),
-                          border: Border.all(
-                            color: selected
-                                ? AppColors.primary
-                                : Colors.transparent,
-                          ),
-                        ),
-                        child: Center(
-                          child: CommonText(
-                            "$seatNumber",
-                            color: selected
-                                ? AppColors.primary
-                                : AppColors.textSecondary,
-                            isBold: selected,
-                          ),
-                        ),
-                      ),
-                    ),
-                  );
-                }),
-              ),
-            ),
-
+            _emptySeats(),
             SizedBox(height: 16.h),
-
-            /// Trunk Space
-            CommonText("Trunk Space", isBold: true),
-            SizedBox(height: 8.h),
-            Container(
-              padding: EdgeInsets.all(8),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10),
-                color: AppColors.grey.withOpacity(0.3),
-              ),
-              child: Row(
-                children: ["Small", "Medium", "Large"].map((e) {
-                  final selected = selectedTrunk == e;
-
-                  return Expanded(
-                    child: GestureDetector(
-                      onTap: () {
-                        setState(() {
-                          selectedTrunk = e;
-                        });
-                      },
-                      child: Container(
-                        margin: EdgeInsets.symmetric(horizontal: 4.w),
-                        padding: EdgeInsets.symmetric(vertical: 10.h),
-                        decoration: BoxDecoration(
-                          color: selected
-                              ? AppColors.white
-                              : Colors.transparent,
-                          borderRadius: BorderRadius.circular(10.r),
-                          border: Border.all(
-                            color: selected
-                                ? AppColors.primary
-                                : Colors.transparent,
-                          ),
-                        ),
-                        child: Center(
-                          child: CommonText(
-                            e,
-                            color: selected
-                                ? AppColors.primary
-                                : AppColors.textSecondary,
-                            isBold: selected,
-                          ),
-                        ),
-                      ),
-                    ),
-                  );
-                }).toList(),
-              ),
-            ),
-
-            SizedBox(height: 30.h), CommonButton("Continue", height: 44),
+            _trunkSpace(),
+            SizedBox(height: 30.h),
+            CommonButton("Continue", height: 44),
+            SizedBox(height: 30.h),
           ],
         ),
       ),
     );
   }
 
+  // Vehicle Card
+  Widget _vehicleCard() {
+    return Card(
+      color: AppColors.white,
+      child: Padding(
+        padding: EdgeInsets.all(16),
+        child: Row(
+          children: [
+            Expanded(
+              child: CommonImage(
+                path: "assest/image/car_1.png",
+                sourceType: ImageSourceType.asset,
+              ),
+            ),
+            Expanded(
+              child: Column(
+                children: [
+                  CommonText("Volkswagen Jetta", size: 14),
+                  CommonText("2008", size: 14),
+                  CommonText(
+                    "kkp-35-466",
+                    size: 12,
+                    color: AppColors.textSecondary,
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // Empty Seats
+  Widget _emptySeats() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        CommonText("Empty Seats", isBold: true),
+        SizedBox(height: 8.h),
+        Container(
+          padding: EdgeInsets.all(8),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(10),
+            color: AppColors.grey.withOpacity(0.3),
+          ),
+          child: Row(
+            children: List.generate(4, (index) {
+              final seatNumber = index + 1;
+              final selected = selectedSeats == seatNumber;
+              return Expanded(
+                child: GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      selectedSeats = seatNumber;
+                    });
+                  },
+                  child: Container(
+                    margin: EdgeInsets.symmetric(horizontal: 4.w),
+                    padding: EdgeInsets.symmetric(vertical: 10.h),
+                    decoration: BoxDecoration(
+                      color: selected ? AppColors.white : Colors.transparent,
+                      borderRadius: BorderRadius.circular(10.r),
+                      border: Border.all(
+                        color: selected
+                            ? AppColors.primary
+                            : Colors.transparent,
+                      ),
+                    ),
+                    child: Center(
+                      child: CommonText(
+                        "$seatNumber",
+                        color: selected
+                            ? AppColors.primary
+                            : AppColors.textSecondary,
+                        isBold: selected,
+                      ),
+                    ),
+                  ),
+                ),
+              );
+            }),
+          ),
+        ),
+      ],
+    );
+  }
+
+  // Trunk Space
+  Widget _trunkSpace() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        CommonText("Trunk Space", isBold: true),
+        SizedBox(height: 8.h),
+        Container(
+          padding: EdgeInsets.all(8),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(10),
+            color: AppColors.grey.withOpacity(0.3),
+          ),
+          child: Row(
+            children: ["Small", "Medium", "Large"].map((e) {
+              final selected = selectedTrunk == e;
+              return Expanded(
+                child: GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      selectedTrunk = e;
+                    });
+                  },
+                  child: Container(
+                    margin: EdgeInsets.symmetric(horizontal: 4.w),
+                    padding: EdgeInsets.symmetric(vertical: 10.h),
+                    decoration: BoxDecoration(
+                      color: selected ? AppColors.white : Colors.transparent,
+                      borderRadius: BorderRadius.circular(10.r),
+                      border: Border.all(
+                        color: selected
+                            ? AppColors.primary
+                            : Colors.transparent,
+                      ),
+                    ),
+                    child: Center(
+                      child: CommonText(
+                        e,
+                        color: selected
+                            ? AppColors.primary
+                            : AppColors.textSecondary,
+                        isBold: selected,
+                      ),
+                    ),
+                  ),
+                ),
+              );
+            }).toList(),
+          ),
+        ),
+      ],
+    );
+  }
+
+  // Route Tile
   Widget _routeTile({bool isSelected = false}) {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 8),
@@ -406,9 +426,15 @@ class _PublishProcessPageState extends State<PublishProcessPage> {
     );
   }
 
-  Widget _locationTile(String title, Widget icon) {
+  // Location Tile (input fields)
+  Widget _locationTile(
+    String title, {
+    required TextEditingController controller,
+    required Widget icon,
+  }) {
     return Container(
       padding: EdgeInsets.all(14.w),
+      height: 60,
       decoration: BoxDecoration(
         color: AppColors.grey.withOpacity(0.3),
         borderRadius: BorderRadius.circular(12.r),
@@ -417,9 +443,19 @@ class _PublishProcessPageState extends State<PublishProcessPage> {
         children: [
           icon,
           SizedBox(width: 12.w),
-          CommonText(title, size: 14.sp),
+          Expanded(
+            child: TextField(
+              controller: controller,
+              decoration: InputDecoration(
+                hintText: title,
+                border: InputBorder.none,
+              ),
+            ),
+          ),
         ],
       ),
     );
   }
+
+
 }

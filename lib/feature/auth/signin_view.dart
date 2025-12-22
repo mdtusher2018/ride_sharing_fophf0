@@ -6,6 +6,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:velozaje/feature/auth/forget_password_view.dart';
 import 'package:velozaje/feature/auth/signup_view.dart';
 import 'package:velozaje/feature/auth/widget/auth_backend.dart';
+import 'package:velozaje/feature/root_view.dart';
 import 'package:velozaje/utills/app_colors.dart';
 import 'package:velozaje/res/common_button.dart';
 import 'package:velozaje/res/common_image.dart';
@@ -110,7 +111,19 @@ class _SignInPageState extends State<SignInPage> {
                         SizedBox(height: 10.h),
 
                         /// Login button
-                        CommonButton("Log in"),
+                        CommonButton(
+                          "Log in",
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) {
+                                  return RootPage();
+                                },
+                              ),
+                            );
+                          },
+                        ),
 
                         SizedBox(height: 16.h),
 
