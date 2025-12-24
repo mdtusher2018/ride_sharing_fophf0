@@ -28,6 +28,7 @@ class _PublishProcessPageState extends State<PublishProcessPage> {
   );
   final TextEditingController tripDetailsController = TextEditingController();
   bool automaticReservation = true;
+  bool enablePackageDelivery = true;
 
   PublishStep currentStep = PublishStep.publishForm;
 
@@ -252,7 +253,23 @@ class _PublishProcessPageState extends State<PublishProcessPage> {
             SizedBox(height: 16.h),
             _emptySeats(),
             SizedBox(height: 16.h),
-            _trunkSpace(),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                CommonText(
+                  "Enable Package Delivery",
+                  fontWeight: FontWeight.w500,
+                  size: 14,
+                ),
+                Switch(
+                  value: enablePackageDelivery,
+                  activeColor: AppColors.primary,
+                  onChanged: (val) {
+                    setState(() => enablePackageDelivery = val);
+                  },
+                ),
+              ],
+            ),
             SizedBox(height: 30.h),
             CommonButton(
               "Continue",
@@ -310,102 +327,11 @@ class _PublishProcessPageState extends State<PublishProcessPage> {
       children: [
         CommonText("Empty Seats", isBold: true),
         SizedBox(height: 8.h),
-        Container(
-          padding: EdgeInsets.all(8),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(10),
-            color: AppColors.grey.withOpacity(0.3),
-          ),
-          child: Row(
-            children: List.generate(4, (index) {
-              final seatNumber = index + 1;
-              final selected = selectedSeats == seatNumber;
-              return Expanded(
-                child: GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      selectedSeats = seatNumber;
-                    });
-                  },
-                  child: Container(
-                    margin: EdgeInsets.symmetric(horizontal: 4.w),
-                    padding: EdgeInsets.symmetric(vertical: 10.h),
-                    decoration: BoxDecoration(
-                      color: selected ? AppColors.white : Colors.transparent,
-                      borderRadius: BorderRadius.circular(10.r),
-                      border: Border.all(
-                        color: selected
-                            ? AppColors.primary
-                            : Colors.transparent,
-                      ),
-                    ),
-                    child: Center(
-                      child: CommonText(
-                        "$seatNumber",
-                        color: selected
-                            ? AppColors.primary
-                            : AppColors.textSecondary,
-                        isBold: selected,
-                      ),
-                    ),
-                  ),
-                ),
-              );
-            }),
-          ),
-        ),
-      ],
-    );
-  }
-
-  // Trunk Space
-  Widget _trunkSpace() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        CommonText("Trunk Space", isBold: true),
-        SizedBox(height: 8.h),
-        Container(
-          padding: EdgeInsets.all(8),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(10),
-            color: AppColors.grey.withOpacity(0.3),
-          ),
-          child: Row(
-            children: ["Small", "Medium", "Large"].map((e) {
-              final selected = selectedTrunk == e;
-              return Expanded(
-                child: GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      selectedTrunk = e;
-                    });
-                  },
-                  child: Container(
-                    margin: EdgeInsets.symmetric(horizontal: 4.w),
-                    padding: EdgeInsets.symmetric(vertical: 10.h),
-                    decoration: BoxDecoration(
-                      color: selected ? AppColors.white : Colors.transparent,
-                      borderRadius: BorderRadius.circular(10.r),
-                      border: Border.all(
-                        color: selected
-                            ? AppColors.primary
-                            : Colors.transparent,
-                      ),
-                    ),
-                    child: Center(
-                      child: CommonText(
-                        e,
-                        color: selected
-                            ? AppColors.primary
-                            : AppColors.textSecondary,
-                        isBold: selected,
-                      ),
-                    ),
-                  ),
-                ),
-              );
-            }).toList(),
+        TextField(
+          style: TextStyle(fontSize: 21),
+          decoration: InputDecoration(
+            hintText: "04",
+            hintStyle: TextStyle(fontSize: 21),
           ),
         ),
       ],

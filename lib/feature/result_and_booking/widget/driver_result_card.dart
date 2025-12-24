@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:icons_plus/icons_plus.dart';
 import 'package:velozaje/feature/result_and_booking/result_trip_details.dart';
 import 'package:velozaje/utills/app_colors.dart';
 import 'package:velozaje/res/common_button.dart';
@@ -186,43 +187,26 @@ class _DriverResultCardState extends State<DriverResultCard> {
       padding: EdgeInsets.only(bottom: 12.h),
       child: Row(
         children: [
-          _sizeCard("Small", "\$60", 0),
+          _sizeCard("Small", "\$60"),
           SizedBox(width: 10.w),
-          _sizeCard("Medium", "\$00", 1),
+          _sizeCard("Medium", "\$00"),
           SizedBox(width: 10.w),
-          _sizeCard("Large", "\$00", 2),
+          _sizeCard("Large", "\$00"),
         ],
       ),
     );
   }
 
-  Widget _sizeCard(String title, String price, int index) {
-    final bool isSelected = selectedIndex == index;
-
+  Widget _sizeCard(String title, String price) {
     return Expanded(
-      child: GestureDetector(
-        onTap: () {
-          setState(() => selectedIndex = index);
-        },
-        child: Container(
-          padding: EdgeInsets.all(12.w),
-          decoration: BoxDecoration(
-            color: isSelected
-                ? AppColors.primary.withOpacity(.08)
-                : AppColors.white,
-            borderRadius: BorderRadius.circular(10),
-            border: Border.all(
-              color: isSelected ? AppColors.primary : Colors.grey.shade300,
-              width: 1.5,
-            ),
-          ),
-          child: Column(
-            children: [
-              CommonText(title, size: 12),
-              SizedBox(height: 6.h),
-              CommonText(price, size: 14, isBold: true),
-            ],
-          ),
+      child: Container(
+        padding: EdgeInsets.all(4.w),
+        child: Row(
+          children: [
+            Icon(Iconsax.box_1_outline),
+            SizedBox(width: 6.h),
+            CommonText(price, size: 14, isBold: true),
+          ],
         ),
       ),
     );

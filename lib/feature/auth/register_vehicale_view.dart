@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:dotted_border/dotted_border.dart';
+import 'package:velozaje/feature/auth/referal_view.dart';
 import 'package:velozaje/utills/app_colors.dart';
 import 'package:velozaje/res/common_button.dart';
 import 'package:velozaje/res/common_image.dart';
@@ -208,7 +209,14 @@ class _RegisterVehiclePageState extends State<RegisterVehiclePage> {
             CommonButton(
               'Confirm Data',
               onTap: () {
-                // TODO: Add confirmation logic
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) {
+                      return ReferalPage();
+                    },
+                  ),
+                );
               },
             ),
             SizedBox(height: 40.h),

@@ -2,8 +2,8 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:velozaje/feature/auth/confirm_details_view.dart';
 import 'package:velozaje/feature/auth/widget/auth_backend.dart';
-import 'package:velozaje/feature/root_view.dart';
 import 'package:velozaje/utills/app_colors.dart';
 import 'package:velozaje/res/common_button.dart';
 import 'package:velozaje/res/common_image.dart';
@@ -113,7 +113,7 @@ class _EmailVerificationPageState extends State<EmailVerificationPage>
                               context,
                               MaterialPageRoute(
                                 builder: (context) {
-                                  return RootPage();
+                                  return ConfirmDetailsPage();
                                 },
                               ),
                             );

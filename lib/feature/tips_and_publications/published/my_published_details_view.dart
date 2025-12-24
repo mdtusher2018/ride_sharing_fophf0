@@ -7,7 +7,7 @@ import 'package:velozaje/res/common_otp_field.dart';
 import 'package:velozaje/res/common_text.dart';
 import 'package:velozaje/utills/app_colors.dart';
 
-enum Status { verified, confirmed, pending }
+enum Status { pending, pickupCode, ontheway, finalCode, compleated }
 
 class MyPublishedDetailsPage extends StatelessWidget {
   const MyPublishedDetailsPage({super.key});
@@ -93,8 +93,10 @@ class MyPublishedDetailsPage extends StatelessWidget {
                         isBold: true,
                       ),
                     ),
-                    _PassengerCard(status: Status.verified),
-                    _PassengerCard(status: Status.confirmed),
+                    _PassengerCard(status: Status.finalCode),
+                    _PassengerCard(status: Status.ontheway),
+                    _PassengerCard(status: Status.pickupCode),
+                    _PassengerCard(status: Status.compleated),
 
                     SizedBox(height: 12.h),
 
@@ -378,9 +380,11 @@ class _PassengerCard extends StatelessWidget {
               ],
             ),
             SizedBox(height: 8),
-            if (status == Status.verified) verified(),
-            if (status == Status.confirmed) verify(),
             if (status == Status.pending) accetpRejectButton(),
+            if (status == Status.pickupCode) pickupCode(),
+            if (status == Status.ontheway) onTheWay(),
+            if (status == Status.finalCode) finalCode(),
+            if (status == Status.compleated) compleate(),
           ],
         ),
       ),
@@ -392,6 +396,7 @@ class _PassengerCard extends StatelessWidget {
       children: [
         ListView.builder(
           itemCount: 2,
+          physics: NeverScrollableScrollPhysics(),
           padding: EdgeInsets.all(0),
           shrinkWrap: true,
           itemBuilder: (context, index) {
@@ -465,7 +470,7 @@ class _PassengerCard extends StatelessWidget {
     );
   }
 
-  Widget verify() {
+  Widget pickupCode() {
     final List<TextEditingController> _controllers = List.generate(
       4,
       (_) => TextEditingController(),
@@ -480,77 +485,121 @@ class _PassengerCard extends StatelessWidget {
       }
     }
 
-    return Row(
-      spacing: 10,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      spacing: 4,
       children: [
-        Expanded(
-          child: FittedBox(
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: List.generate(4, (index) {
-                return CommonOtpField(
-                  controller: _controllers[index],
-                  focusNode: _focusNodes[index],
-                  onChanged: (value) => onChanged(value, index),
-                );
-              }),
+        CommonText("Enter Pickup Code", size: 16, isBold: true),
+        CommonText("Asked the Passanger for the code to confirm their pickup"),
+        SizedBox(),
+        Row(
+          spacing: 10,
+          children: [
+            Expanded(
+              child: FittedBox(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: List.generate(4, (index) {
+                    return CommonOtpField(
+                      controller: _controllers[index],
+                      focusNode: _focusNodes[index],
+                      onChanged: (value) => onChanged(value, index),
+                    );
+                  }),
+                ),
+              ),
             ),
-          ),
+            CommonButton("Verify", width: 90, height: 30, boarderRadious: 8),
+          ],
         ),
-        CommonButton("Verify", width: 90, height: 30, boarderRadious: 8),
       ],
     );
   }
 
-  Widget verified() {
-    return Container(
-      padding: EdgeInsets.all(8),
-      decoration: BoxDecoration(
-        color: AppColors.grey.withOpacity(0.4),
+  Widget finalCode() {
+    final List<TextEditingController> _controllers = List.generate(
+      4,
+      (_) => TextEditingController(),
+    );
+    final List<FocusNode> _focusNodes = List.generate(4, (_) => FocusNode());
 
-        borderRadius: BorderRadius.circular(10),
-      ),
-      child: Column(
-        spacing: 4.h,
-        children: [
-          Row(
-            spacing: 8.w,
-            children: [
-              Icon(Icons.verified_user_outlined),
-              CommonText("Drop off Code"),
-              Spacer(),
-              Container(
-                constraints: BoxConstraints(maxWidth: 140),
-                padding: EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(16),
+    void onChanged(String value, int index) {
+      if (value.length == 1 && index < 3) {
+        _focusNodes[index + 1].requestFocus();
+      } else if (value.isEmpty && index > 0) {
+        _focusNodes[index - 1].requestFocus();
+      }
+    }
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      spacing: 4,
+      children: [
+        CommonText("Enter Final Code", size: 16, isBold: true),
+        CommonText("Asked the Passanger for the code to confirm their pickup"),
+        SizedBox(),
+        Row(
+          spacing: 10,
+          children: [
+            Expanded(
+              child: FittedBox(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: List.generate(4, (index) {
+                    return CommonOtpField(
+                      controller: _controllers[index],
+                      focusNode: _focusNodes[index],
+                      onChanged: (value) => onChanged(value, index),
+                    );
+                  }),
                 ),
-                child: CommonText("Give to Leo Messi", size: 10),
               ),
-            ],
-          ),
-          Container(
-            padding: EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              border: Border.all(color: AppColors.white),
-              borderRadius: BorderRadius.circular(10),
             ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                CommonText("Final Code", size: 14),
-                CommonText(
-                  "4 9 2 1",
-                  size: 16,
-                  isBold: true,
-                  color: AppColors.primary,
-                ),
-              ],
-            ),
-          ),
-        ],
+            CommonButton("Verify", width: 90, height: 30, boarderRadious: 8),
+          ],
+        ),
+      ],
+    );
+  }
+
+  Widget compleate() {
+    return SizedBox(
+      height: 36.h,
+      child: CommonButton(
+        "Trip Compleated",
+        color: AppColors.textSecondary,
+        textSize: 12,
+        boarderRadious: 5,
+        onTap: null,
+        iconWidget: Icon(
+          Icons.check_circle_outline_outlined,
+          color: AppColors.white,
+        ),
       ),
+    );
+  }
+
+  Widget onTheWay() {
+    return Column(
+      spacing: 6,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        CommonText("Trip in Progress", size: 16, isBold: true),
+        SizedBox(
+          height: 36.h,
+          child: CommonButton(
+            "Arived at destination",
+
+            textSize: 12,
+            boarderRadious: 5,
+            onTap: null,
+            iconWidget: Padding(
+              padding: const EdgeInsets.only(right: 8.0),
+              child: Icon(Iconsax.send_2_outline, color: AppColors.white),
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

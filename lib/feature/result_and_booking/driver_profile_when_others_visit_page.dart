@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:velozaje/feature/result_and_booking/report_user.dart';
 import 'package:velozaje/utills/app_colors.dart';
 import 'package:velozaje/res/common_appbar.dart';
 import 'package:velozaje/res/common_text.dart';
@@ -13,9 +14,21 @@ class DriverProfilePageWhenOthersVisitsPage extends StatelessWidget {
       appBar: commonAppBar(
         context,
         title: "Driver Profile",
-        actionWidget: Padding(
-          padding: EdgeInsets.only(right: 16),
-          child: Icon(Icons.warning_amber_rounded, color: Colors.red),
+        actionWidget: InkWell(
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) {
+                  return ReportUserPage();
+                },
+              ),
+            );
+          },
+          child: Padding(
+            padding: EdgeInsets.only(right: 16),
+            child: Icon(Icons.warning_amber_rounded, color: Colors.red),
+          ),
         ),
       ),
 
@@ -80,10 +93,10 @@ class _ProfileHeader extends StatelessWidget {
         const SizedBox(height: 4),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: const [
+          children: [
             CommonText("Level"),
             SizedBox(width: 4),
-            Icon(Icons.diamond, color: Colors.blue, size: 16),
+            Image.asset("assest/badge/diamond_fill.png", width: 16),
           ],
         ),
       ],

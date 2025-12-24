@@ -5,8 +5,6 @@ import 'package:velozaje/feature/result_and_booking/widget/driver_result_card.da
 import 'package:velozaje/feature/result_and_booking/widget/filter_widget.dart';
 import 'package:velozaje/res/common_appbar.dart';
 
-import 'package:velozaje/res/common_text.dart';
-
 class ResultsPage extends StatelessWidget {
   const ResultsPage({super.key});
 
@@ -28,9 +26,8 @@ class ResultsPage extends StatelessWidget {
         padding: EdgeInsets.all(16.w),
         child: Column(
           children: [
-            _tripSummary(),
-            SizedBox(height: 16.h),
-
+            // _tripSummary(),
+            // SizedBox(height: 16.h),
             Expanded(
               child: ListView.separated(
                 separatorBuilder: (context, index) {
@@ -51,28 +48,28 @@ class ResultsPage extends StatelessWidget {
   }
 }
 
-Widget _tripSummary() {
-  return Container(
-    padding: EdgeInsets.all(14.w),
-    decoration: BoxDecoration(
-      color: AppColors.grey.withOpacity(0.3),
-      borderRadius: BorderRadius.circular(12.r),
-    ),
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        CommonText("Barcelona  →  Madrid", size: 15, isBold: true),
-        SizedBox(height: 6.h),
-        CommonText("Sat, Oct 18  •  10:30 PM", size: 12, color: Colors.grey),
-        SizedBox(height: 6.h),
-        Row(
-          children: [
-            Icon(Icons.person, size: 16, color: Colors.grey),
-            SizedBox(width: 6.w),
-            CommonText("1 passengers", size: 12),
-          ],
-        ),
-      ],
-    ),
-  );
-}
+// Widget _tripSummary() {
+//   return Container(
+//     padding: EdgeInsets.all(14.w),
+//     decoration: BoxDecoration(
+//       color: AppColors.grey.withOpacity(0.3),
+//       borderRadius: BorderRadius.circular(12.r),
+//     ),
+//     child: Column(
+//       crossAxisAlignment: CrossAxisAlignment.start,
+//       children: [
+//         CommonText("Barcelona  →  Madrid", size: 15, isBold: true),
+//         SizedBox(height: 6.h),
+//         CommonText("Sat, Oct 18  •  10:30 PM", size: 12, color: Colors.grey),
+//         SizedBox(height: 6.h),
+//         Row(
+//           children: [
+//             Icon(Icons.person, size: 16, color: Colors.grey),
+//             SizedBox(width: 6.w),
+//             CommonText("1 passengers", size: 12),
+//           ],
+//         ),
+//       ],
+//     ),
+//   );
+// }

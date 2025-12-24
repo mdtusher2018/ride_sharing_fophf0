@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:velozaje/feature/root_view.dart';
 import 'package:velozaje/utills/app_colors.dart';
 import 'package:velozaje/res/common_button.dart';
 import 'package:velozaje/res/common_image.dart';
@@ -28,11 +29,23 @@ class ReferalPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         actions: [
-          CommonText(
-            "Skip >>",
-            size: 14,
-            isBold: true,
-            color: AppColors.primary,
+          InkWell(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) {
+                    return RootPage();
+                  },
+                ),
+              );
+            },
+            child: CommonText(
+              "Skip >>",
+              size: 14,
+              isBold: true,
+              color: AppColors.primary,
+            ),
           ),
           SizedBox(width: 16.w),
         ],

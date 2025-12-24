@@ -95,10 +95,10 @@ class _ReportUserPageState extends State<ReportUserPage> {
               textColor: Colors.white,
               textalign: TextAlign.center,
               height: 50,
-              onTap: selectedIndex == -1
+              onTap: (selectedIndex == -1)
                   ? null
                   : () {
-                      // submit logic
+                      _showReportSubmitDialog(context);
                     },
             ),
 
@@ -106,6 +106,44 @@ class _ReportUserPageState extends State<ReportUserPage> {
           ],
         ),
       ),
+    );
+  }
+
+  void _showReportSubmitDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) {
+        return Dialog(
+          backgroundColor: AppColors.white,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20.r),
+          ),
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 16.h),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                SizedBox(height: 16.h),
+
+                /// Title
+                CommonText("Report Submitted", size: 18, isBold: true),
+
+                SizedBox(height: 8.h),
+
+                /// Subtitle / message
+                CommonText(
+                  "Wait for other users Approval",
+                  textAlign: TextAlign.center,
+                  size: 14,
+                ),
+
+                SizedBox(height: 10.h),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 }

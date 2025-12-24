@@ -16,9 +16,9 @@ void showFilterBottomSheet(BuildContext context) {
   ];
 
   final List<String> levels = [
-    'assest/image/car.png',
-    'assest/image/taxi.png',
-    'assest/image/bike.png',
+    'assest/badge/rock_fill.png',
+    'assest/badge/clay_fill.png',
+    'assest/badge/diamond_fill.png',
   ];
 
   int selectedVehicleIndex = -1;
@@ -123,7 +123,7 @@ void showFilterBottomSheet(BuildContext context) {
                     ),
                     SizedBox(height: 8.h),
                     SizedBox(
-                      height: 80.h,
+                      height: 60.h,
                       child: ListView.builder(
                         scrollDirection: Axis.horizontal,
                         itemCount: levels.length,
@@ -136,7 +136,8 @@ void showFilterBottomSheet(BuildContext context) {
                               });
                             },
                             child: Container(
-                              width: 90.w,
+                              width: 60.w,
+
                               margin: EdgeInsets.only(right: 12.w),
                               decoration: BoxDecoration(
                                 color: AppColors.grey.withOpacity(0.3),
@@ -152,7 +153,7 @@ void showFilterBottomSheet(BuildContext context) {
                                 child: CommonImage(
                                   path: levels[index],
                                   sourceType: ImageSourceType.asset,
-                                  width: 50.w,
+                                  width: 24,
                                 ),
                               ),
                             ),
