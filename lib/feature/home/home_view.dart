@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:icons_plus/icons_plus.dart';
+import 'package:velozaje/feature/home/saved_place_view.dart';
+import 'package:velozaje/feature/home/widgets/saved_place_card.dart';
 
 import 'package:velozaje/utills/app_colors.dart';
-import 'package:velozaje/feature/home/travel_view.dart';
+import 'package:velozaje/feature/home/take_image_view.dart';
+import 'package:velozaje/feature/home/widgets/date_time_picker.dart';
+import 'package:velozaje/res/common_button.dart';
 import 'package:velozaje/res/common_image.dart';
 import 'package:velozaje/res/common_text.dart';
 
@@ -16,7 +20,33 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   bool isTravelSelected = true;
-  int count = 1;
+  int personCount = 1;
+  int packageCount = 0;
+  final TextEditingController dateTime = TextEditingController();
+  final TextEditingController sizeController = TextEditingController();
+  final TextEditingController weightController = TextEditingController();
+  final TextEditingController destinationController = TextEditingController();
+  final TextEditingController pickupController = TextEditingController();
+
+  // Declare controllers for each input field
+  List<TextEditingController> weightControllers = [];
+
+  void _initializeControllers() {
+    // Ensure the list is cleared before adding new controllers
+    weightControllers.clear();
+
+    for (int i = 0; i < packageCount; i++) {
+      // Create a new controller for each "weight card"
+      weightControllers.add(TextEditingController());
+    }
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _initializeControllers();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -36,7 +66,6 @@ class _HomePageState extends State<HomePage> {
             ),
           ),
 
-          /// 🟢 Top Header
           Positioned(
             left: 0,
             right: 0,
@@ -90,7 +119,7 @@ class _HomePageState extends State<HomePage> {
             child: Container(
               padding: EdgeInsets.all(16.w),
               constraints: BoxConstraints(
-                maxHeight: MediaQuery.sizeOf(context).height * 0.5,
+                maxHeight: MediaQuery.sizeOf(context).height * 0.6,
               ),
               decoration: BoxDecoration(
                 color: Colors.white,
@@ -101,6 +130,16 @@ class _HomePageState extends State<HomePage> {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
+                    /// Handle
+                    Container(
+                      width: 40.w,
+                      height: 4.h,
+                      decoration: BoxDecoration(
+                        color: Colors.grey.shade300,
+                        borderRadius: BorderRadius.circular(4.r),
+                      ),
+                    ),
+
                     SizedBox(height: 12.h),
 
                     /// Travel / Send Package Tabs
@@ -124,38 +163,222 @@ class _HomePageState extends State<HomePage> {
                     ),
 
                     SizedBox(height: 16.h),
-                    searchBar(
-                      controller: TextEditingController(),
-                      hintText: "Enter destination",
-                      onChanged: (value) {
-                        // TODO: search logic
-                      },
-                      onSubmit: (location) {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) {
-                              return TravelPage();
-                            },
-                          ),
-                        );
-                      },
-                      onClear: () {
-                        setState(() {});
-                      },
+
+                    _locationTile(
+                      "Pick-up location",
+                      controller: pickupController,
+                      icon: Container(
+                        width: 20,
+                        height: 20,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          border: Border.all(width: 7),
+                        ),
+                      ),
                     ),
 
                     SizedBox(height: 12.h),
 
-                    /// Saved Places
-                    _savedPlaceTile(issBookMarks: true),
-                    SizedBox(height: 10.h),
-                    _savedPlaceTile(),
+                    /// Destination
+                    _locationTile(
+                      "Destination",
+                      icon: Icon(Icons.location_on),
+                      controller: destinationController,
+                    ),
 
-                    SizedBox(height: 30.h),
+                    SizedBox(height: 12.h),
+
+                    /// Time & Counter
+                    Row(
+                      spacing: 12,
+                      children: [
+                        Expanded(
+                          child: InkWell(
+                            onTap: () async {
+                              final DateTime? result =
+                                  await showDateTimePickerDialog(context);
+
+                              if (result != null) {
+                                print("Selected DateTime: $result");
+                                setState(() {
+                                  dateTime.text =
+                                      "${result.day}/${result.month}/${result.year}";
+                                });
+                              }
+                            },
+                            child: _infoBox(
+                              Icons.calendar_month,
+                              (dateTime.text.isNotEmpty)
+                                  ? dateTime.text
+                                  : "Time & Date",
+                            ),
+                          ),
+                        ),
+
+                        Expanded(
+                          child: isTravelSelected
+                              ? _counterBoxForPerson()
+                              : _counterBoxForPackage(),
+                        ),
+                      ],
+                    ),
+
+                    if (!isTravelSelected) ...[
+                      SizedBox(height: 12.h),
+
+                      ListView.separated(
+                        padding: EdgeInsets.all(0),
+                        physics: NeverScrollableScrollPhysics(),
+                        separatorBuilder: (context, index) {
+                          return SizedBox(height: 10.h);
+                        },
+                        shrinkWrap: true, // Prevents infinite height error
+                        itemCount: packageCount,
+                        itemBuilder: (context, index) {
+                          return weightCard(
+                            index,
+                          ); // Add a weightCard for each count
+                        },
+                      ),
+                    ],
+
+                    SizedBox(height: 16.h),
+
+                    /// Saved Places
+                    savedPlaceCard(issBookMarks: true),
+                    SizedBox(height: 10.h),
+                    savedPlaceCard(),
+
+                    SizedBox(height: 10.h),
+                    _savedPlaceCard(),
+                    SizedBox(height: 20.h),
+
+                    /// Search Button
+                    CommonButton(
+                      "Search Trips",
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) {
+                              return TakePhotoPage();
+                            },
+                          ),
+                        );
+                      },
+                      height: 40,
+                    ),
+                    SizedBox(height: 10.h),
                   ],
                 ),
               ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget weightCard(int index) {
+    return SizedBox(
+      height: 75,
+      child: Row(
+        children: [
+          Expanded(
+            child: Container(
+              padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 10.h),
+              decoration: BoxDecoration(
+                color: AppColors.grey.withOpacity(0.3),
+                borderRadius: BorderRadius.circular(6.r),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  CommonText("Weight (kg)", size: 10.sp),
+
+                  TextField(
+                    keyboardType: TextInputType.number,
+                    controller: weightControllers[index],
+                    decoration: InputDecoration(
+                      hintText: "0",
+                      isDense: true,
+                      border: InputBorder.none,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          SizedBox(width: 12.w),
+          Expanded(
+            child: Row(
+              children: [
+                Expanded(
+                  child: Container(
+                    height: double.infinity,
+                    decoration: BoxDecoration(
+                      color: AppColors.grey.withOpacity(0.3),
+                      borderRadius: BorderRadius.circular(6.r),
+                    ),
+                    child: Center(
+                      child: TextField(
+                        textAlign: TextAlign.center,
+                        keyboardType: TextInputType.number,
+                        controller: TextEditingController(),
+                        decoration: InputDecoration(
+                          hintText: "L",
+                          isDense: true,
+                          border: InputBorder.none,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                CommonText(" x "),
+                Expanded(
+                  child: Container(
+                    height: double.infinity,
+                    decoration: BoxDecoration(
+                      color: AppColors.grey.withOpacity(0.3),
+                      borderRadius: BorderRadius.circular(6.r),
+                    ),
+                    child: Center(
+                      child: TextField(
+                        keyboardType: TextInputType.number,
+                        controller: TextEditingController(),
+                        textAlign: TextAlign.center,
+                        decoration: InputDecoration(
+                          hintText: "W",
+                          isDense: true,
+                          border: InputBorder.none,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                CommonText(" x "),
+                Expanded(
+                  child: Container(
+                    height: double.infinity,
+                    decoration: BoxDecoration(
+                      color: AppColors.grey.withOpacity(0.3),
+                      borderRadius: BorderRadius.circular(6.r),
+                    ),
+                    child: Center(
+                      child: TextField(
+                        textAlign: TextAlign.center,
+                        keyboardType: TextInputType.number,
+                        controller: TextEditingController(),
+                        decoration: InputDecoration(
+                          hintText: "H",
+                          isDense: true,
+                          border: InputBorder.none,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
         ],
@@ -185,61 +408,177 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget searchBar({
+  /// 📍 Location Tile
+  Widget _locationTile(
+    String title, {
     required TextEditingController controller,
-    String hintText = "Enter destination",
-    VoidCallback? onClear,
-    Function(String)? onSubmit,
-    ValueChanged<String>? onChanged,
+    required Widget icon,
   }) {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 10.h),
+      padding: EdgeInsets.all(14.w),
+      height: 60,
       decoration: BoxDecoration(
-        color: AppColors.grey.withOpacity(0.4),
-        borderRadius: BorderRadius.circular(8.r),
-        border: Border.all(width: 1),
+        color: AppColors.grey.withOpacity(0.3),
+        borderRadius: BorderRadius.circular(12.r),
       ),
       child: Row(
         children: [
-          Icon(Icons.search, color: Colors.grey, size: 22.sp),
-          SizedBox(width: 8.w),
-
-          /// Text Field
+          icon,
+          SizedBox(width: 12.w),
           Expanded(
             child: TextField(
               controller: controller,
-              onChanged: onChanged,
-              onSubmitted: onSubmit,
               decoration: InputDecoration(
-                hintText: hintText,
+                hintText: title,
                 border: InputBorder.none,
-                isDense: true,
               ),
             ),
           ),
-
-          /// Clear Button
-          if (controller.text.isNotEmpty)
-            GestureDetector(
-              onTap: () {
-                controller.clear();
-                if (onClear != null) onClear();
-              },
-              child: Icon(Icons.close, size: 18.sp, color: Colors.grey),
-            ),
         ],
       ),
     );
   }
 
-  Widget _savedPlaceTile({bool issBookMarks = false}) {
+  /// ℹ️ Info Box
+  Widget _infoBox(IconData icon, String text) {
+    return Container(
+      padding: EdgeInsets.all(12.w),
+      decoration: BoxDecoration(
+        color: AppColors.grey.withOpacity(0.3),
+        borderRadius: BorderRadius.circular(12.r),
+      ),
+      child: Row(
+        children: [
+          Icon(icon, color: Colors.grey),
+          SizedBox(width: 8.w),
+          Expanded(child: CommonText(text, size: 13.sp)),
+        ],
+      ),
+    );
+  }
+
+  /// ➕➖ Counter Box
+  Widget _counterBoxForPerson() {
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      decoration: BoxDecoration(
+        color: AppColors.grey.withOpacity(0.3),
+        borderRadius: BorderRadius.circular(12.r),
+      ),
+      child: Row(
+        children: [
+          Icon(Icons.person_2_outlined),
+          SizedBox(width: 16.w),
+          Expanded(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                InkWell(
+                  onTap: () {
+                    if (personCount > 1) setState(() => personCount--);
+                  },
+                  child: Container(
+                    padding: EdgeInsets.all(4),
+
+                    decoration: BoxDecoration(
+                      color: AppColors.white,
+                      shape: BoxShape.circle,
+                    ),
+                    child: Icon(Icons.remove),
+                  ),
+                ),
+                CommonText(personCount.toString(), size: 14.sp),
+                InkWell(
+                  onTap: () {
+                    setState(() => personCount++);
+                  },
+                  child: Container(
+                    padding: EdgeInsets.all(4),
+
+                    decoration: BoxDecoration(
+                      color: AppColors.white,
+                      shape: BoxShape.circle,
+                    ),
+                    child: Icon(Icons.add),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _counterBoxForPackage() {
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      decoration: BoxDecoration(
+        color: AppColors.grey.withOpacity(0.3),
+        borderRadius: BorderRadius.circular(12.r),
+      ),
+      child: Row(
+        children: [
+          Icon(Iconsax.box_1_outline),
+          SizedBox(width: 16.w),
+          Expanded(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                InkWell(
+                  onTap: () {
+                    if (packageCount > 0) {
+                      setState(() {
+                        packageCount--;
+                      });
+                    }
+                    // Initialize the controllers when package count changes
+                  },
+                  child: Container(
+                    padding: EdgeInsets.all(4),
+
+                    decoration: BoxDecoration(
+                      color: AppColors.white,
+                      shape: BoxShape.circle,
+                    ),
+                    child: Icon(Icons.remove),
+                  ),
+                ),
+                CommonText(packageCount.toString(), size: 14.sp),
+                InkWell(
+                  onTap: () {
+                    setState(() {
+                      packageCount++;
+                    });
+                    _initializeControllers();
+                  },
+                  child: Container(
+                    padding: EdgeInsets.all(4),
+
+                    decoration: BoxDecoration(
+                      color: AppColors.white,
+                      shape: BoxShape.circle,
+                    ),
+                    child: Icon(Icons.add),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// ⭐ Saved Place Tile
+  Widget _savedPlaceCard() {
     return InkWell(
       onTap: () {
         Navigator.push(
           context,
           MaterialPageRoute(
             builder: (context) {
-              return TravelPage();
+              return SavedPlacePage();
             },
           ),
         );
@@ -260,7 +599,7 @@ class _HomePageState extends State<HomePage> {
                 color: AppColors.grey.withOpacity(0.4),
                 borderRadius: BorderRadius.circular(8),
               ),
-              child: Icon(Iconsax.clock_bold, color: Colors.grey),
+              child: Icon(Icons.star),
             ),
             SizedBox(width: 12.w),
             Expanded(
@@ -268,22 +607,12 @@ class _HomePageState extends State<HomePage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   CommonText(
-                    "Titumir University",
+                    "Saved Places",
                     size: 14.sp,
                     fontWeight: FontWeight.w500,
                   ),
-                  CommonText("Mohakhali, Dhaka", size: 12.sp),
                 ],
               ),
-            ),
-            Column(
-              children: [
-                Icon(
-                  (issBookMarks) ? Icons.star : Icons.star_border,
-                  color: issBookMarks ? Colors.yellow : AppColors.grey,
-                ),
-                CommonText("5.5 km", size: 10),
-              ],
             ),
           ],
         ),
