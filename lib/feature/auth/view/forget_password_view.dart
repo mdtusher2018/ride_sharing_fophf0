@@ -2,7 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:velozaje/feature/auth/otp_verification_view.dart';
+import 'package:velozaje/feature/auth/view/otp_verification_view.dart';
 import 'package:velozaje/feature/auth/widget/auth_backend.dart';
 import 'package:velozaje/utills/app_colors.dart';
 import 'package:velozaje/res/common_button.dart';

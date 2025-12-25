@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:velozaje/feature/auth/signin_view.dart';
+import 'package:velozaje/feature/auth/view/signin_view.dart';
 import 'package:velozaje/utills/app_colors.dart';
 import 'package:velozaje/res/common_button.dart';
 import 'package:velozaje/res/common_image.dart';

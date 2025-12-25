@@ -22,6 +22,11 @@ dependencies:
   share_plus: ^12.0.1
   easy_stepper: ^0.9.1
   get: ^4.7.3
+  flutter_riverpod: ^3.0.3
+  app_links: ^7.0.0
+  shared_preferences: ^2.5.4
+  another_flushbar: ^1.12.32
+  http: ^1.6.0
  
 
 dev_dependencies:

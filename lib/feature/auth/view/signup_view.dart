@@ -2,33 +2,33 @@
 
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:velozaje/feature/auth/forget_password_view.dart';
-import 'package:velozaje/feature/auth/signup_view.dart';
+import 'package:velozaje/feature/auth/controllers/signup_controller.dart';
+import 'package:velozaje/feature/auth/view/signin_view.dart';
 import 'package:velozaje/feature/auth/widget/auth_backend.dart';
-import 'package:velozaje/feature/root_view.dart';
 import 'package:velozaje/utills/app_colors.dart';
 import 'package:velozaje/res/common_button.dart';
 import 'package:velozaje/res/common_image.dart';
 import 'package:velozaje/res/common_text.dart';
 import 'package:velozaje/res/common_text_field_with_title.dart';
 
-class SignInPage extends StatefulWidget {
-  SignInPage({super.key});
+class SignUpPage extends ConsumerWidget {
+  SignUpPage({super.key});
 
-  @override
-  State<SignInPage> createState() => _SignInPageState();
-}
-
-class _SignInPageState extends State<SignInPage> {
   final TextEditingController emailController = TextEditingController();
 
   final TextEditingController passwordController = TextEditingController();
 
-  bool isPasswordVisible = true;
+  final TextEditingController fullNameController = TextEditingController();
+
+  ValueNotifier<bool> isPasswordVisible = ValueNotifier(true);
+
+  ValueNotifier<bool> isTermsAccept = ValueNotifier(false);
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final controller = ref.watch(signupControllerProvider);
     return Scaffold(
       backgroundColor: AppColors.white,
       body: SingleChildScrollView(
@@ -52,7 +52,7 @@ class _SignInPageState extends State<SignInPage> {
                       children: [
                         Center(
                           child: CommonText(
-                            'Welcome Back',
+                            'Create Account',
                             size: 18.sp,
                             fontWeight: FontWeight.w600,
                             color: AppColors.primary,
@@ -60,6 +60,13 @@ class _SignInPageState extends State<SignInPage> {
                         ),
 
                         SizedBox(height: 30.h),
+
+                        CommonTextfieldWithTitle(
+                          "Full Name",
+                          fullNameController,
+                          hintText: 'Enter your full name',
+                        ),
+                        SizedBox(height: 16.h),
 
                         /// Email field
                         CommonTextfieldWithTitle(
@@ -72,37 +79,59 @@ class _SignInPageState extends State<SignInPage> {
                         SizedBox(height: 16.h),
 
                         /// Password field
-                        CommonTextfieldWithTitle(
-                          'Password',
-                          passwordController,
-                          hintText: 'Enter your password',
-                          issuffixIconVisible: true,
-                          isPasswordVisible: isPasswordVisible,
-                          changePasswordVisibility: () {
-                            setState(() {
-                              isPasswordVisible = !isPasswordVisible;
-                            });
+                        ValueListenableBuilder(
+                          valueListenable: isPasswordVisible,
+                          builder: (context, value, child) {
+                            return CommonTextfieldWithTitle(
+                              'Password',
+                              passwordController,
+                              hintText: 'Enter your password',
+                              issuffixIconVisible: true,
+                              isPasswordVisible: value,
+                              changePasswordVisibility: () {
+                                isPasswordVisible.value =
+                                    !isPasswordVisible.value;
+                              },
+                            );
                           },
                         ),
-                        SizedBox(height: 4),
+
                         Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
                           children: [
-                            InkWell(
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) {
-                                      return ForgetPasswordPage();
-                                    },
-                                  ),
+                            ValueListenableBuilder(
+                              valueListenable: isTermsAccept,
+                              builder: (context, value, child) {
+                                return Checkbox(
+                                  value: value,
+                                  onChanged: (value) {
+                                    isTermsAccept.value = value!;
+                                  },
                                 );
                               },
-                              child: CommonText(
-                                'Forgot Password?',
-                                size: 12,
-                                color: AppColors.primary,
+                            ),
+                            Expanded(
+                              child: RichText(
+                                text: TextSpan(
+                                  children: [
+                                    TextSpan(
+                                      text: "I accept the ",
+                                      style: TextStyle(
+                                        color: AppColors.textPrimary,
+                                        fontSize: 14.sp,
+                                      ),
+                                    ),
+                                    TextSpan(
+                                      text: 'Terms & Conditions',
+                                      recognizer: TapGestureRecognizer()
+                                        ..onTap = () {},
+                                      style: TextStyle(
+                                        color: AppColors.primary,
+                                        fontSize: 14.sp,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                                  ],
+                                ),
                               ),
                             ),
                           ],
@@ -111,16 +140,20 @@ class _SignInPageState extends State<SignInPage> {
                         SizedBox(height: 10.h),
 
                         /// Login button
-                        CommonButton(
-                          "Log in",
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) {
-                                  return RootPage();
-                                },
-                              ),
+                        ValueListenableBuilder(
+                          valueListenable: controller.isLoading,
+                          builder: (context, value, child) {
+                            return CommonButton(
+                              "Register",
+                              isLoading: value,
+                              onTap: () {
+                                controller.signup(
+                                  name: fullNameController.text,
+                                  email: emailController.text,
+                                  password: passwordController.text,
+                                  termsAndConditions: isTermsAccept.value,
+                                );
+                              },
                             );
                           },
                         ),
@@ -133,21 +166,21 @@ class _SignInPageState extends State<SignInPage> {
                             text: TextSpan(
                               children: [
                                 TextSpan(
-                                  text: "You don't have an account? ",
+                                  text: "Already have an account?  ",
                                   style: TextStyle(
                                     color: AppColors.textPrimary,
                                     fontSize: 14.sp,
                                   ),
                                 ),
                                 TextSpan(
-                                  text: 'Register',
+                                  text: 'Login',
                                   recognizer: TapGestureRecognizer()
                                     ..onTap = () {
                                       Navigator.push(
                                         context,
                                         MaterialPageRoute(
                                           builder: (context) {
-                                            return SignUpPage();
+                                            return SignInPage();
                                           },
                                         ),
                                       );

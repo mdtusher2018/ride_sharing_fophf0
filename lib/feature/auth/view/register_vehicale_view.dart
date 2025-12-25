@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:dotted_border/dotted_border.dart';
-import 'package:velozaje/feature/auth/referal_view.dart';
+import 'package:velozaje/feature/auth/view/referal_view.dart';
 import 'package:velozaje/utills/app_colors.dart';
 import 'package:velozaje/res/common_button.dart';
 import 'package:velozaje/res/common_image.dart';

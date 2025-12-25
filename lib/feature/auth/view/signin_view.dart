@@ -1,10 +1,15 @@
 // ignore_for_file: must_be_immutable
 
+import 'dart:developer';
+
+import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:velozaje/feature/auth/email_verification_view.dart';
-import 'package:velozaje/feature/auth/signin_view.dart';
+import 'package:velozaje/feature/auth/controllers/signin_controller.dart';
+import 'package:velozaje/feature/auth/view/forget_password_view.dart';
+import 'package:velozaje/feature/auth/view/signup_view.dart';
 import 'package:velozaje/feature/auth/widget/auth_backend.dart';
 import 'package:velozaje/utills/app_colors.dart';
 import 'package:velozaje/res/common_button.dart';
@@ -12,25 +17,29 @@ import 'package:velozaje/res/common_image.dart';
 import 'package:velozaje/res/common_text.dart';
 import 'package:velozaje/res/common_text_field_with_title.dart';
 
-class SignUpPage extends StatefulWidget {
-  SignUpPage({super.key});
+class SignInPage extends ConsumerStatefulWidget {
+  SignInPage({super.key});
 
   @override
-  State<SignUpPage> createState() => _SignUpPageState();
+  ConsumerState<SignInPage> createState() => _SignInPageState();
 }
 
-class _SignUpPageState extends State<SignUpPage> {
-  final TextEditingController emailController = TextEditingController();
+class _SignInPageState extends ConsumerState<SignInPage> {
+  final TextEditingController emailController = TextEditingController(
+    text: kDebugMode ? "nesag11717@mucate.com" : null,
+  );
 
-  final TextEditingController passwordController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController(
+    text: kDebugMode ? "jelixey449@kudimi.com" : null,
+  );
 
-  final TextEditingController fullNameController = TextEditingController();
+  ValueNotifier<bool> isPasswordVisible = ValueNotifier(true);
 
-  bool isPasswordVisible = true;
-  bool isTermsAccept = false;
 
   @override
   Widget build(BuildContext context) {
+    log("Rebuild Called============>>>>>>>>>>>>");
+    final controller = ref.watch(signInControllerProvider);
     return Scaffold(
       backgroundColor: AppColors.white,
       body: SingleChildScrollView(
@@ -54,7 +63,7 @@ class _SignUpPageState extends State<SignUpPage> {
                       children: [
                         Center(
                           child: CommonText(
-                            'Create Account',
+                            'Welcome Back',
                             size: 18.sp,
                             fontWeight: FontWeight.w600,
                             color: AppColors.primary,
@@ -62,13 +71,6 @@ class _SignUpPageState extends State<SignUpPage> {
                         ),
 
                         SizedBox(height: 30.h),
-
-                        CommonTextfieldWithTitle(
-                          "Full Name",
-                          fullNameController,
-                          hintText: 'Enter your full name',
-                        ),
-                        SizedBox(height: 16.h),
 
                         /// Email field
                         CommonTextfieldWithTitle(
@@ -81,52 +83,42 @@ class _SignUpPageState extends State<SignUpPage> {
                         SizedBox(height: 16.h),
 
                         /// Password field
-                        CommonTextfieldWithTitle(
-                          'Password',
-                          passwordController,
-                          hintText: 'Enter your password',
-                          issuffixIconVisible: true,
-                          isPasswordVisible: isPasswordVisible,
-                          changePasswordVisibility: () {
-                            setState(() {
-                              isPasswordVisible = !isPasswordVisible;
-                            });
+                        ValueListenableBuilder(
+                          valueListenable: isPasswordVisible,
+                          builder: (context, value, child) {
+                            return CommonTextfieldWithTitle(
+                              'Password',
+                              passwordController,
+                              hintText: 'Enter your password',
+                              issuffixIconVisible: true,
+                              isPasswordVisible: value,
+                              changePasswordVisibility: () {
+                                isPasswordVisible.value =
+                                    !isPasswordVisible.value;
+                              },
+                            );
                           },
                         ),
 
+                        SizedBox(height: 4),
                         Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
                           children: [
-                            Checkbox(
-                              value: isTermsAccept,
-                              onChanged: (value) {
-                                setState(() {
-                                  isTermsAccept = value!;
-                                });
+                            InkWell(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) {
+                                      return ForgetPasswordPage();
+                                    },
+                                  ),
+                                );
                               },
-                            ),
-                            Expanded(
-                              child: RichText(
-                                text: TextSpan(
-                                  children: [
-                                    TextSpan(
-                                      text: "I accept the ",
-                                      style: TextStyle(
-                                        color: AppColors.textPrimary,
-                                        fontSize: 14.sp,
-                                      ),
-                                    ),
-                                    TextSpan(
-                                      text: 'Terms & Conditions',
-                                      recognizer: TapGestureRecognizer()
-                                        ..onTap = () {},
-                                      style: TextStyle(
-                                        color: AppColors.primary,
-                                        fontSize: 14.sp,
-                                        fontWeight: FontWeight.w600,
-                                      ),
-                                    ),
-                                  ],
-                                ),
+                              child: CommonText(
+                                'Forgot Password?',
+                                size: 12,
+                                color: AppColors.primary,
                               ),
                             ),
                           ],
@@ -135,16 +127,18 @@ class _SignUpPageState extends State<SignUpPage> {
                         SizedBox(height: 10.h),
 
                         /// Login button
-                        CommonButton(
-                          "Register",
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) {
-                                  return EmailVerificationPage();
-                                },
-                              ),
+                        ValueListenableBuilder(
+                          valueListenable: controller.isLoading,
+                          builder: (context, value, child) {
+                            return CommonButton(
+                              "Log in",
+                              isLoading: value,
+                              onTap: () {
+                                controller.signIn(
+                                  email: emailController.text,
+                                  password: passwordController.text,
+                                );
+                              },
                             );
                           },
                         ),
@@ -157,21 +151,21 @@ class _SignUpPageState extends State<SignUpPage> {
                             text: TextSpan(
                               children: [
                                 TextSpan(
-                                  text: "Already have an account?  ",
+                                  text: "You don't have an account? ",
                                   style: TextStyle(
                                     color: AppColors.textPrimary,
                                     fontSize: 14.sp,
                                   ),
                                 ),
                                 TextSpan(
-                                  text: 'Login',
+                                  text: 'Register',
                                   recognizer: TapGestureRecognizer()
                                     ..onTap = () {
                                       Navigator.push(
                                         context,
                                         MaterialPageRoute(
                                           builder: (context) {
-                                            return SignInPage();
+                                            return SignUpPage();
                                           },
                                         ),
                                       );

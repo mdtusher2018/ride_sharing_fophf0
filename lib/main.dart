@@ -1,6 +1,8 @@
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:velozaje/core/utils/global_keys.dart';
 import 'package:velozaje/feature/home/take_image_view.dart';
 import 'package:velozaje/feature/splash_onboarding/splash_screen.dart';
 import 'package:get/get.dart';
@@ -10,7 +12,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   TakePhotoPage.cameras = await availableCameras();
 
-  runApp(const MyApp());
+  runApp(ProviderScope(child: const MyApp()));
 }
 
 class MyApp extends StatelessWidget {
@@ -22,7 +24,7 @@ class MyApp extends StatelessWidget {
       designSize: const Size(375, 812),
       builder: (_, __) => GetMaterialApp(
         title: 'Velozaje',
-
+        navigatorKey: navigatorKey,
         translations: AppTranslations(),
         locale: const Locale('en', 'ES'),
         fallbackLocale: const Locale('en', 'ES'),
