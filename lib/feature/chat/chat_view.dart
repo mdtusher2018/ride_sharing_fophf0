@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:velozaje/core/localization/app_localizations.dart';
 import 'package:velozaje/utills/app_colors.dart';
 import 'package:velozaje/res/common_text.dart';
 import 'package:velozaje/res/common_image.dart';
@@ -26,7 +27,6 @@ class _ChatPageState extends State<ChatPage> {
     return Scaffold(
       backgroundColor: AppColors.mainbg,
 
-      /// 🧭 AppBar
       appBar: AppBar(
         backgroundColor: AppColors.white,
         surfaceTintColor: Colors.transparent,
@@ -129,7 +129,7 @@ class _ChatPageState extends State<ChatPage> {
                     minLines: 1,
                     maxLines: 4,
                     decoration: InputDecoration(
-                      hintText: 'Type a message...',
+                      hintText: AppLocalizations.of(context)!.type_a_message,
                       filled: true,
                       fillColor: AppColors.grey.withOpacity(0.2),
                       contentPadding: EdgeInsets.symmetric(

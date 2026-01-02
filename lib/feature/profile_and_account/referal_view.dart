@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:icons_plus/icons_plus.dart';
+import 'package:velozaje/core/localization/app_localizations.dart';
 import 'package:velozaje/utills/app_colors.dart';
 import 'package:velozaje/res/common_appbar.dart';
 import 'package:velozaje/res/common_button.dart';
@@ -14,7 +15,10 @@ class ReferralsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: commonAppBar(context, title: "Referrals"),
+      appBar: commonAppBar(
+        context,
+        title: AppLocalizations.of(context)!.referrals,
+      ),
       backgroundColor: AppColors.mainbg,
       body: Padding(
         padding: EdgeInsets.all(16.0.w), // Scalable padding
@@ -32,41 +36,47 @@ class ReferralsPage extends StatelessWidget {
             SizedBox(height: 16.h), // Scalable height
             Center(
               child: CommonText(
-                '100% Commission Free',
+                AppLocalizations.of(context)!.percent_commission_free,
                 size: 18.sp, // Scalable font size
                 color: AppColors.primary,
                 isBold: true,
               ),
             ),
             SizedBox(height: 8.h), // Scalable height
-            Center(child: CommonText('On your next published trip', size: 14)),
+            Center(
+              child: CommonText(
+                AppLocalizations.of(context)!.on_your_next_published_trip,
+                size: 14,
+              ),
+            ),
             SizedBox(height: 24.h), // Scalable height
             _buildReferralStep(
-              'Share your code',
-              'Send your unique code to friends.',
+              AppLocalizations.of(context)!.share_your_code,
+              AppLocalizations.of(context)!.send_your_unique_code_to_friends,
               Icons.share_outlined,
             ),
             _stepLine(),
             _buildReferralStep(
-              'Friend joins',
-              'Your friend records it when signing up.',
+              AppLocalizations.of(context)!.friend_joins,
+              AppLocalizations.of(
+                context,
+              )!.your_friend_records_it_when_signing_up,
               Iconsax.profile_2user_outline,
             ),
             _stepLine(),
             _buildReferralStep(
-              'You both win',
-              'Get discounts on your trips automatically.',
+              AppLocalizations.of(context)!.you_both_win,
+              AppLocalizations.of(
+                context,
+              )!.get_discounts_on_your_trips_automatically,
 
               Iconsax.ticket_2_outline,
             ),
-            SizedBox(height: 24.h), // Scalable height
+            SizedBox(height: 24.h),
 
-            SizedBox(height: 8.h), // Scalable height
+            SizedBox(height: 8.h),
             Container(
-              padding: EdgeInsets.symmetric(
-                vertical: 16.h,
-                horizontal: 16.w,
-              ), // Scalable padding
+              padding: EdgeInsets.symmetric(vertical: 16.h, horizontal: 16.w),
               decoration: BoxDecoration(
                 border: Border.all(
                   width: 1.w,
@@ -80,7 +90,7 @@ class ReferralsPage extends StatelessWidget {
                 child: Column(
                   spacing: 4.h,
                   children: [
-                    CommonText("Your Code"),
+                    CommonText(AppLocalizations.of(context)!.your_code),
                     CommonText(
                       '4 5 b 7',
                       size: 24.sp, // Scalable font size
@@ -94,7 +104,7 @@ class ReferralsPage extends StatelessWidget {
             SizedBox(height: 30.h),
 
             CommonButton(
-              "Share Code",
+              AppLocalizations.of(context)!.share_code,
               iconWidget: Padding(
                 padding: EdgeInsetsGeometry.only(right: 8),
                 child: Icon(Icons.share, color: AppColors.white),

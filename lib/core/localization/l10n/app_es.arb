@@ -1,0 +1,366 @@
+{
+  "confirm_your_details": "Confirmar tus detalles",
+  "email": "Correo electrónico",
+  "enter_your_email": "Introduce tu correo electrónico",
+  "contact_phone": "Teléfono de contacto",
+  "enter_your_contact_number": "Introduce tu número de contacto",
+  "full_name": "Nombre completo",
+  "enter_your_full_name": "Introduce tu nombre completo",
+  "address": "Dirección",
+  "enter_your_address": "Introduce tu dirección",
+  "dob": "Fecha de nacimiento",
+  "select_your_date_of_birth": "Selecciona tu fecha de nacimiento",
+  "confirm_data": "Confirmar datos",
+
+  "create_new_password": "Crear nueva contraseña",
+  "new_password": "Nueva contraseña",
+  "enter_your_password": "Introduce tu contraseña",
+  "confirm_password": "Confirmar contraseña",
+  "enter_your_confirm_password": "Introduce tu contraseña de confirmación",
+  "update_password": "Actualizar contraseña",
+
+  "verification_code": "Código de verificación",
+  "we_ve_sent_a_4_digit_otp_code_to_your_email_address_please_enter_it_below_to_verify_and_continue_with_password_reset": "Hemos enviado un código OTP de 4 dígitos a tu correo electrónico. Por favor, introdúcelo abajo para verificar y continuar con la restauración de la contraseña.",
+  "enter": "Entrar",
+
+  "reset_your_password": "Restablece tu contraseña",
+  "enter_your_registered_email_address_below_we_ll_send_you_a_one_time_password_otp_to_reset_your_password_securely": "Introduce tu dirección de correo electrónico registrada abajo. Te enviaremos una contraseña de un solo uso (OTP) para restablecer tu contraseña de manera segura",
+  "send_otp_code": "Enviar código OTP",
+
+  "skip": "Saltar >>",
+  "referral_code": "Código de referencia",
+  "have_a_code_enter_it_to_unlock_0_percent_commission_on_your_first_trip_as_a_driver": "¿Tienes un código? Introdúcelo para desbloquear una comisión del 0% en tu primer viaje como conductor.",
+  "submite": "Enviar",
+  "documents_sent_successfully": "¡Documentos enviados con éxito!",
+  "we_will_notify_you_once_your_documents_are_verified": "Te notificaremos una vez que tus documentos sean verificados.",
+
+  "register_your_vehicle": "Registrar tu vehículo",
+  "upload_your_vehicle_image": "*Sube la imagen de tu vehículo",
+  "select_vehicle_type": "Selecciona el tipo de vehículo",
+  "registration": "Registro",
+  "enter_registration_number": "Introduce el número de matrícula",
+  "year_of_vehicle": "Año del vehículo",
+  "enter_year": "Introduce el año",
+  "brand": "Marca",
+  "enter_brand": "Introduce la marca",
+  "model": "Modelo",
+  "enter_model": "Introduce el modelo",
+  "car_license_plate_number": "Número de matrícula del coche",
+  "enter_license_number": "Introduce el número de matrícula",
+
+  "welcome_back": "¡Bienvenido de nuevo!",
+
+  "password": "Contraseña",
+
+  "forgot_password": "¿Olvidaste la contraseña?",
+  "log_in": "Iniciar sesión",
+  "you_don_t_have_an_account": "¿No tienes una cuenta?",
+  "register": "Registrarse",
+
+  "create_account": "Crear cuenta",
+
+  "i_accept_the": "Acepto los ",
+  "terms_conditions": "Términos y condiciones",
+
+  "already_have_an_account": "¿Ya tienes una cuenta?",
+  "login": "Iniciar sesión",
+
+  "inbox": "Bandeja de entrada",
+  "search_chats": "Buscar conversaciones",
+
+  "support": "Soporte",
+  "online": "En línea",
+  "type_a_message": "Escribe un mensaje...",
+  "hello": "¡Hola! 👋",
+  "hi_i_uploaded_my_documents": "Hola, subí mis documentos.",
+  "great_we_are_reviewing_them": "¡Genial! Los estamos revisando.",
+
+  "select_time": "Selecciona la hora",
+  "cancel": "Cancelar",
+  "ok": "Aceptar",
+
+  "finding_your_drivers": "Buscando tus conductores",
+  "pick_up_location": "Ubicación de recogida",
+  "destination": "Destino",
+
+  "generate_search": "Generar búsqueda",
+
+  "where_to": "¿A dónde?",
+  "find_a_ride_or_send_a_package": "Encuentra un viaje o envía un paquete",
+  "travel": "Viajar",
+  "send_package": "Enviar paquete",
+  "enter_destination": "Introduce el destino",
+
+  "saved_places": "Lugares guardados",
+
+  "time_date": "Hora y fecha",
+  "weight_kg": "Peso (kg)",
+  "l": "L",
+  "w": "A",
+  "h": "H",
+  "search_trips": "Buscar viajes",
+
+  "add_payment": "Añadir pago",
+  "add_card": "Añadir tarjeta",
+  "card_information": "Información de la tarjeta",
+  "card_number": "Número de tarjeta",
+  "mm_yy": "MM/AA",
+  "cvc": "CVC",
+  "billing_address": "Dirección de facturación",
+  "country_or_region": "País o región",
+  "zip": "Código postal",
+  "zip_code": "Código postal",
+  "save_this_card_for_future_payment": "Guardar esta tarjeta para pagos futuros",
+  "done": "Hecho",
+  "united_states": "Estados Unidos",
+  "canada": "Canadá",
+  "mexico": "México",
+  "india": "India",
+  "germany": "Alemania",
+
+  "change_password": "Cambiar contraseña",
+  "enter_your_current_password": "Introduce tu contraseña actual",
+  "enter_your_new_password": "Introduce tu nueva contraseña",
+  "re_enter_your_new_password": "Vuelve a introducir tu nueva contraseña",
+  "update": "Actualizar",
+
+  "contact": "Contacto",
+  "email_us": "Envíanos un correo",
+  "facebook": "Facebook",
+  "instagram": "Instagram",
+
+  "payment_method": "Método de pago",
+  "payment_methods": "Métodos de pago",
+  "add_payments_method": "Añadir métodos de pago",
+
+  "driver_profile": "Perfil de conductor",
+
+  "about_me": "Sobre mí",
+  "lorem_ipsum_is_simply_dummy_text_of_the_printing_and_typesetting_industry_lorem_ipsum_has_been_the_industry_s_standard_dummy_text_ever_since_the_1500s": "Lorem Ipsum es simplemente texto de relleno de la industria de la impresión y la composición tipográfica. Lorem Ipsum ha sido el texto estándar de la industria desde los años 1500",
+
+
+  "verifications": "Verificaciones",
+  "verified_id": "ID verificada",
+  "confirmed_email": "Correo electrónico confirmado",
+  "car_license_plate_number": "Número de matrícula del coche",
+  "photo": "Foto",
+  "vehicle": "Vehículo",
+  "completed_trips": "Viajes completados",
+  "referrals": "Referencias",
+  "member_since": "Miembro desde",
+  "trip_cancellations": "Cancelaciones de viajes",
+  "claims": "Reclamaciones",
+  "reviews": "Reseñas",
+  "dec_2020": "Dic 2020",
+
+  "account": "Cuenta",
+  "leo_messi": "Leo Messi",
+  "leomessi_gmail_com": "leomessi@gmail.com",
+
+  "profile": "Perfil",
+  "payment_methods": "Métodos de pago",
+  "general": "GENERAL",
+  "wallet_transactions": "Cartera y transacciones",
+  "app_preferences": "PREFERENCIAS DE LA APP",
+  "notifications": "Notificaciones",
+  "language": "Idioma",
+  "english": "Inglés",
+  "support_legal": "SUPORTE Y LEGAL",
+  "log_out": "Cerrar sesión",
+  "delete_account": "Eliminar cuenta",
+
+  "percent_commission_free": "100% Comisión libre",
+  "on_your_next_published_trip": "En tu próximo viaje publicado",
+  "share_your_code": "Comparte tu código",
+  "send_your_unique_code_to_friends": "Envía tu código único a tus amigos.",
+  "friend_joins": "Amigo se une",
+  "your_friend_records_it_when_signing_up": "Tu amigo lo registra al registrarse.",
+  "you_both_win": "Ambos ganan",
+  "get_discounts_on_your_trips_automatically": "Obtén descuentos en tus viajes automáticamente.",
+  "your_code": "Tu código",
+  "share_code": "Compartir código",
+
+  "wallet": "Cartera",
+  "total_balance": "SALDO TOTAL",
+
+  "recent_activity": "Actividad reciente",
+  "earned_2500": "Ganado: $2500",
+  "trip_madrid_to_barcelona": "Viaje: Madrid a Barcelona",
+  "drive_madrid_to_barcelona": "Conducir: Madrid a Barcelona",
+  "today_10_25_am": "Hoy, 10:25 AM",
+
+  "from": "De",
+  "morelia_avenida_p_calle_12": "Morelia, Avenida P. Calle 12",
+  "to": "A",
+  "small": "Pequeño",
+  "medium": "Mediano",
+  "large": "Grande",
+  "toyota_corolla": "TOYOTA COROLLA",
+  "view_details": "Ver detalles",
+
+  "filters": "Filtros",
+  "level": "Nivel",
+  "stars": "Estrellas",
+  "features": "Características",
+  "verified_profile": "Perfil verificado",
+  "automatic_reservation": "Reserva automática",
+  "confirm_filters": "Confirmar filtros",
+
+  "confirm_booking": "Confirmar reserva",
+  "wait_for_driver_approval": "Esperar aprobación del conductor",
+  "we_ve_sent_your_request_waiting_for_a_driver_to_accept": "Hemos enviado tu solicitud. Esperando que un conductor la acepte.",
+  "dhm_ga29_5455": "DHM-GA29-5455",
+  "toyota_hr_v_white": "Toyota HR - V | Blanco",
+  "rides_1000": "1,000 viajes",
+
+  "rating": "Calificación",
+  "trips": "Viajes",
+  "experience": "Experiencia",
+  "year_3": "3 años",
+  "about_oswaldo": "Sobre Oswaldo",
+  "punctuality_you_could_smoke_i_make_stops_to_go_to_the_bathroom": "Puntualidad. Podrías fumar. Hago paradas para ir al baño.",
+  "recent_reviews": "Reseñas recientes",
+  "maria": "María",
+  "great_driver_very_punctual": "Gran conductor, muy puntual",
+
+  "report_user": "Reportar usuario",
+  "please_select_a_reason_for_reporting_osbaldo_garcia_this_is_anonymous_and_helps_keep_our_community_safe": "Por favor, selecciona una razón para reportar a Osbaldo García. Esto es anónimo y ayuda a mantener nuestra comunidad segura.",
+  "dangerous_driving": "Conducción peligrosa",
+  "vehicle_didn_t_match_description": "El vehículo no coincidía con la descripción",
+  "wrong_drop_off": "Entrega incorrecta",
+  "rude_or_aggressive_behavior": "Comportamiento grosero o agresivo",
+  "package_damaged_or_lost": "Paquete dañado o perdido",
+  "additional_details": "Detalles adicionales",
+  "please_describe_what_happened": "Por favor, describe lo que sucedió...",
+  "submit_report": "Enviar informe",
+
+  "trip": "Viaje",
+  "passengers": "Pasajeros",
+  "see_on_map": "Ver en el mapa",
+  "trip_details": "Detalles del viaje",
+
+  "results": "Resultados",
+  "barcelona_to_madrid": "Barcelona → Madrid",
+  "sat_oct_18_10_30_pm": "Sáb, 18 de oct • 10:30 PM",
+  "passenger_1": "1 pasajero",
+
+  "travel_smarter_together": "Viaja de forma más inteligente, juntos",
+  "find_long_distance_rides_or_send_packages_securely_with_verified_drivers": "Encuentra viajes de larga distancia o envía paquetes de forma segura con conductores verificados.",
+  "verified_people_real_trips": "Personas verificadas. Viajes reales.",
+  "every_driver_and_user_is_id_verified_to_keep_every_journey_safe_and_reliable": "Cada conductor y usuario está verificado con ID para mantener cada viaje seguro y confiable.",
+  "next": "Siguiente",
+
+  "where_are_you_going": "¿A dónde vas?",
+
+  "continue_text": "Continuar",
+  "vehicle_space": "Espacio del vehículo",
+  "empty_seats": "Asientos disponibles",
+  "trunk_space": "Espacio en el maletero",
+
+  "set_your_price": "Establecer tu precio",
+  "price_per_seat": "Precio por asiento",
+  "trip_details": "Detalles del viaje",
+  "lorem_ipsum_is_simply_dummy_text_of_the_printing_and_typesetting_industry_lorem_ipsum": "Lorem Ipsum es simplemente texto de relleno de la industria de la impresión y la composición tipográfica.",
+
+  "barcelona_to_real_madrid": "Barcelona → Real Madrid",
+
+
+  "confirmed_passengers": "Pasajeros confirmados",
+  "pending_requests_2": "Solicitudes pendientes (2)",
+  "active_trip": "Viaje activo",
+  "barcelona_to_madrid": "Barcelona a Madrid",
+  "earning": "Ganancias",
+
+  "packages": "Paquetes",
+  "est_time": "Est. tiempo",
+
+  "seats_2": "2 Asientos",
+  "cancel_trip": "Cancelar viaje",
+  "accept": "Aceptar",
+  "verify": "Verificar",
+  "drop_off_code": "Código de entrega",
+  "give_to_leo_messi": "Entregar a Leo Messi",
+  "final_code": "Código final",
+  "start_trip": "Comenzar viaje",
+
+  "scheduled": "Programado",
+  "saturday_10_20_25_8_40_am": "Sábado 20/10/25, 8:40 AM",
+
+  "seats": "Asientos",
+  "requests": "Solicitudes",
+
+
+  "trip_published": "Viaje publicado",
+  "passengers_can_now_book_your_ride_to_madrid": "Los pasajeros ahora pueden reservar tu viaje a Madrid",
+  "view_my_trips": "Ver mis viajes",
+
+  "security_handshake": "Intercambio de seguridad",
+  "start_code": "CÓDIGO DE INICIO",
+  "give_at_pickup": "Dar en la recogida",
+  "end_code": "CÓDIGO FINAL",
+
+  "claim": "Reclamar",
+
+  "cancel_ride": "¿Cancelar viaje?",
+  "keep_my_trip": "Mantener mi viaje",
+  "cancel_ride": "Cancelar viaje",
+  "select_wrong_dropoff": "Seleccionar entrega incorrecta",
+  "selected_wrong_pickup": "Seleccionó recogida incorrecta",
+  "selected_wrong_vehicle": "Seleccionó vehículo incorrecto",
+  "wait_time_was_too_long": "El tiempo de espera fue demasiado largo",
+  "other": "Otro",
+
+  "confirmed": "Confirmado",
+  "pending": "Pendiente",
+  "cancelled": "Cancelado",
+  "saturday_10_20_25": "Sábado 20/10/25",
+  "start_code": "Código de inicio",
+
+  "publish_trip": "Publicar viaje",
+
+  "rate_your_driver": "Califica a tu conductor",
+  "write_your_feedback": "Escribe tus comentarios...",
+  "skip": "Saltar >>",
+  "submit": "Enviar",
+  "driver_name": "nombre del conductor",
+
+  "map_placeholder": "mapa",
+  "volkswagen_jetta": "volkswagen Jetta",
+  "year": "año",
+  "plate_number": "número de matrícula",
+  "passengers": "pasajeros",
+  "pay_amount": "monto a pagar",
+  "payment_successful": "pago exitoso",
+  "rate_your_driver_button": "calificar_conductor",
+
+  "my_tips": "mis consejos",
+
+  "booked": "reservado",
+  "published": "publicado",
+
+  "confirmed": "confirmado",
+  "pending": "pendiente",
+  "cancelled": "cancelado",
+
+  "from": "de",
+  "to": "a",
+  "start_code": "código_inicio",
+  "give_at_pickup": "dar_en_recogida",
+
+  "trip_duration": "duración_viaje",
+
+  "view_my_trips": "ver_mis_viajes",
+  "claim": "reclamar",
+  "cancel_trip": "cancelar_viaje",
+
+
+
+  "wait_for_other_users_approval": "Espera la aprobación de otros usuarios",
+  "enable_package_delivery": "Habilitar entrega de paquetes",
+  "enter_pickup_code": "Introduce el código de recogida",
+  "asked_the_passanger_for_the_code_to_confirm_their_pickup": "Pidió al pasajero el código para confirmar su recogida",
+  "trip_compleated": "Viaje completado",
+  "trip_in_progress": "Viaje en progreso",
+  "arived_at_destination": "Llegado al destino"
+
+}

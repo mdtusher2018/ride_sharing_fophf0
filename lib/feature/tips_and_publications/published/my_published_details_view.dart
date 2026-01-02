@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:icons_plus/icons_plus.dart';
+import 'package:velozaje/core/localization/app_localizations.dart';
 import 'package:velozaje/res/common_button.dart';
 import 'package:velozaje/res/common_image.dart';
 import 'package:velozaje/res/common_otp_field.dart';
@@ -70,7 +71,7 @@ class MyPublishedDetailsPage extends StatelessWidget {
                     SizedBox(height: 12.h),
 
                     CommonText(
-                      'Trip Details',
+                      AppLocalizations.of(context)!.trip_details,
                       size: 16,
                       fontWeight: FontWeight.w600,
                     ),
@@ -88,7 +89,7 @@ class MyPublishedDetailsPage extends StatelessWidget {
                     Align(
                       alignment: AlignmentGeometry.centerLeft,
                       child: CommonText(
-                        'Confirmed Passengers',
+                        AppLocalizations.of(context)!.confirmed_passengers,
                         size: 14,
                         isBold: true,
                       ),
@@ -103,7 +104,7 @@ class MyPublishedDetailsPage extends StatelessWidget {
                     Align(
                       alignment: AlignmentGeometry.centerLeft,
                       child: CommonText(
-                        'Pending Requests (2)',
+                        AppLocalizations.of(context)!.pending_requests_2,
                         size: 14,
                         isBold: true,
                       ),
@@ -162,7 +163,7 @@ class _TripSummaryCard extends StatelessWidget {
                   borderRadius: BorderRadius.circular(20.r),
                 ),
                 child: CommonText(
-                  'Active Trip',
+                  AppLocalizations.of(context)!.active_trip,
                   size: 12,
                   color: AppColors.primary,
                 ),
@@ -187,7 +188,10 @@ class _TripSummaryCard extends StatelessWidget {
                   color: Colors.white,
                 ),
               ),
-              CommonText("Earning", color: AppColors.white),
+              CommonText(
+                AppLocalizations.of(context)!.earning,
+                color: AppColors.white,
+              ),
             ],
           ),
 
@@ -195,21 +199,21 @@ class _TripSummaryCard extends StatelessWidget {
 
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: const [
+            children: [
               _InfoBox(
                 icon: Icons.person_2_outlined,
                 value: '1/4',
-                label: 'Passengers',
+                label: AppLocalizations.of(context)!.passengers,
               ),
               _InfoBox(
                 icon: Iconsax.box_1_outline,
                 value: '0',
-                label: 'Packages',
+                label: AppLocalizations.of(context)!.packages,
               ),
               _InfoBox(
                 icon: Iconsax.send_2_outline,
                 value: '3.5h',
-                label: 'Est. Time',
+                label: AppLocalizations.of(context)!.est_time,
               ),
             ],
           ),
@@ -346,7 +350,7 @@ class _PassengerCard extends StatelessWidget {
                           ),
                           SizedBox(width: 4),
                           CommonText(
-                            "2 Seats",
+                            AppLocalizations.of(context)!.seats_2,
                             size: 12,
                             color: AppColors.textSecondary,
                           ),
@@ -380,18 +384,18 @@ class _PassengerCard extends StatelessWidget {
               ],
             ),
             SizedBox(height: 8),
-            if (status == Status.pending) accetpRejectButton(),
-            if (status == Status.pickupCode) pickupCode(),
-            if (status == Status.ontheway) onTheWay(),
+            if (status == Status.pending) accetpRejectButton(context),
+            if (status == Status.pickupCode) pickupCode(context),
+            if (status == Status.ontheway) onTheWay(context),
             if (status == Status.finalCode) finalCode(),
-            if (status == Status.compleated) compleate(),
+            if (status == Status.compleated) compleate(context),
           ],
         ),
       ),
     );
   }
 
-  Widget accetpRejectButton() {
+  Widget accetpRejectButton(BuildContext context) {
     return Column(
       children: [
         ListView.builder(
@@ -440,7 +444,7 @@ class _PassengerCard extends StatelessWidget {
             children: [
               Expanded(
                 child: CommonButton(
-                  'Cancel Trip',
+                  AppLocalizations.of(context)!.cancel_trip,
                   color: Colors.transparent,
                   textColor: Colors.red,
 
@@ -453,7 +457,7 @@ class _PassengerCard extends StatelessWidget {
               ),
               Expanded(
                 child: CommonButton(
-                  'Accept',
+                  AppLocalizations.of(context)!.accept,
                   color: Colors.transparent,
                   textColor: Colors.green,
                   boarder: Border.all(color: Colors.green, width: 2),
@@ -470,7 +474,7 @@ class _PassengerCard extends StatelessWidget {
     );
   }
 
-  Widget pickupCode() {
+  Widget pickupCode(BuildContext context) {
     final List<TextEditingController> _controllers = List.generate(
       4,
       (_) => TextEditingController(),
@@ -489,8 +493,16 @@ class _PassengerCard extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       spacing: 4,
       children: [
-        CommonText("Enter Pickup Code", size: 16, isBold: true),
-        CommonText("Asked the Passanger for the code to confirm their pickup"),
+        CommonText(
+          AppLocalizations.of(context)!.enter_pickup_code,
+          size: 16,
+          isBold: true,
+        ),
+        CommonText(
+          AppLocalizations.of(
+            context,
+          )!.asked_the_passanger_for_the_code_to_confirm_their_pickup,
+        ),
         SizedBox(),
         Row(
           spacing: 10,
@@ -509,7 +521,12 @@ class _PassengerCard extends StatelessWidget {
                 ),
               ),
             ),
-            CommonButton("Verify", width: 90, height: 30, boarderRadious: 8),
+            CommonButton(
+              AppLocalizations.of(context)!.verify,
+              width: 90,
+              height: 30,
+              boarderRadious: 8,
+            ),
           ],
         ),
       ],
@@ -562,11 +579,11 @@ class _PassengerCard extends StatelessWidget {
     );
   }
 
-  Widget compleate() {
+  Widget compleate(BuildContext context) {
     return SizedBox(
       height: 36.h,
       child: CommonButton(
-        "Trip Compleated",
+        AppLocalizations.of(context)!.trip_compleated,
         color: AppColors.textSecondary,
         textSize: 12,
         boarderRadious: 5,
@@ -579,16 +596,20 @@ class _PassengerCard extends StatelessWidget {
     );
   }
 
-  Widget onTheWay() {
+  Widget onTheWay(BuildContext context) {
     return Column(
       spacing: 6,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        CommonText("Trip in Progress", size: 16, isBold: true),
+        CommonText(
+          AppLocalizations.of(context)!.trip_in_progress,
+          size: 16,
+          isBold: true,
+        ),
         SizedBox(
           height: 36.h,
           child: CommonButton(
-            "Arived at destination",
+            AppLocalizations.of(context)!.arived_at_destination,
 
             textSize: 12,
             boarderRadious: 5,
@@ -611,7 +632,7 @@ class _BottomActions extends StatelessWidget {
       children: [
         Expanded(
           child: CommonButton(
-            'Cancel Trip',
+            AppLocalizations.of(context)!.cancel_trip,
             color: Colors.transparent,
             textColor: Colors.red,
             boarder: Border.all(color: Colors.red, width: 2),
@@ -622,7 +643,7 @@ class _BottomActions extends StatelessWidget {
         SizedBox(width: 12.w),
         Expanded(
           child: CommonButton(
-            'Start Trip',
+            AppLocalizations.of(context)!.start_trip,
             color: Colors.green,
             onTap: () {},
             height: 35,

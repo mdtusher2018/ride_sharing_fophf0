@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:velozaje/core/localization/app_localizations.dart';
 import 'package:velozaje/feature/root_view.dart';
 import 'package:velozaje/utills/app_colors.dart';
 import 'package:velozaje/res/common_button.dart';
@@ -41,7 +42,7 @@ class ReferalPage extends StatelessWidget {
               );
             },
             child: CommonText(
-              "Skip >>",
+              AppLocalizations.of(context)!.skip,
               size: 14,
               isBold: true,
               color: AppColors.primary,
@@ -62,10 +63,16 @@ class ReferalPage extends StatelessWidget {
                 child: CommonImage(path: "assest/image/referal.png"),
               ),
               SizedBox(height: 30.h),
-              CommonText("Referral Code", size: 21, isBold: true),
+              CommonText(
+                AppLocalizations.of(context)!.referral_code,
+                size: 21,
+                isBold: true,
+              ),
               SizedBox(height: 30.h),
               CommonText(
-                " Have a code? Enter it to unlock 0% commission on your first trip as a driver.",
+                AppLocalizations.of(
+                  context,
+                )!.have_a_code_enter_it_to_unlock_0_percent_commission_on_your_first_trip_as_a_driver,
                 size: 14,
                 textAlign: TextAlign.center,
               ),
@@ -83,9 +90,8 @@ class ReferalPage extends StatelessWidget {
               ),
               SizedBox(height: 50.h),
 
-              /// Login button
               CommonButton(
-                "Submite",
+                AppLocalizations.of(context)!.submite,
                 onTap: () {
                   _showSuccessDialog(context);
                 },
@@ -118,14 +124,17 @@ class ReferalPage extends StatelessWidget {
                 ),
                 SizedBox(height: 16.h),
 
-                /// Title
-                CommonText("Documents Sent Successfully!", size: 18),
+                CommonText(
+                  AppLocalizations.of(context)!.documents_sent_successfully,
+                  size: 18,
+                ),
 
                 SizedBox(height: 8.h),
 
-                /// Subtitle / message
                 CommonText(
-                  "We will notify you once your documents are verified.",
+                  AppLocalizations.of(
+                    context,
+                  )!.we_will_notify_you_once_your_documents_are_verified,
                   textAlign: TextAlign.center,
                   size: 14,
                 ),

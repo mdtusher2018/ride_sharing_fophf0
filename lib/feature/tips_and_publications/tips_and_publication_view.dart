@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:velozaje/core/localization/app_localizations.dart';
 import 'package:velozaje/feature/tips_and_publications/published/my_tip_published_view.dart';
 import 'package:velozaje/feature/tips_and_publications/my_tips_view.dart';
 import 'package:velozaje/res/common_text.dart';
@@ -27,7 +28,11 @@ class _TipsAndPublicationPageState extends State<TipsAndPublicationPage> {
         backgroundColor: AppColors.white,
         elevation: 0,
         centerTitle: true,
-        title: CommonText('My Tips', size: 18.sp, fontWeight: FontWeight.w600),
+        title: CommonText(
+          AppLocalizations.of(context)!.my_tips,
+          size: 18.sp,
+          fontWeight: FontWeight.w600,
+        ),
       ),
       body: Padding(
         padding: EdgeInsets.all(16.w),
@@ -75,12 +80,12 @@ class _SegmentedControl extends StatelessWidget {
       child: Row(
         children: [
           _TabItem(
-            title: 'Booked',
+            title: AppLocalizations.of(context)!.booked,
             isSelected: selectedTab == TipsTab.booked,
             onTap: () => onChanged(TipsTab.booked),
           ),
           _TabItem(
-            title: 'Published',
+            title: AppLocalizations.of(context)!.published,
             isSelected: selectedTab == TipsTab.published,
             onTap: () => onChanged(TipsTab.published),
           ),

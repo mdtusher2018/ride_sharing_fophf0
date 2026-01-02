@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:velozaje/core/localization/app_localizations.dart';
 import 'package:velozaje/utills/app_colors.dart';
 import 'package:velozaje/res/common_button.dart';
 import 'package:velozaje/res/common_image.dart';
@@ -45,7 +46,6 @@ void showFilterBottomSheet(BuildContext context) {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // Top bar indicator
                     Center(
                       child: Container(
                         width: 50.w,
@@ -61,7 +61,7 @@ void showFilterBottomSheet(BuildContext context) {
                     // Title
                     Center(
                       child: CommonText(
-                        'Filters',
+                        AppLocalizations.of(context)!.filters,
                         size: 18.sp,
                         fontWeight: FontWeight.bold,
                       ),
@@ -70,7 +70,7 @@ void showFilterBottomSheet(BuildContext context) {
 
                     // Vehicle Type
                     CommonText(
-                      'Select Vehicle Type',
+                      AppLocalizations.of(context)!.select_vehicle_type,
                       size: 14.sp,
                       fontWeight: FontWeight.w500,
                     ),
@@ -115,9 +115,8 @@ void showFilterBottomSheet(BuildContext context) {
                     ),
                     SizedBox(height: 16.h),
 
-                    // Level
                     CommonText(
-                      'Level',
+                      AppLocalizations.of(context)!.level,
                       size: 14.sp,
                       fontWeight: FontWeight.w500,
                     ),
@@ -165,7 +164,7 @@ void showFilterBottomSheet(BuildContext context) {
 
                     // Stars
                     CommonText(
-                      'Stars',
+                      AppLocalizations.of(context)!.stars,
                       size: 14.sp,
                       fontWeight: FontWeight.w500,
                     ),
@@ -191,13 +190,20 @@ void showFilterBottomSheet(BuildContext context) {
                     SizedBox(height: 16.h),
 
                     // Features
-                    CommonText("Features", size: 16, isBold: true),
+                    CommonText(
+                      AppLocalizations.of(context)!.features,
+                      size: 16,
+                      isBold: true,
+                    ),
                     SizedBox(height: 8.h),
 
                     // Verified Profile
                     Row(
                       children: [
-                        CommonText('Verified Profile', size: 14.sp),
+                        CommonText(
+                          AppLocalizations.of(context)!.verified_profile,
+                          size: 14.sp,
+                        ),
                         Spacer(),
                         Radio<FeatureOption>(
                           value: FeatureOption.verifiedProfile,
@@ -214,7 +220,10 @@ void showFilterBottomSheet(BuildContext context) {
                     // Automatic Reservation
                     Row(
                       children: [
-                        CommonText('Automatic Reservation', size: 14.sp),
+                        CommonText(
+                          AppLocalizations.of(context)!.automatic_reservation,
+                          size: 14.sp,
+                        ),
                         Spacer(),
                         Radio<FeatureOption>(
                           value: FeatureOption.automaticReservation,
@@ -231,7 +240,7 @@ void showFilterBottomSheet(BuildContext context) {
 
                     // Confirm Button
                     CommonButton(
-                      "Confirm Filters",
+                      AppLocalizations.of(context)!.confirm_filters,
                       onTap: () {
                         Navigator.pop(context);
                       },

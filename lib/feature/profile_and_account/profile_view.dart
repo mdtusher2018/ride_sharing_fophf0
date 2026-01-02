@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:get/get.dart';
+import 'package:velozaje/core/localization/app_localizations.dart';
 import 'package:velozaje/feature/profile_and_account/change_password_view.dart';
 
 import 'package:velozaje/feature/profile_and_account/contact_view.dart';
@@ -9,6 +9,7 @@ import 'package:velozaje/feature/profile_and_account/profile_details.dart';
 import 'package:velozaje/feature/profile_and_account/referal_view.dart';
 import 'package:velozaje/feature/profile_and_account/terms_and_conditions_view.dart';
 import 'package:velozaje/feature/profile_and_account/wallet_view.dart';
+import 'package:velozaje/main.dart';
 import 'package:velozaje/utills/app_colors.dart';
 import 'package:velozaje/res/common_image.dart';
 import 'package:velozaje/res/common_text.dart';
@@ -21,7 +22,11 @@ class ProfilePage extends StatelessWidget {
     return Scaffold(
       backgroundColor: AppColors.mainbg,
       appBar: AppBar(
-        title: CommonText('Account', size: 20, isBold: true),
+        title: CommonText(
+          AppLocalizations.of(context)!.account,
+          size: 20,
+          isBold: true,
+        ),
         centerTitle: true,
         backgroundColor: AppColors.mainbg,
         surfaceTintColor: Colors.transparent,
@@ -30,7 +35,6 @@ class ProfilePage extends StatelessWidget {
       body: ListView(
         padding: EdgeInsets.all(16.w),
         children: [
-          /// PROFILE CARD
           _card(
             child: Column(
               children: [
@@ -89,7 +93,7 @@ class ProfilePage extends StatelessWidget {
 
                 _divider(),
                 _tile(
-                  'Profile',
+                  AppLocalizations.of(context)!.profile,
                   "assest/icon/profile.png",
                   ontap: () {
                     Navigator.push(
@@ -104,7 +108,7 @@ class ProfilePage extends StatelessWidget {
                 ),
                 _divider(),
                 _tile(
-                  'Payment Methods',
+                  AppLocalizations.of(context)!.payment_methods,
                   "assest/icon/payment.png",
                   ontap: () {
                     Navigator.push(
@@ -119,7 +123,7 @@ class ProfilePage extends StatelessWidget {
                 ),
                 _divider(),
                 _tile(
-                  'Change Password',
+                  AppLocalizations.of(context)!.change_password,
                   "assest/icon/changepassword.png",
                   ontap: () {
                     Navigator.push(
@@ -139,12 +143,12 @@ class ProfilePage extends StatelessWidget {
           SizedBox(height: 16.h),
 
           /// GENERAL CARD
-          _sectionTitle('GENERAL'),
+          _sectionTitle(AppLocalizations.of(context)!.general),
           _card(
             child: Column(
               children: [
                 _tile(
-                  'Referral Code',
+                  AppLocalizations.of(context)!.referral_code,
                   "assest/icon/payment.png",
                   ontap: () {
                     Navigator.push(
@@ -159,7 +163,7 @@ class ProfilePage extends StatelessWidget {
                 ),
                 _divider(),
                 _tile(
-                  'Wallet & Transactions',
+                  AppLocalizations.of(context)!.wallet_transactions,
                   "assest/icon/wallet.png",
                   ontap: () {
                     Navigator.push(
@@ -179,20 +183,27 @@ class ProfilePage extends StatelessWidget {
           SizedBox(height: 16.h),
 
           /// APP PREFERENCES CARD
-          _sectionTitle('APP PREFERENCES'),
+          _sectionTitle(AppLocalizations.of(context)!.app_preferences),
           _card(
             child: Column(
               children: [
-                _switchTile('Notifications', Icons.notifications),
+                _switchTile(
+                  AppLocalizations.of(context)!.notifications,
+                  Icons.notifications,
+                ),
                 _divider(),
                 _tile(
-                  'Language',
+                  AppLocalizations.of(context)!.language,
                   "assest/icon/language.png",
-                  trailing: Get.locale?.languageCode == 'es'
+
+                  trailing: Localizations.localeOf(context).languageCode == 'es'
                       ? 'Español'
                       : 'English',
                   ontap: () {
-                    Get.bottomSheet(_languageBottomSheet());
+                    showModalBottomSheet(
+                      context: context,
+                      builder: (context2) => _languageBottomSheet(context),
+                    );
                   },
                 ),
               ],
@@ -202,12 +213,12 @@ class ProfilePage extends StatelessWidget {
           SizedBox(height: 16.h),
 
           /// SUPPORT & LEGAL CARD
-          _sectionTitle('SUPPORT & LEGAL'),
+          _sectionTitle(AppLocalizations.of(context)!.support_legal),
           _card(
             child: Column(
               children: [
                 _tile(
-                  'Contact',
+                  AppLocalizations.of(context)!.contact,
                   "assest/icon/email.png",
                   ontap: () {
                     Navigator.push(
@@ -222,7 +233,7 @@ class ProfilePage extends StatelessWidget {
                 ),
                 _divider(),
                 _tile(
-                  'Terms & Conditions',
+                  AppLocalizations.of(context)!.terms_conditions,
                   "assest/icon/wallet.png",
                   ontap: () {
                     Navigator.push(
@@ -242,10 +253,14 @@ class ProfilePage extends StatelessWidget {
           _card(
             child: Column(
               children: [
-                _tile('Log Out', "assest/icon/logout.png", ontap: () {}),
+                _tile(
+                  AppLocalizations.of(context)!.log_out,
+                  "assest/icon/logout.png",
+                  ontap: () {},
+                ),
                 _divider(),
                 _tile(
-                  'Delete Account',
+                  AppLocalizations.of(context)!.delete_account,
                   "assest/icon/delete.png",
                   isRed: true,
                   ontap: () {},
@@ -260,7 +275,7 @@ class ProfilePage extends StatelessWidget {
 
   // ---------- HELPERS ----------
 
-  Widget _languageBottomSheet() {
+  Widget _languageBottomSheet(BuildContext context) {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: const BoxDecoration(
@@ -273,15 +288,15 @@ class ProfilePage extends StatelessWidget {
           ListTile(
             title: const Text('English'),
             onTap: () {
-              Get.updateLocale(const Locale('en', 'US'));
-              Get.back();
+              MyApp.setLocale(context, const Locale('en', 'US'));
+              Navigator.pop(context);
             },
           ),
           ListTile(
             title: const Text('Español'),
             onTap: () {
-              Get.updateLocale(const Locale('es', 'ES'));
-              Get.back();
+              MyApp.setLocale(context, const Locale('es', 'ES'));
+              Navigator.pop(context);
             },
           ),
         ],

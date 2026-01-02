@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:velozaje/core/localization/app_localizations.dart';
 import 'package:velozaje/feature/auth/view/register_vehicale_view.dart';
 import 'package:velozaje/utills/app_colors.dart';
 import 'package:velozaje/res/common_button.dart';
@@ -26,7 +27,6 @@ class _ConfirmDetailsPageState extends State<ConfirmDetailsPage> {
   File? _avatarImage;
   final ImagePicker _picker = ImagePicker();
 
-  /// Pick avatar image from gallery
   Future<void> _pickAvatar() async {
     final XFile? pickedFile = await _picker.pickImage(
       source: ImageSource.gallery,
@@ -40,7 +40,6 @@ class _ConfirmDetailsPageState extends State<ConfirmDetailsPage> {
     }
   }
 
-  /// Pick date of birth
   Future<void> _pickDOB() async {
     DateTime? pickedDate = await showDatePicker(
       context: context,
@@ -65,13 +64,15 @@ class _ConfirmDetailsPageState extends State<ConfirmDetailsPage> {
         elevation: 0,
         surfaceTintColor: Colors.transparent,
         centerTitle: true,
-        title: CommonText('Confirm Your Details', size: 21),
+        title: CommonText(
+          AppLocalizations.of(context)!.confirm_your_details,
+          size: 21,
+        ),
       ),
       body: SingleChildScrollView(
         padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 16.h),
         child: Column(
           children: [
-            /// Circular avatar with border and camera icon
             GestureDetector(
               onTap: _pickAvatar,
               child: Stack(
@@ -109,7 +110,7 @@ class _ConfirmDetailsPageState extends State<ConfirmDetailsPage> {
                             ),
                     ),
                   ),
-                  // Camera icon overlay
+
                   Positioned(
                     bottom: 0,
                     right: 0,
@@ -134,11 +135,10 @@ class _ConfirmDetailsPageState extends State<ConfirmDetailsPage> {
 
             SizedBox(height: 30.h),
 
-            /// Email field
             CommonTextfieldWithTitle(
-              'Email',
+              AppLocalizations.of(context)!.email,
               emailController,
-              hintText: 'Enter your email',
+              hintText: AppLocalizations.of(context)!.enter_your_email,
               keyboardType: TextInputType.emailAddress,
               prefixIconWidget: Padding(
                 padding: EdgeInsets.all(12.r),
@@ -147,11 +147,10 @@ class _ConfirmDetailsPageState extends State<ConfirmDetailsPage> {
             ),
             SizedBox(height: 16.h),
 
-            /// Contact Phone field
             CommonTextfieldWithTitle(
-              'Contact Phone',
+              AppLocalizations.of(context)!.contact_phone,
               phoneController,
-              hintText: 'Enter your contact number',
+              hintText: AppLocalizations.of(context)!.enter_your_contact_number,
               keyboardType: TextInputType.phone,
               prefixIconWidget: Padding(
                 padding: EdgeInsets.all(12.r),
@@ -160,11 +159,10 @@ class _ConfirmDetailsPageState extends State<ConfirmDetailsPage> {
             ),
             SizedBox(height: 16.h),
 
-            /// Full Name field
             CommonTextfieldWithTitle(
-              'Full Name',
+              AppLocalizations.of(context)!.full_name,
               fullNameController,
-              hintText: 'Enter your full name',
+              hintText: AppLocalizations.of(context)!.enter_your_full_name,
               prefixIconWidget: Padding(
                 padding: EdgeInsets.all(12.r),
                 child: Icon(Icons.person, color: Colors.grey, size: 20.sp),
@@ -172,11 +170,10 @@ class _ConfirmDetailsPageState extends State<ConfirmDetailsPage> {
             ),
             SizedBox(height: 16.h),
 
-            /// Address field
             CommonTextfieldWithTitle(
-              'Address',
+              AppLocalizations.of(context)!.address,
               addressController,
-              hintText: 'Enter your address',
+              hintText: AppLocalizations.of(context)!.enter_your_address,
               prefixIconWidget: Padding(
                 padding: EdgeInsets.all(12.r),
                 child: Icon(Icons.location_on, color: Colors.grey, size: 20.sp),
@@ -184,11 +181,10 @@ class _ConfirmDetailsPageState extends State<ConfirmDetailsPage> {
             ),
             SizedBox(height: 16.h),
 
-            /// DOB field - pickable
             CommonTextfieldWithTitle(
-              'DOB',
+              AppLocalizations.of(context)!.dob,
               dobController,
-              hintText: 'Select your date of birth',
+              hintText: AppLocalizations.of(context)!.select_your_date_of_birth,
               keyboardType: TextInputType.none,
               enable: false,
               onTap: _pickDOB,
@@ -204,9 +200,8 @@ class _ConfirmDetailsPageState extends State<ConfirmDetailsPage> {
 
             SizedBox(height: 40.h),
 
-            /// Confirm Button
             CommonButton(
-              "Confirm Data",
+              AppLocalizations.of(context)!.confirm_data,
               onTap: () {
                 Navigator.push(
                   context,

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:velozaje/core/localization/app_localizations.dart';
 import 'package:velozaje/res/common_button.dart';
 import 'package:velozaje/res/common_image.dart';
 import 'package:velozaje/res/common_text.dart';
@@ -51,7 +52,7 @@ class _RateDriverBottomSheetState extends State<RateDriverBottomSheet> {
 
             /// Title
             CommonText(
-              'Rate Your Driver',
+              AppLocalizations.of(context)!.rate_your_driver,
               size: 18.sp,
               fontWeight: FontWeight.w600,
             ),
@@ -107,7 +108,7 @@ class _RateDriverBottomSheetState extends State<RateDriverBottomSheet> {
             /// Comment Box
             CommonTextField(
               controller: reviewController,
-              hintText: 'Write your feedback...',
+              hintText: AppLocalizations.of(context)!.write_your_feedback,
               minLine: 4,
               keyboardType: TextInputType.multiline,
             ),
@@ -119,7 +120,7 @@ class _RateDriverBottomSheetState extends State<RateDriverBottomSheet> {
               children: [
                 Expanded(
                   child: CommonButton(
-                    'Skip',
+                    AppLocalizations.of(context)!.skip,
                     color: Colors.white,
                     textColor: Colors.black,
                     boarder: Border.all(color: Colors.grey),
@@ -132,7 +133,7 @@ class _RateDriverBottomSheetState extends State<RateDriverBottomSheet> {
                 SizedBox(width: 12.w),
                 Expanded(
                   child: CommonButton(
-                    'Submit',
+                    AppLocalizations.of(context)!.submit,
                     color: Colors.green,
                     textColor: Colors.white,
                     textalign: TextAlign.center,

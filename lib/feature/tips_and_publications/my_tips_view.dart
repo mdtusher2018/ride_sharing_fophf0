@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:velozaje/core/localization/app_localizations.dart';
 import 'package:velozaje/feature/tips_and_publications/my_tip_details_view.dart';
 import 'package:velozaje/utills/app_colors.dart';
 import 'package:velozaje/res/common_text.dart';
@@ -63,7 +64,7 @@ class _MyTipCardState extends State<MyTipCard> {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                CommonText("Start Code"),
+                CommonText(AppLocalizations.of(context)!.start_code),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
@@ -73,7 +74,10 @@ class _MyTipCardState extends State<MyTipCard> {
                       color: AppColors.primary,
                       isBold: true,
                     ),
-                    CommonText("Give at Pickup", size: 10),
+                    CommonText(
+                      AppLocalizations.of(context)!.give_at_pickup,
+                      size: 10,
+                    ),
                   ],
                 ),
               ],
@@ -195,9 +199,15 @@ class _MyTipCardState extends State<MyTipCard> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _stepText(title: "From", value: "Morelia, Avenida P. Calle 12"),
+              _stepText(
+                title: AppLocalizations.of(context)!.from,
+                value: "Morelia, Avenida P. Calle 12",
+              ),
               SizedBox(height: 10.h),
-              _stepText(title: "To", value: "Morelia, Avenida P. Calle 12"),
+              _stepText(
+                title: AppLocalizations.of(context)!.to,
+                value: "Morelia, Avenida P. Calle 12",
+              ),
             ],
           ),
         ),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:velozaje/core/localization/app_localizations.dart';
 import 'package:velozaje/feature/chat/chat_view.dart';
 import 'package:velozaje/utills/app_colors.dart';
 import 'package:velozaje/res/common_text.dart';
@@ -16,11 +17,14 @@ class ChatListPage extends StatelessWidget {
         backgroundColor: AppColors.white,
         surfaceTintColor: Colors.transparent,
         centerTitle: true,
-        title: CommonText('Inbox', size: 21.sp, fontWeight: FontWeight.w600),
+        title: CommonText(
+          AppLocalizations.of(context)!.inbox,
+          size: 21.sp,
+          fontWeight: FontWeight.w600,
+        ),
       ),
       body: Column(
         children: [
-          /// 🔍 Search Bar
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 16.w),
             child: Container(
@@ -33,7 +37,7 @@ class ChatListPage extends StatelessWidget {
                 decoration: InputDecoration(
                   border: InputBorder.none,
                   prefixIcon: Icon(Icons.search_rounded, color: Colors.grey),
-                  hintText: 'Search chats',
+                  hintText: AppLocalizations.of(context)!.search_chats,
                 ),
               ),
             ),

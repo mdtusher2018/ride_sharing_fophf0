@@ -7,42 +7,41 @@ import 'package:velozaje/core/services/providers.dart';
 import 'package:velozaje/core/utils/api_end_points.dart';
 import 'package:velozaje/core/utils/extention.dart';
 import 'package:velozaje/core/utils/global_keys.dart';
-import 'package:velozaje/feature/auth/models/email_verification_model.dart';
-import 'package:velozaje/feature/auth/view/confirm_details_view.dart';
+import 'package:velozaje/feature/auth/models/forget_password_model.dart';
+import 'package:velozaje/feature/auth/view/otp_verification_view.dart';
 
-final emailVerificationProvider = Provider((ref) {
-  return EmailVerificationController(
+final forgetVerificationProvider = Provider((ref) {
+  return ForgetPasswordController(
     apiService: ref.read(apiServiceProvider),
     localStorageService: ref.read(localStorageProvider),
   );
 });
 
-class EmailVerificationController extends BaseNotifier {
+class ForgetPasswordController extends BaseNotifier {
   final IApiService apiService;
   final ILocalStorageService localStorageService;
 
-  EmailVerificationController({
+  ForgetPasswordController({
     required this.apiService,
     required this.localStorageService,
   }) : super(false);
 
-  Future<void> emailVerification({
-    required String email,
-    required String otp,
-  }) async {
+  Future<void> forgetVerification({required String email}) async {
     safeCall(
       task: () async {
-        final response = await apiService.post(ApiEndpoints.verifyOTP, {
+        final response = await apiService.post(ApiEndpoints.forgetPassword, {
           "email": email,
-          "otp": otp,
-          "purpose": "emailVerify",
+
+          "purpose": "passwordReset",
         });
         if (response['success'] ?? false) {
-          final user = EmailVerificationModel.fromJson(response);
+          final user = ForgetPasswordModel.fromJson(response);
 
           await localStorageService.saveString(StorageKey.token, user.token);
 
-          navigatorKey.currentContext?.navigateTo(ConfirmDetailsPage());
+          navigatorKey.currentContext?.navigateTo(
+            OtpVerificationPage(email: email),
+          );
         } else {
           throw Exception(response['message'] ?? 'Failed to send OTP failed');
         }

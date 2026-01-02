@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:velozaje/core/localization/app_localizations.dart';
 import 'package:velozaje/feature/result_and_booking/search_results_page.dart';
 
 import 'package:velozaje/utills/app_colors.dart';
@@ -19,7 +20,6 @@ class _FindingDriversPageState extends State<FindingDriversPage> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     Future.delayed(Duration(seconds: 5), () {
       Navigator.push(
@@ -74,7 +74,6 @@ class _FindingDriversPageState extends State<FindingDriversPage> {
             ),
           ),
 
-          /// ⬆️ Bottom Sheet Card
           Positioned(
             bottom: 0,
             left: 0,
@@ -104,7 +103,11 @@ class _FindingDriversPageState extends State<FindingDriversPage> {
                       ),
                     ),
                     SizedBox(height: 16.h),
-                    CommonText("Finding your Drivers", size: 16, isBold: true),
+                    CommonText(
+                      AppLocalizations.of(context)!.finding_your_drivers,
+                      size: 16,
+                      isBold: true,
+                    ),
                     SizedBox(height: 12.h),
                     LinearProgressIndicator(
                       color: AppColors.primary,
@@ -123,9 +126,8 @@ class _FindingDriversPageState extends State<FindingDriversPage> {
                           ),
                           SizedBox(height: 30.h),
 
-                          /// Pickup Location
                           _locationTile(
-                            "Pick-up location",
+                            AppLocalizations.of(context)!.pick_up_location,
                             controller: pickupController,
                             icon: Container(
                               width: 20,
@@ -141,7 +143,7 @@ class _FindingDriversPageState extends State<FindingDriversPage> {
 
                           /// Destination
                           _locationTile(
-                            "Destination",
+                            AppLocalizations.of(context)!.destination,
                             icon: Icon(Icons.location_on),
                             controller: destinationController,
                           ),
@@ -160,7 +162,6 @@ class _FindingDriversPageState extends State<FindingDriversPage> {
     );
   }
 
-  /// 📍 Location Tile
   Widget _locationTile(
     String title, {
     required TextEditingController controller,

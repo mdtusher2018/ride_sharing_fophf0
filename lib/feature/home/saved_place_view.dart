@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:velozaje/core/localization/app_localizations.dart';
 import 'package:velozaje/feature/home/widgets/saved_place_card.dart';
 import 'package:velozaje/res/common_appbar.dart';
 import 'package:velozaje/utills/app_colors.dart';
@@ -10,7 +11,10 @@ class SavedPlacePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: commonAppBar(context, title: "Saved Places"),
+      appBar: commonAppBar(
+        context,
+        title: AppLocalizations.of(context)!.saved_places,
+      ),
       backgroundColor: AppColors.mainbg,
       body: Padding(
         padding: EdgeInsetsGeometry.all(16.r),

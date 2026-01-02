@@ -48,7 +48,9 @@ class SignupController extends BaseNotifier {
 
           await localStorageService.saveString(StorageKey.token, user.token);
 
-          navigatorKey.currentContext?.navigateTo(EmailVerificationPage());
+          navigatorKey.currentContext?.navigateTo(
+            EmailVerificationPage(email: email),
+          );
         } else {
           throw Exception(response['message'] ?? 'Failed to send OTP failed');
         }

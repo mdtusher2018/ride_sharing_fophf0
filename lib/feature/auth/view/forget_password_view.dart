@@ -1,8 +1,10 @@
 // ignore_for_file: must_be_immutable
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:velozaje/feature/auth/view/otp_verification_view.dart';
+import 'package:velozaje/core/localization/app_localizations.dart';
+import 'package:velozaje/feature/auth/controllers/forget_password_controller.dart';
 import 'package:velozaje/feature/auth/widget/auth_backend.dart';
 import 'package:velozaje/utills/app_colors.dart';
 import 'package:velozaje/res/common_button.dart';
@@ -49,7 +51,7 @@ class _ForgetPasswordPageState extends State<ForgetPasswordPage> {
                       children: [
                         Center(
                           child: CommonText(
-                            'Reset Your Password',
+                            AppLocalizations.of(context)!.reset_your_password,
                             size: 18.sp,
                             fontWeight: FontWeight.w600,
                             color: AppColors.primary,
@@ -59,7 +61,9 @@ class _ForgetPasswordPageState extends State<ForgetPasswordPage> {
                           child: Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: CommonText(
-                              "Enter your registered email address below. We’ll send you a one-time password (OTP) to reset your passoword securely",
+                              AppLocalizations.of(
+                                context,
+                              )!.enter_your_registered_email_address_below_we_ll_send_you_a_one_time_password_otp_to_reset_your_password_securely,
                               textAlign: TextAlign.center,
                             ),
                           ),
@@ -67,11 +71,12 @@ class _ForgetPasswordPageState extends State<ForgetPasswordPage> {
 
                         SizedBox(height: 30.h),
 
-                        /// Email field
                         CommonTextfieldWithTitle(
-                          'Email',
+                          AppLocalizations.of(context)!.email,
                           emailController,
-                          hintText: 'Enter your email',
+                          hintText: AppLocalizations.of(
+                            context,
+                          )!.enter_your_email,
                           keyboardType: TextInputType.emailAddress,
                         ),
 
@@ -79,17 +84,23 @@ class _ForgetPasswordPageState extends State<ForgetPasswordPage> {
 
                         SizedBox(height: 10.h),
 
-                        /// Login button
-                        CommonButton(
-                          "Send OTP Code",
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) {
-                                  return OtpVerificationPage();
-                                },
-                              ),
+                        Consumer(
+                          builder: (context, ref, _) {
+                            final state = ref.watch(forgetVerificationProvider);
+
+                            return ValueListenableBuilder(
+                              valueListenable: state.isLoading,
+                              builder: (context, value, child) {
+                                return CommonButton(
+                                  AppLocalizations.of(context)!.send_otp_code,
+                                  isLoading: value,
+                                  onTap: () async {
+                                    await state.forgetVerification(
+                                      email: emailController.text,
+                                    );
+                                  },
+                                );
+                              },
                             );
                           },
                         ),

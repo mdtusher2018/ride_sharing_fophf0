@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:icons_plus/icons_plus.dart';
+import 'package:velozaje/core/localization/app_localizations.dart';
 import 'package:velozaje/feature/result_and_booking/result_trip_details.dart';
 import 'package:velozaje/utills/app_colors.dart';
 import 'package:velozaje/res/common_button.dart';
@@ -43,7 +44,7 @@ class _DriverResultCardState extends State<DriverResultCard> {
           if (!showPackageOptions) _footer(),
           if (showPackageOptions)
             CommonButton(
-              "View Details",
+              AppLocalizations.of(context)!.view_details,
               height: 24,
               textSize: 14,
               onTap: () {
@@ -134,9 +135,15 @@ class _DriverResultCardState extends State<DriverResultCard> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _stepText(title: "From", value: "Morelia, Avenida P. Calle 12"),
+              _stepText(
+                title: AppLocalizations.of(context)!.from,
+                value: "Morelia, Avenida P. Calle 12",
+              ),
               SizedBox(height: 10.h),
-              _stepText(title: "To", value: "Morelia, Avenida P. Calle 12"),
+              _stepText(
+                title: AppLocalizations.of(context)!.to,
+                value: "Morelia, Avenida P. Calle 12",
+              ),
             ],
           ),
         ),
@@ -187,11 +194,11 @@ class _DriverResultCardState extends State<DriverResultCard> {
       padding: EdgeInsets.only(bottom: 12.h),
       child: Row(
         children: [
-          _sizeCard("Small", "\$60"),
+          _sizeCard(AppLocalizations.of(context)!.small, "\$60"),
           SizedBox(width: 10.w),
-          _sizeCard("Medium", "\$00"),
+          _sizeCard(AppLocalizations.of(context)!.medium, "\$00"),
           SizedBox(width: 10.w),
-          _sizeCard("Large", "\$00"),
+          _sizeCard(AppLocalizations.of(context)!.large, "\$00"),
         ],
       ),
     );
@@ -228,7 +235,7 @@ class _DriverResultCardState extends State<DriverResultCard> {
           ),
           const Spacer(),
           CommonButton(
-            "View Details",
+            AppLocalizations.of(context)!.view_details,
             onTap: () {
               setState(() {
                 showPackageOptions = !showPackageOptions;

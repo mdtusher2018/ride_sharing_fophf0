@@ -1,7 +1,8 @@
-// ignore_for_file: must_be_immutable
-
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:velozaje/core/localization/app_localizations.dart';
+import 'package:velozaje/feature/auth/controllers/reset_password_controller.dart';
 import 'package:velozaje/feature/auth/widget/auth_backend.dart';
 import 'package:velozaje/utills/app_colors.dart';
 import 'package:velozaje/res/common_button.dart';
@@ -52,7 +53,7 @@ class _CreateNewPasswordPageState extends State<CreateNewPasswordPage> {
                       children: [
                         Center(
                           child: CommonText(
-                            'Create New Password',
+                            AppLocalizations.of(context)!.create_new_password,
                             size: 18.sp,
                             fontWeight: FontWeight.w600,
                             color: AppColors.primary,
@@ -60,11 +61,12 @@ class _CreateNewPasswordPageState extends State<CreateNewPasswordPage> {
                         ),
                         SizedBox(height: 30.h),
 
-                        /// New Password field
                         CommonTextfieldWithTitle(
-                          'New Password',
+                          AppLocalizations.of(context)!.new_password,
                           newPasswordController,
-                          hintText: 'Enter your password',
+                          hintText: AppLocalizations.of(
+                            context,
+                          )!.enter_your_password,
                           issuffixIconVisible: true,
                           isPasswordVisible: isNewPasswordVisible,
                           changePasswordVisibility: () {
@@ -76,9 +78,11 @@ class _CreateNewPasswordPageState extends State<CreateNewPasswordPage> {
 
                         SizedBox(height: 16.h),
                         CommonTextfieldWithTitle(
-                          'Confirm Password',
+                          AppLocalizations.of(context)!.confirm_password,
                           newPasswordController,
-                          hintText: 'Enter your confirm password',
+                          hintText: AppLocalizations.of(
+                            context,
+                          )!.enter_your_confirm_password,
                           issuffixIconVisible: true,
                           isPasswordVisible: isConfirmPasswordVisible,
                           changePasswordVisibility: () {
@@ -91,18 +95,20 @@ class _CreateNewPasswordPageState extends State<CreateNewPasswordPage> {
 
                         SizedBox(height: 30.h),
 
-                        /// Send OTP button
-                        CommonButton(
-                          "Update Password",
-                          onTap: () {
-                            // Navigator.push(
-                            //   context,
-                            //   MaterialPageRoute(
-                            //     builder: (context) {
-                            //       return const EmailVerificationPage();
-                            //     },
-                            //   ),
-                            // );
+                        Consumer(
+                          builder: (context, ref, _) {
+                            return ValueListenableBuilder(
+                              valueListenable: ref
+                                  .watch(resetPasswordControllerProvider)
+                                  .isLoading,
+                              builder: (context, value, child) {
+                                return CommonButton(
+                                  AppLocalizations.of(context)!.update_password,
+                                  isLoading: value,
+                                  onTap: () {},
+                                );
+                              },
+                            );
                           },
                         ),
 

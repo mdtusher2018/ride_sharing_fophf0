@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:velozaje/core/localization/app_localizations.dart';
 import 'package:velozaje/res/common_appbar.dart';
 import 'package:velozaje/res/common_button.dart';
 import 'package:velozaje/res/common_text_field_with_title.dart';
@@ -31,7 +32,6 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
   // Function to handle password update logic
   void _updatePassword() {
     if (_formKey.currentState!.validate()) {
-      // Assuming a successful password update
       Navigator.pop(context); // Go back after updating password
     }
   }
@@ -41,7 +41,7 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
     return Scaffold(
       appBar: commonAppBar(
         context,
-        title: "Change Password",
+        title: AppLocalizations.of(context)!.change_password,
         backgroundColor: AppColors.white,
       ),
       backgroundColor: AppColors.white,
@@ -53,7 +53,9 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
             CommonTextfieldWithTitle(
               '',
               currentPasswordController,
-              hintText: 'Enter your current password',
+              hintText: AppLocalizations.of(
+                context,
+              )!.enter_your_current_password,
 
               issuffixIconVisible: true,
               isPasswordVisible: isCurrentPasswordVisible,
@@ -68,7 +70,7 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
             CommonTextfieldWithTitle(
               '',
               newPasswordController,
-              hintText: 'Enter your new password',
+              hintText: AppLocalizations.of(context)!.enter_your_new_password,
               issuffixIconVisible: true,
               isPasswordVisible: isNewPasswordVisible,
               changePasswordVisibility: () {
@@ -82,7 +84,9 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
             CommonTextfieldWithTitle(
               "",
               confirmPasswordController,
-              hintText: 'Re-enter your new password',
+              hintText: AppLocalizations.of(
+                context,
+              )!.re_enter_your_new_password,
               issuffixIconVisible: true,
               isPasswordVisible: isConfirmPasswordVisible,
               changePasswordVisibility: () {
@@ -95,7 +99,7 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
 
             // Update Button
             CommonButton(
-              "Update",
+              AppLocalizations.of(context)!.update,
               onTap:
                   _updatePassword, // Call _updatePassword method on button tap
             ),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:velozaje/core/localization/app_localizations.dart';
 import 'package:velozaje/feature/tips_and_publications/published/my_published_details_view.dart';
 import 'package:velozaje/res/common_text.dart';
 import 'package:velozaje/utills/app_colors.dart';
@@ -10,9 +11,15 @@ class MyPublishedTripsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListView(
-      children: const [
-        TripCard(status: 'Active Trip', statusColor: AppColors.primary),
-        TripCard(status: 'scheduled', statusColor: AppColors.textSecondary),
+      children: [
+        TripCard(
+          status: AppLocalizations.of(context)!.active_trip,
+          statusColor: AppColors.primary,
+        ),
+        TripCard(
+          status: AppLocalizations.of(context)!.scheduled,
+          statusColor: AppColors.textSecondary,
+        ),
       ],
     );
   }
@@ -47,7 +54,6 @@ class TripCard extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              /// Top Row
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -96,7 +102,11 @@ class TripCard extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        CommonText('From', size: 11, color: Colors.grey),
+                        CommonText(
+                          AppLocalizations.of(context)!.from,
+                          size: 11,
+                          color: Colors.grey,
+                        ),
                         CommonText(
                           'Morelia, Avenida P. Calle 12',
                           size: 13,
@@ -104,7 +114,11 @@ class TripCard extends StatelessWidget {
                           fontWeight: FontWeight.w500,
                         ),
                         SizedBox(height: 10.h),
-                        CommonText('To', size: 11, color: Colors.grey),
+                        CommonText(
+                          AppLocalizations.of(context)!.to,
+                          size: 11,
+                          color: Colors.grey,
+                        ),
                         CommonText(
                           'Morelia, Avenida P. Calle 12',
                           size: 13,
@@ -120,7 +134,6 @@ class TripCard extends StatelessWidget {
 
               SizedBox(height: 16.h),
 
-              /// Bottom Stats
               Container(
                 padding: EdgeInsets.symmetric(vertical: 12.h),
                 decoration: BoxDecoration(
@@ -130,17 +143,20 @@ class TripCard extends StatelessWidget {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    _TripStat(value: '3/4', label: 'Seats'),
+                    _TripStat(
+                      value: '3/4',
+                      label: AppLocalizations.of(context)!.seats,
+                    ),
                     _Divider(),
                     _TripStat(
                       value: '\$840',
-                      label: 'Seats',
+                      label: AppLocalizations.of(context)!.seats,
                       valueColor: AppColors.primary,
                     ),
                     _Divider(),
                     _TripStat(
                       value: '2',
-                      label: 'Requests',
+                      label: AppLocalizations.of(context)!.requests,
                       valueColor: AppColors.primary,
                     ),
                   ],

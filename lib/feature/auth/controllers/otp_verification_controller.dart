@@ -7,26 +7,26 @@ import 'package:velozaje/core/services/providers.dart';
 import 'package:velozaje/core/utils/api_end_points.dart';
 import 'package:velozaje/core/utils/extention.dart';
 import 'package:velozaje/core/utils/global_keys.dart';
-import 'package:velozaje/feature/auth/models/email_verification_model.dart';
-import 'package:velozaje/feature/auth/view/confirm_details_view.dart';
+import 'package:velozaje/feature/auth/models/otp_verification_model.dart';
+import 'package:velozaje/feature/auth/view/creat_new_password_view.dart';
 
-final emailVerificationProvider = Provider((ref) {
-  return EmailVerificationController(
+final otpVerificationProvider = Provider((ref) {
+  return OTPVerificationController(
     apiService: ref.read(apiServiceProvider),
     localStorageService: ref.read(localStorageProvider),
   );
 });
 
-class EmailVerificationController extends BaseNotifier {
+class OTPVerificationController extends BaseNotifier {
   final IApiService apiService;
   final ILocalStorageService localStorageService;
 
-  EmailVerificationController({
+  OTPVerificationController({
     required this.apiService,
     required this.localStorageService,
   }) : super(false);
 
-  Future<void> emailVerification({
+  Future<void> otpVerification({
     required String email,
     required String otp,
   }) async {
@@ -35,14 +35,14 @@ class EmailVerificationController extends BaseNotifier {
         final response = await apiService.post(ApiEndpoints.verifyOTP, {
           "email": email,
           "otp": otp,
-          "purpose": "emailVerify",
+          "purpose": "passwordReset",
         });
         if (response['success'] ?? false) {
-          final user = EmailVerificationModel.fromJson(response);
+          final user = OTPVerificationModel.fromJson(response);
 
           await localStorageService.saveString(StorageKey.token, user.token);
 
-          navigatorKey.currentContext?.navigateTo(ConfirmDetailsPage());
+          navigatorKey.currentContext?.navigateTo(CreateNewPasswordPage());
         } else {
           throw Exception(response['message'] ?? 'Failed to send OTP failed');
         }

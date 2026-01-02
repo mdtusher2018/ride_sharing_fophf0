@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:velozaje/core/localization/app_localizations.dart';
 import 'package:velozaje/res/common_appbar.dart';
 import 'package:velozaje/res/common_text.dart';
 
@@ -8,7 +9,10 @@ class TermsAndConditionsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: commonAppBar(context, title: "Terms & Conditions"),
+      appBar: commonAppBar(
+        context,
+        title: AppLocalizations.of(context)!.terms_conditions,
+      ),
       body: Padding(
         padding: const EdgeInsets.all(24.0),
         child: CommonText(

@@ -45,7 +45,6 @@ class _TakePhotoPageState extends State<TakePhotoPage> {
     super.dispose();
   }
 
-  /// 📸 Capture Image
   Future<void> _takePicture() async {
     await _initializeCameraFuture;
     final XFile image = await _cameraController.takePicture();
@@ -83,7 +82,6 @@ class _TakePhotoPageState extends State<TakePhotoPage> {
     }
   }
 
-  /// 🔄 Switch Camera
   void _switchCamera() {
     _cameraIndex = (_cameraIndex + 1) % TakePhotoPage.cameras.length;
     _cameraController.dispose();
@@ -107,7 +105,6 @@ class _TakePhotoPageState extends State<TakePhotoPage> {
             },
           ),
 
-          /// 🔙 Back Button
           Positioned(
             top: 50.h,
             left: 16.w,
@@ -123,7 +120,6 @@ class _TakePhotoPageState extends State<TakePhotoPage> {
             ),
           ),
 
-          /// 📸 Bottom Controls
           Positioned(
             bottom: 40.h,
             left: 0,

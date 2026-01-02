@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:velozaje/core/localization/app_localizations.dart';
 import 'package:velozaje/feature/root_view.dart';
 import 'package:velozaje/utills/app_colors.dart';
 import 'package:velozaje/res/common_button.dart';
@@ -27,17 +28,23 @@ class PublishedSucessfullPage extends StatelessWidget {
             SizedBox(
               height: 60,
               child: FittedBox(
-                child: CommonText("Trip Published", size: 24, isBold: true),
+                child: CommonText(
+                  AppLocalizations.of(context)!.trip_published,
+                  size: 24,
+                  isBold: true,
+                ),
               ),
             ),
             CommonText(
-              "Passengers can now book your ride to Madrid",
+              AppLocalizations.of(
+                context,
+              )!.passengers_can_now_book_your_ride_to_madrid,
               size: 14,
               color: AppColors.textSecondary,
             ),
             SizedBox(height: 20.h),
             CommonButton(
-              "View My Trips",
+              AppLocalizations.of(context)!.view_my_trips,
               onTap: () {
                 RootPage.currentIndex = 2;
                 Navigator.pushAndRemoveUntil(

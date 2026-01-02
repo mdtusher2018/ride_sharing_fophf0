@@ -1,8 +1,10 @@
 // ignore_for_file: must_be_immutable
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:velozaje/feature/auth/view/creat_new_password_view.dart';
+import 'package:velozaje/core/localization/app_localizations.dart';
+import 'package:velozaje/feature/auth/controllers/otp_verification_controller.dart';
 import 'package:velozaje/feature/auth/widget/auth_backend.dart';
 import 'package:velozaje/utills/app_colors.dart';
 import 'package:velozaje/res/common_button.dart';
@@ -11,14 +13,16 @@ import 'package:velozaje/res/common_otp_field.dart';
 import 'package:velozaje/res/common_text.dart';
 import 'package:velozaje/utills/helper.dart';
 
-class OtpVerificationPage extends StatefulWidget {
-  const OtpVerificationPage({super.key});
+class OtpVerificationPage extends ConsumerStatefulWidget {
+  const OtpVerificationPage({super.key, required this.email});
+  final String email;
 
   @override
-  State<OtpVerificationPage> createState() => _OtpVerificationPageState();
+  ConsumerState<OtpVerificationPage> createState() =>
+      _OtpVerificationPageState();
 }
 
-class _OtpVerificationPageState extends State<OtpVerificationPage>
+class _OtpVerificationPageState extends ConsumerState<OtpVerificationPage>
     with WidgetsBindingObserver {
   final List<TextEditingController> _controllers = List.generate(
     4,
@@ -74,7 +78,7 @@ class _OtpVerificationPageState extends State<OtpVerificationPage>
                       children: [
                         Center(
                           child: CommonText(
-                            'Verification Code',
+                            AppLocalizations.of(context)!.verification_code,
                             size: 18.sp,
                             fontWeight: FontWeight.w600,
                             color: AppColors.primary,
@@ -84,7 +88,9 @@ class _OtpVerificationPageState extends State<OtpVerificationPage>
                           child: Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: CommonText(
-                              "We’ve sent a 4 digit OTP code to your email address. Please enetr it below to verify and continue with password reset.",
+                              AppLocalizations.of(
+                                context,
+                              )!.we_ve_sent_a_4_digit_otp_code_to_your_email_address_please_enter_it_below_to_verify_and_continue_with_password_reset,
                               textAlign: TextAlign.center,
                             ),
                           ),
@@ -106,16 +112,24 @@ class _OtpVerificationPageState extends State<OtpVerificationPage>
                         SizedBox(height: 30.h),
 
                         /// Login button
-                        CommonButton(
-                          "Enter",
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) {
-                                  return CreateNewPasswordPage();
-                                },
-                              ),
+                        ValueListenableBuilder(
+                          valueListenable: ref
+                              .watch(otpVerificationProvider)
+                              .isLoading,
+                          builder: (context, value, child) {
+                            return CommonButton(
+                              AppLocalizations.of(context)!.enter,
+                              isLoading: value,
+                              onTap: () {
+                                ref
+                                    .read(otpVerificationProvider)
+                                    .otpVerification(
+                                      email: widget.email,
+                                      otp: _controllers.map((e) {
+                                        return e.text;
+                                      }).join(),
+                                    );
+                              },
                             );
                           },
                         ),

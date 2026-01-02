@@ -4,7 +4,7 @@ import 'package:icons_plus/icons_plus.dart';
 import 'package:velozaje/res/common_text.dart';
 import 'package:velozaje/utills/app_colors.dart';
 
-/// ⭐ Saved Place Tile
+
 Widget savedPlaceCard({bool issBookMarks = false}) {
   return Container(
     padding: EdgeInsets.all(14.w),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:velozaje/core/localization/app_localizations.dart';
 import 'package:velozaje/utills/app_colors.dart';
 import 'package:velozaje/res/common_appbar.dart';
 import 'package:velozaje/res/common_button.dart';
@@ -30,7 +31,10 @@ class _ReportUserPageState extends State<ReportUserPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.mainbg,
-      appBar: commonAppBar(context, title: "Report User"),
+      appBar: commonAppBar(
+        context,
+        title: AppLocalizations.of(context)!.report_user,
+      ),
       body: Padding(
         padding: EdgeInsets.symmetric(horizontal: 20.w),
         child: Column(
@@ -46,8 +50,10 @@ class _ReportUserPageState extends State<ReportUserPage> {
                 borderRadius: BorderRadius.circular(10.r),
               ),
               child: CommonText(
-                'Please select a reason for reporting Osbaldo Garcia. '
-                'This is anonymous and helps keep our community safe.',
+                AppLocalizations.of(
+                  context,
+                )!.please_select_a_reason_for_reporting_osbaldo_garcia_this_is_anonymous_and_helps_keep_our_community_safe,
+
                 size: 12.sp,
                 color: const Color(0xFF910F0F),
               ),
@@ -71,7 +77,7 @@ class _ReportUserPageState extends State<ReportUserPage> {
             SizedBox(height: 24.h),
 
             CommonText(
-              'Additional Details',
+              AppLocalizations.of(context)!.additional_details,
               size: 14.sp,
               fontWeight: FontWeight.w600,
             ),
@@ -80,7 +86,9 @@ class _ReportUserPageState extends State<ReportUserPage> {
 
             CommonTextField(
               controller: detailsController,
-              hintText: 'Please describe what happened...',
+              hintText: AppLocalizations.of(
+                context,
+              )!.please_describe_what_happened,
               minLine: 4,
               keyboardType: TextInputType.multiline,
               boarderColor: Colors.transparent,
@@ -90,7 +98,7 @@ class _ReportUserPageState extends State<ReportUserPage> {
 
             /// Submit button
             CommonButton(
-              'Submit Report',
+              AppLocalizations.of(context)!.submit_report,
               color: Colors.red.shade600,
               textColor: Colors.white,
               textalign: TextAlign.center,
@@ -127,13 +135,18 @@ class _ReportUserPageState extends State<ReportUserPage> {
                 SizedBox(height: 16.h),
 
                 /// Title
-                CommonText("Report Submitted", size: 18, isBold: true),
+                CommonText(
+                  AppLocalizations.of(context)!.submit_report,
+                  size: 18,
+                  isBold: true,
+                ),
 
                 SizedBox(height: 8.h),
 
-                /// Subtitle / message
+          
                 CommonText(
-                  "Wait for other users Approval",
+                  AppLocalizations.of(context)!.wait_for_other_users_approval,
+
                   textAlign: TextAlign.center,
                   size: 14,
                 ),

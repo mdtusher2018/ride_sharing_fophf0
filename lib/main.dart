@@ -1,12 +1,12 @@
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:velozaje/core/localization/app_localizations.dart';
 import 'package:velozaje/core/utils/global_keys.dart';
 import 'package:velozaje/feature/home/take_image_view.dart';
 import 'package:velozaje/feature/splash_onboarding/splash_screen.dart';
-import 'package:get/get.dart';
-import 'package:velozaje/localization/app_translate.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -15,20 +15,43 @@ void main() async {
   runApp(ProviderScope(child: const MyApp()));
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
+  static void setLocale(BuildContext context, Locale locale) {
+    _MyAppState? state = context.findAncestorStateOfType<_MyAppState>();
+    state?.updateLocale(locale); // Call the updateLocale method
+  }
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  Locale _locale = Locale('es', 'ES'); // Default to English
+  void updateLocale(Locale locale) {
+    setState(() {
+      _locale = locale; // Update the locale
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return ScreenUtilInit(
       designSize: const Size(375, 812),
-      builder: (_, __) => GetMaterialApp(
+      builder: (_, __) => MaterialApp(
         title: 'Velozaje',
         navigatorKey: navigatorKey,
-        translations: AppTranslations(),
-        locale: const Locale('en', 'ES'),
-        fallbackLocale: const Locale('en', 'ES'),
 
+        locale: _locale,
+
+        localizationsDelegates: [
+          AppLocalizations.delegate, // Add this line
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+        ],
+
+        supportedLocales: AppLocalizations.supportedLocales,
         theme: ThemeData(
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         ),

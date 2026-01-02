@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:dotted_border/dotted_border.dart';
+import 'package:velozaje/core/localization/app_localizations.dart';
 import 'package:velozaje/feature/auth/view/referal_view.dart';
 import 'package:velozaje/utills/app_colors.dart';
 import 'package:velozaje/res/common_button.dart';
@@ -35,7 +36,6 @@ class _RegisterVehiclePageState extends State<RegisterVehiclePage> {
   ];
   int selectedTypeIndex = 0;
 
-  /// Pick vehicle image
   Future<void> _pickVehicleImage() async {
     final XFile? pickedFile = await _picker.pickImage(
       source: ImageSource.gallery,
@@ -58,14 +58,17 @@ class _RegisterVehiclePageState extends State<RegisterVehiclePage> {
         backgroundColor: AppColors.white,
         elevation: 0,
         centerTitle: true,
-        title: CommonText('Register Your Vehicle', size: 21, isBold: true),
+        title: CommonText(
+          AppLocalizations.of(context)!.register_your_vehicle,
+          size: 21,
+          isBold: true,
+        ),
       ),
       body: SingleChildScrollView(
         padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 16.h),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            /// Vehicle Image Upload
             SizedBox(height: 8.h),
             GestureDetector(
               onTap: _pickVehicleImage,
@@ -103,7 +106,9 @@ class _RegisterVehiclePageState extends State<RegisterVehiclePage> {
                               ),
                               SizedBox(height: 8.h),
                               CommonText(
-                                '*Upload your vehicle image',
+                                AppLocalizations.of(
+                                  context,
+                                )!.upload_your_vehicle_image,
                                 size: 12.sp,
                                 color: AppColors.grey,
                               ),
@@ -115,9 +120,8 @@ class _RegisterVehiclePageState extends State<RegisterVehiclePage> {
             ),
             SizedBox(height: 24.h),
 
-            /// Vehicle Type Selection
             CommonText(
-              'Select Vehicle Type',
+              AppLocalizations.of(context)!.select_vehicle_type,
               size: 14.sp,
               fontWeight: FontWeight.w500,
             ),
@@ -163,51 +167,49 @@ class _RegisterVehiclePageState extends State<RegisterVehiclePage> {
 
             SizedBox(height: 24.h),
 
-            /// Registration
             CommonTextfieldWithTitle(
-              'Registration',
+              AppLocalizations.of(context)!.registration,
               registrationController,
-              hintText: 'Enter registration number',
+              hintText: AppLocalizations.of(context)!.enter_registration_number,
             ),
             SizedBox(height: 16.h),
 
             /// Year of Vehicle
             CommonTextfieldWithTitle(
-              'Year of Vehicle',
+              AppLocalizations.of(context)!.year_of_vehicle,
               yearController,
-              hintText: 'Enter year',
+              hintText: AppLocalizations.of(context)!.enter_year,
               keyboardType: TextInputType.number,
             ),
             SizedBox(height: 16.h),
 
             /// Brand
             CommonTextfieldWithTitle(
-              'Brand',
+              AppLocalizations.of(context)!.brand,
               brandController,
-              hintText: 'Enter brand',
+              hintText: AppLocalizations.of(context)!.enter_brand,
             ),
             SizedBox(height: 16.h),
 
             /// Model
             CommonTextfieldWithTitle(
-              'Model',
+              AppLocalizations.of(context)!.model,
               modelController,
-              hintText: 'Enter model',
+              hintText: AppLocalizations.of(context)!.enter_model,
             ),
             SizedBox(height: 16.h),
 
             /// Car License plate number
             CommonTextfieldWithTitle(
-              'Car License Plate Number',
+              AppLocalizations.of(context)!.car_license_plate_number,
               licenseController,
-              hintText: 'Enter license number',
+              hintText: AppLocalizations.of(context)!.enter_license_number,
             ),
 
             SizedBox(height: 40.h),
 
-            /// Confirm Button
             CommonButton(
-              'Confirm Data',
+              AppLocalizations.of(context)!.confirm_data,
               onTap: () {
                 Navigator.push(
                   context,

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:velozaje/core/localization/app_localizations.dart';
 import 'package:velozaje/feature/result_and_booking/report_user.dart';
 import 'package:velozaje/utills/app_colors.dart';
 import 'package:velozaje/res/common_appbar.dart';
@@ -13,7 +14,7 @@ class DriverProfilePageWhenOthersVisitsPage extends StatelessWidget {
       backgroundColor: AppColors.mainbg,
       appBar: commonAppBar(
         context,
-        title: "Driver Profile",
+        title: AppLocalizations.of(context)!.driver_profile,
         actionWidget: InkWell(
           onTap: () {
             Navigator.push(
@@ -94,7 +95,7 @@ class _ProfileHeader extends StatelessWidget {
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            CommonText("Level"),
+            CommonText(AppLocalizations.of(context)!.level),
             SizedBox(width: 4),
             Image.asset("assest/badge/diamond_fill.png", width: 16),
           ],
@@ -113,10 +114,17 @@ class _StatsRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Row(
-      children: const [
-        _StatCard(title: "Rating", value: "4.9", icon: Icons.star),
-        _StatCard(title: "Trips", value: "142"),
-        _StatCard(title: "Experience", value: "3 year"),
+      children: [
+        _StatCard(
+          title: AppLocalizations.of(context)!.rating,
+          value: "4.9",
+          icon: Icons.star,
+        ),
+        _StatCard(title: AppLocalizations.of(context)!.trips, value: "142"),
+        _StatCard(
+          title: AppLocalizations.of(context)!.experience,
+          value: "3 year",
+        ),
       ],
     );
   }
@@ -172,21 +180,35 @@ class _AboutSection extends StatelessWidget {
       decoration: _cardDecoration(),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        children: const [
-          CommonText("About Oswaldo", fontWeight: FontWeight.w600),
+        children: [
+          CommonText(
+            AppLocalizations.of(context)!.about_oswaldo,
+            fontWeight: FontWeight.w600,
+          ),
           SizedBox(height: 8),
           CommonText(
-            "Punctuality. You could smoke. I make stops to go to the bathroom.",
+            AppLocalizations.of(
+              context,
+            )!.punctuality_you_could_smoke_i_make_stops_to_go_to_the_bathroom,
             color: AppColors.grey,
           ),
           SizedBox(height: 16),
-          CommonText("Verifications", fontWeight: FontWeight.w600),
+          CommonText(
+            AppLocalizations.of(context)!.verifications,
+            fontWeight: FontWeight.w600,
+          ),
           SizedBox(height: 8),
-          _VerificationItem("Verified ID", true),
-          _VerificationItem("Confirmed email", true),
-          _VerificationItem("Car license plate number", true),
-          _VerificationItem("Photo", true),
-          _VerificationItem("Vehicle", false),
+          _VerificationItem(AppLocalizations.of(context)!.verified_id, true),
+          _VerificationItem(
+            AppLocalizations.of(context)!.confirmed_email,
+            true,
+          ),
+          _VerificationItem(
+            AppLocalizations.of(context)!.car_license_plate_number,
+            true,
+          ),
+          _VerificationItem(AppLocalizations.of(context)!.photo, true),
+          _VerificationItem(AppLocalizations.of(context)!.vehicle, false),
         ],
       ),
     );
@@ -228,8 +250,8 @@ class _ReviewsSection extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const CommonText(
-          "Recent Reviews",
+        CommonText(
+          AppLocalizations.of(context)!.recent_reviews,
           fontWeight: FontWeight.w600,
           size: 14,
         ),

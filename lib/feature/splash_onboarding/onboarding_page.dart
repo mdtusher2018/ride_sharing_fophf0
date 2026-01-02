@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:velozaje/core/localization/app_localizations.dart';
 import 'package:velozaje/feature/auth/view/signin_view.dart';
 import 'package:velozaje/utills/app_colors.dart';
 import 'package:velozaje/res/common_button.dart';
@@ -20,30 +21,6 @@ class OnboardingModel {
   });
 }
 
-final List<OnboardingModel> onboardingData = [
-  OnboardingModel(
-    image: 'assest/image/onboarding1.png',
-    groundImage: 'assest/image/1.png',
-    title: 'Travel Smarter, Together',
-    subtitle:
-        'Find long-distance rides or send packages securely with verified drivers.',
-  ),
-  OnboardingModel(
-    image: 'assest/image/onboarding2.png',
-    groundImage: 'assest/image/2.png',
-    title: 'Verified People. Real Trips.',
-    subtitle:
-        'Every driver and user is ID-verified to keep every journey safe and reliable.',
-  ),
-  OnboardingModel(
-    image: 'assest/image/onboarding3.png',
-    groundImage: 'assest/image/3.png',
-    title: 'Verified People. Real Trips.',
-    subtitle:
-        'Every driver and user is ID-verified to keep every journey safe and reliable.',
-  ),
-];
-
 class OnboardingPage extends StatefulWidget {
   const OnboardingPage({super.key});
 
@@ -56,7 +33,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
   int currentIndex = 0;
 
   void _next() {
-    if (currentIndex < onboardingData.length - 1) {
+    if (currentIndex < 2) {
       _controller.nextPage(
         duration: const Duration(milliseconds: 400),
         curve: Curves.easeInOut,
@@ -75,6 +52,33 @@ class _OnboardingPageState extends State<OnboardingPage> {
 
   @override
   Widget build(BuildContext context) {
+    final List<OnboardingModel> onboardingData = [
+      OnboardingModel(
+        image: 'assest/image/onboarding1.png',
+        groundImage: 'assest/image/1.png',
+        title: AppLocalizations.of(context)!.travel_smarter_together,
+        subtitle: AppLocalizations.of(
+          context,
+        )!.find_long_distance_rides_or_send_packages_securely_with_verified_drivers,
+      ),
+      OnboardingModel(
+        image: 'assest/image/onboarding2.png',
+        groundImage: 'assest/image/2.png',
+        title: AppLocalizations.of(context)!.verified_people_real_trips,
+        subtitle: AppLocalizations.of(
+          context,
+        )!.every_driver_and_user_is_id_verified_to_keep_every_journey_safe_and_reliable,
+      ),
+      OnboardingModel(
+        image: 'assest/image/onboarding3.png',
+        groundImage: 'assest/image/3.png',
+        title: AppLocalizations.of(context)!.verified_people_real_trips,
+        subtitle: AppLocalizations.of(
+          context,
+        )!.every_driver_and_user_is_id_verified_to_keep_every_journey_safe_and_reliable,
+      ),
+    ];
+
     return Scaffold(
       backgroundColor: Colors.white,
       body: Stack(
@@ -127,7 +131,7 @@ class _OnboardingItem extends StatelessWidget {
           ],
         ),
         Positioned(
-          bottom: 180,
+          bottom: 150,
           width: MediaQuery.sizeOf(context).width * 0.8,
           child: Column(
             mainAxisSize: .min,

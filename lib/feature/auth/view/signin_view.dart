@@ -1,12 +1,11 @@
 // ignore_for_file: must_be_immutable
 
-import 'dart:developer';
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:velozaje/core/localization/app_localizations.dart';
 import 'package:velozaje/feature/auth/controllers/signin_controller.dart';
 import 'package:velozaje/feature/auth/view/forget_password_view.dart';
 import 'package:velozaje/feature/auth/view/signup_view.dart';
@@ -35,11 +34,8 @@ class _SignInPageState extends ConsumerState<SignInPage> {
 
   ValueNotifier<bool> isPasswordVisible = ValueNotifier(true);
 
-
   @override
   Widget build(BuildContext context) {
-    log("Rebuild Called============>>>>>>>>>>>>");
-    final controller = ref.watch(signInControllerProvider);
     return Scaffold(
       backgroundColor: AppColors.white,
       body: SingleChildScrollView(
@@ -63,7 +59,7 @@ class _SignInPageState extends ConsumerState<SignInPage> {
                       children: [
                         Center(
                           child: CommonText(
-                            'Welcome Back',
+                            AppLocalizations.of(context)!.welcome_back,
                             size: 18.sp,
                             fontWeight: FontWeight.w600,
                             color: AppColors.primary,
@@ -74,9 +70,11 @@ class _SignInPageState extends ConsumerState<SignInPage> {
 
                         /// Email field
                         CommonTextfieldWithTitle(
-                          'Email',
+                          AppLocalizations.of(context)!.email,
                           emailController,
-                          hintText: 'Enter your email',
+                          hintText: AppLocalizations.of(
+                            context,
+                          )!.enter_your_email,
                           keyboardType: TextInputType.emailAddress,
                         ),
 
@@ -87,9 +85,11 @@ class _SignInPageState extends ConsumerState<SignInPage> {
                           valueListenable: isPasswordVisible,
                           builder: (context, value, child) {
                             return CommonTextfieldWithTitle(
-                              'Password',
+                              AppLocalizations.of(context)!.password,
                               passwordController,
-                              hintText: 'Enter your password',
+                              hintText: AppLocalizations.of(
+                                context,
+                              )!.enter_your_password,
                               issuffixIconVisible: true,
                               isPasswordVisible: value,
                               changePasswordVisibility: () {
@@ -116,7 +116,7 @@ class _SignInPageState extends ConsumerState<SignInPage> {
                                 );
                               },
                               child: CommonText(
-                                'Forgot Password?',
+                                AppLocalizations.of(context)!.forgot_password,
                                 size: 12,
                                 color: AppColors.primary,
                               ),
@@ -128,16 +128,20 @@ class _SignInPageState extends ConsumerState<SignInPage> {
 
                         /// Login button
                         ValueListenableBuilder(
-                          valueListenable: controller.isLoading,
+                          valueListenable: ref
+                              .watch(signInControllerProvider)
+                              .isLoading,
                           builder: (context, value, child) {
                             return CommonButton(
-                              "Log in",
+                              AppLocalizations.of(context)!.login,
                               isLoading: value,
                               onTap: () {
-                                controller.signIn(
-                                  email: emailController.text,
-                                  password: passwordController.text,
-                                );
+                                ref
+                                    .read(signInControllerProvider)
+                                    .signIn(
+                                      email: emailController.text,
+                                      password: passwordController.text,
+                                    );
                               },
                             );
                           },
@@ -151,14 +155,17 @@ class _SignInPageState extends ConsumerState<SignInPage> {
                             text: TextSpan(
                               children: [
                                 TextSpan(
-                                  text: "You don't have an account? ",
+                                  text: AppLocalizations.of(
+                                    context,
+                                  )!.you_don_t_have_an_account,
                                   style: TextStyle(
                                     color: AppColors.textPrimary,
                                     fontSize: 14.sp,
                                   ),
                                 ),
+                                TextSpan(text: "  "),
                                 TextSpan(
-                                  text: 'Register',
+                                  text: AppLocalizations.of(context)!.register,
                                   recognizer: TapGestureRecognizer()
                                     ..onTap = () {
                                       Navigator.push(

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:velozaje/core/localization/app_localizations.dart';
 import 'package:velozaje/utills/app_colors.dart';
 import 'package:velozaje/res/common_appbar.dart';
 import 'package:velozaje/res/common_image.dart';
@@ -11,7 +12,10 @@ class ContactPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: commonAppBar(context, title: "Contact"),
+      appBar: commonAppBar(
+        context,
+        title: AppLocalizations.of(context)!.contact,
+      ),
       backgroundColor: AppColors.mainbg,
       body: Padding(
         padding: EdgeInsets.all(16.w),

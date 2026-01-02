@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:velozaje/core/localization/app_localizations.dart';
 
 import 'package:velozaje/utills/app_colors.dart';
 import 'package:velozaje/feature/tips_and_publications/rate_driver_bottom_sheet_view.dart';
@@ -126,7 +127,7 @@ class StartTipDetailsPage extends StatelessWidget {
                               mainAxisSize: MainAxisSize.min,
                               children: [
                                 CommonText(
-                                  "Passengers",
+                                  AppLocalizations.of(context)!.passengers,
                                   size: 16,
                                   isBold: true,
                                 ),
@@ -237,12 +238,12 @@ class StartTipDetailsPage extends StatelessWidget {
               children: [
                 SizedBox(height: 32.h),
 
-                CommonText("Payment Successful!", size: 18),
+                CommonText(AppLocalizations.of(context)!.payment_successful, size: 18),
 
                 SizedBox(height: 16.h),
 
                 CommonButton(
-                  "Rate your Driver",
+                  AppLocalizations.of(context)!.rate_your_driver,
                   height: 40,
                   iconWidget: Icon(Icons.star, color: AppColors.white),
                   onTap: () {

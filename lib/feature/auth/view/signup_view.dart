@@ -4,6 +4,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:velozaje/core/localization/app_localizations.dart';
 import 'package:velozaje/feature/auth/controllers/signup_controller.dart';
 import 'package:velozaje/feature/auth/view/signin_view.dart';
 import 'package:velozaje/feature/auth/widget/auth_backend.dart';
@@ -28,7 +29,6 @@ class SignUpPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final controller = ref.watch(signupControllerProvider);
     return Scaffold(
       backgroundColor: AppColors.white,
       body: SingleChildScrollView(
@@ -52,7 +52,7 @@ class SignUpPage extends ConsumerWidget {
                       children: [
                         Center(
                           child: CommonText(
-                            'Create Account',
+                            AppLocalizations.of(context)!.create_account,
                             size: 18.sp,
                             fontWeight: FontWeight.w600,
                             color: AppColors.primary,
@@ -62,17 +62,21 @@ class SignUpPage extends ConsumerWidget {
                         SizedBox(height: 30.h),
 
                         CommonTextfieldWithTitle(
-                          "Full Name",
+                          AppLocalizations.of(context)!.full_name,
                           fullNameController,
-                          hintText: 'Enter your full name',
+                          hintText: AppLocalizations.of(
+                            context,
+                          )!.enter_your_full_name,
                         ),
                         SizedBox(height: 16.h),
 
                         /// Email field
                         CommonTextfieldWithTitle(
-                          'Email',
+                          AppLocalizations.of(context)!.email,
                           emailController,
-                          hintText: 'Enter your email',
+                          hintText: AppLocalizations.of(
+                            context,
+                          )!.enter_your_email,
                           keyboardType: TextInputType.emailAddress,
                         ),
 
@@ -83,9 +87,11 @@ class SignUpPage extends ConsumerWidget {
                           valueListenable: isPasswordVisible,
                           builder: (context, value, child) {
                             return CommonTextfieldWithTitle(
-                              'Password',
+                              AppLocalizations.of(context)!.password,
                               passwordController,
-                              hintText: 'Enter your password',
+                              hintText: AppLocalizations.of(
+                                context,
+                              )!.enter_your_password,
                               issuffixIconVisible: true,
                               isPasswordVisible: value,
                               changePasswordVisibility: () {
@@ -114,14 +120,18 @@ class SignUpPage extends ConsumerWidget {
                                 text: TextSpan(
                                   children: [
                                     TextSpan(
-                                      text: "I accept the ",
+                                      text: AppLocalizations.of(
+                                        context,
+                                      )!.i_accept_the,
                                       style: TextStyle(
                                         color: AppColors.textPrimary,
                                         fontSize: 14.sp,
                                       ),
                                     ),
                                     TextSpan(
-                                      text: 'Terms & Conditions',
+                                      text: AppLocalizations.of(
+                                        context,
+                                      )!.terms_conditions,
                                       recognizer: TapGestureRecognizer()
                                         ..onTap = () {},
                                       style: TextStyle(
@@ -141,18 +151,22 @@ class SignUpPage extends ConsumerWidget {
 
                         /// Login button
                         ValueListenableBuilder(
-                          valueListenable: controller.isLoading,
+                          valueListenable: ref
+                              .watch(signupControllerProvider)
+                              .isLoading,
                           builder: (context, value, child) {
                             return CommonButton(
-                              "Register",
+                              AppLocalizations.of(context)!.register,
                               isLoading: value,
                               onTap: () {
-                                controller.signup(
-                                  name: fullNameController.text,
-                                  email: emailController.text,
-                                  password: passwordController.text,
-                                  termsAndConditions: isTermsAccept.value,
-                                );
+                                ref
+                                    .read(signupControllerProvider)
+                                    .signup(
+                                      name: fullNameController.text,
+                                      email: emailController.text,
+                                      password: passwordController.text,
+                                      termsAndConditions: isTermsAccept.value,
+                                    );
                               },
                             );
                           },
@@ -166,14 +180,17 @@ class SignUpPage extends ConsumerWidget {
                             text: TextSpan(
                               children: [
                                 TextSpan(
-                                  text: "Already have an account?  ",
+                                  text: AppLocalizations.of(
+                                    context,
+                                  )!.already_have_an_account,
                                   style: TextStyle(
                                     color: AppColors.textPrimary,
                                     fontSize: 14.sp,
                                   ),
                                 ),
+                                TextSpan(text: "  "),
                                 TextSpan(
-                                  text: 'Login',
+                                  text: AppLocalizations.of(context)!.login,
                                   recognizer: TapGestureRecognizer()
                                     ..onTap = () {
                                       Navigator.push(

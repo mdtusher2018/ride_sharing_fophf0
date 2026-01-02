@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:velozaje/core/localization/app_localizations.dart';
 
 import 'package:velozaje/utills/app_colors.dart';
 import 'package:velozaje/feature/tips_and_publications/start_tip_details_view.dart';
@@ -19,7 +20,6 @@ class MyTipDetailsPage extends StatelessWidget {
       body: Stack(
         fit: StackFit.expand,
         children: [
-          /// 🗺️ Map Placeholder
           Container(
             color: Colors.grey,
             width: MediaQuery.sizeOf(context).width,
@@ -72,7 +72,6 @@ class MyTipDetailsPage extends StatelessWidget {
               child: SingleChildScrollView(
                 child: Column(
                   children: [
-                    /// Handle
                     Container(
                       width: 40.w,
                       height: 4.h,
@@ -116,7 +115,7 @@ class MyTipDetailsPage extends StatelessWidget {
                           ),
                         ),
                         SizedBox(height: 16.h),
-                        //passanger
+
                         Card(
                           color: AppColors.white,
                           child: Padding(
@@ -126,7 +125,7 @@ class MyTipDetailsPage extends StatelessWidget {
                               mainAxisSize: MainAxisSize.min,
                               children: [
                                 CommonText(
-                                  "Passengers",
+                                  AppLocalizations.of(context)!.passengers,
                                   size: 16,
                                   isBold: true,
                                 ),
@@ -207,7 +206,7 @@ class MyTipDetailsPage extends StatelessWidget {
                           children: [
                             Expanded(
                               child: CommonButton(
-                                "Claim",
+                                AppLocalizations.of(context)!.claim,
                                 color: Colors.transparent,
                                 boarder: Border.all(color: AppColors.error),
 
@@ -231,7 +230,7 @@ class MyTipDetailsPage extends StatelessWidget {
                             ),
                             Expanded(
                               child: CommonButton(
-                                "Cancel Trip",
+                                AppLocalizations.of(context)!.cancel_trip,
                                 color: AppColors.error,
                                 onTap: () => showCancelRideSheet(context),
                               ),
@@ -307,7 +306,7 @@ class _CancelRideBottomSheetState extends State<CancelRideBottomSheet> {
             SizedBox(height: 16.h),
 
             CommonText(
-              'Cancel Ride?',
+              AppLocalizations.of(context)!.cancel_ride,
               size: 18.sp,
               fontWeight: FontWeight.w600,
             ),
@@ -330,7 +329,7 @@ class _CancelRideBottomSheetState extends State<CancelRideBottomSheet> {
 
             /// Keep Trip
             CommonButton(
-              'Keep my trip',
+              AppLocalizations.of(context)!.keep_my_trip,
               color: Colors.green,
               textColor: Colors.white,
               textalign: TextAlign.center,
@@ -342,7 +341,7 @@ class _CancelRideBottomSheetState extends State<CancelRideBottomSheet> {
 
             /// Cancel Ride
             CommonButton(
-              'Cancel Ride',
+              AppLocalizations.of(context)!.cancel_ride,
               color: Colors.transparent,
               textColor: Colors.black,
               boarder: Border.all(color: Colors.red, width: 2),

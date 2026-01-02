@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:icons_plus/icons_plus.dart';
+import 'package:velozaje/core/localization/app_localizations.dart';
 import 'package:velozaje/feature/home/saved_place_view.dart';
 import 'package:velozaje/feature/home/widgets/saved_place_card.dart';
 
@@ -28,22 +29,18 @@ class _HomePageState extends State<HomePage> {
   final TextEditingController destinationController = TextEditingController();
   final TextEditingController pickupController = TextEditingController();
 
-  // Declare controllers for each input field
   List<TextEditingController> weightControllers = [];
 
   void _initializeControllers() {
-    // Ensure the list is cleared before adding new controllers
     weightControllers.clear();
 
     for (int i = 0; i < packageCount; i++) {
-      // Create a new controller for each "weight card"
       weightControllers.add(TextEditingController());
     }
   }
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     _initializeControllers();
   }
@@ -54,7 +51,6 @@ class _HomePageState extends State<HomePage> {
       body: Stack(
         fit: StackFit.expand,
         children: [
-          /// 🗺️ Map Placeholder
           Container(
             color: Colors.grey,
             width: MediaQuery.sizeOf(context).width,
@@ -92,13 +88,15 @@ class _HomePageState extends State<HomePage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       CommonText(
-                        "Where to?",
+                        AppLocalizations.of(context)!.where_to,
                         size: 16.sp,
                         fontWeight: FontWeight.w600,
                         color: Colors.white,
                       ),
                       CommonText(
-                        "Find a ride or send a package",
+                        AppLocalizations.of(
+                          context,
+                        )!.find_a_ride_or_send_a_package,
                         size: 12.sp,
                         color: Colors.white70,
                       ),
@@ -152,12 +150,20 @@ class _HomePageState extends State<HomePage> {
                       ),
                       child: Row(
                         children: [
-                          _tabButton("Travel", isTravelSelected, () {
-                            setState(() => isTravelSelected = true);
-                          }),
-                          _tabButton("Send Package", !isTravelSelected, () {
-                            setState(() => isTravelSelected = false);
-                          }),
+                          _tabButton(
+                            AppLocalizations.of(context)!.travel,
+                            isTravelSelected,
+                            () {
+                              setState(() => isTravelSelected = true);
+                            },
+                          ),
+                          _tabButton(
+                            AppLocalizations.of(context)!.send_package,
+                            !isTravelSelected,
+                            () {
+                              setState(() => isTravelSelected = false);
+                            },
+                          ),
                         ],
                       ),
                     ),
@@ -165,7 +171,7 @@ class _HomePageState extends State<HomePage> {
                     SizedBox(height: 16.h),
 
                     _locationTile(
-                      "Pick-up location",
+                      AppLocalizations.of(context)!.pick_up_location,
                       controller: pickupController,
                       icon: Container(
                         width: 20,
@@ -179,16 +185,14 @@ class _HomePageState extends State<HomePage> {
 
                     SizedBox(height: 12.h),
 
-                    /// Destination
                     _locationTile(
-                      "Destination",
+                      AppLocalizations.of(context)!.destination,
                       icon: Icon(Icons.location_on),
                       controller: destinationController,
                     ),
 
                     SizedBox(height: 12.h),
 
-                    /// Time & Counter
                     Row(
                       spacing: 12,
                       children: [
@@ -210,7 +214,7 @@ class _HomePageState extends State<HomePage> {
                               Icons.calendar_month,
                               (dateTime.text.isNotEmpty)
                                   ? dateTime.text
-                                  : "Time & Date",
+                                  : AppLocalizations.of(context)!.time_date,
                             ),
                           ),
                         ),
@@ -232,12 +236,10 @@ class _HomePageState extends State<HomePage> {
                         separatorBuilder: (context, index) {
                           return SizedBox(height: 10.h);
                         },
-                        shrinkWrap: true, // Prevents infinite height error
+                        shrinkWrap: true,
                         itemCount: packageCount,
                         itemBuilder: (context, index) {
-                          return weightCard(
-                            index,
-                          ); // Add a weightCard for each count
+                          return weightCard(index);
                         },
                       ),
                     ],
@@ -255,7 +257,7 @@ class _HomePageState extends State<HomePage> {
 
                     /// Search Button
                     CommonButton(
-                      "Search Trips",
+                      AppLocalizations.of(context)!.search_trips,
                       onTap: () {
                         Navigator.push(
                           context,
@@ -294,7 +296,10 @@ class _HomePageState extends State<HomePage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  CommonText("Weight (kg)", size: 10.sp),
+                  CommonText(
+                    AppLocalizations.of(context)!.weight_kg,
+                    size: 10.sp,
+                  ),
 
                   TextField(
                     keyboardType: TextInputType.number,
@@ -457,7 +462,6 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  /// ➕➖ Counter Box
   Widget _counterBoxForPerson() {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -532,7 +536,6 @@ class _HomePageState extends State<HomePage> {
                         packageCount--;
                       });
                     }
-                    // Initialize the controllers when package count changes
                   },
                   child: Container(
                     padding: EdgeInsets.all(4),
@@ -570,7 +573,6 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  /// ⭐ Saved Place Tile
   Widget _savedPlaceCard() {
     return InkWell(
       onTap: () {
@@ -607,7 +609,7 @@ class _HomePageState extends State<HomePage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   CommonText(
-                    "Saved Places",
+                    AppLocalizations.of(context)!.saved_places,
                     size: 14.sp,
                     fontWeight: FontWeight.w500,
                   ),

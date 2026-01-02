@@ -17,7 +17,6 @@ class CommonTextfieldWithTitle extends StatelessWidget {
   final Widget? prefixIconWidget; // new
   final double borderWidth;
   final double? scale;
-  final bool optional;
   final VoidCallback? changePasswordVisibility;
   final TextInputType keyboardType;
   final String? assetIconPath;
@@ -42,7 +41,6 @@ class CommonTextfieldWithTitle extends StatelessWidget {
     this.prefixIconWidget, // new
     this.borderWidth = 1.0,
     this.scale = 2.0,
-    this.optional = false,
     this.changePasswordVisibility,
     this.keyboardType = TextInputType.text,
     this.assetIconPath,
@@ -67,8 +65,6 @@ class CommonTextfieldWithTitle extends StatelessWidget {
               fontWeight: FontWeight.w500,
               color: AppColors.textPrimary,
             ),
-            if (optional)
-              CommonText("(Optional)", size: textSize, color: Colors.grey),
           ],
         ),
         SizedBox(height: 8.h),

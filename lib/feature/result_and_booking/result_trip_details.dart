@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:velozaje/core/localization/app_localizations.dart';
 import 'package:velozaje/feature/result_and_booking/confirm_booking_page.dart';
 import 'package:velozaje/feature/result_and_booking/driver_profile_when_others_visit_page.dart';
 import 'package:velozaje/utills/app_colors.dart';
@@ -14,7 +15,7 @@ class ResultTripDetailsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: commonAppBar(context, title: "Trip"),
+      appBar: commonAppBar(context, title: AppLocalizations.of(context)!.trip),
       backgroundColor: AppColors.mainbg,
       body: Padding(
         padding: EdgeInsets.all(16.r),
@@ -50,7 +51,7 @@ class ResultTripDetailsPage extends StatelessWidget {
                 ),
               ),
               SizedBox(height: 16.h),
-              //passanger
+
               Card(
                 color: AppColors.white,
                 child: Padding(
@@ -59,7 +60,11 @@ class ResultTripDetailsPage extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      CommonText("Passengers", size: 16, isBold: true),
+                      CommonText(
+                        AppLocalizations.of(context)!.passengers,
+                        size: 16,
+                        isBold: true,
+                      ),
                       SizedBox(height: 8.h),
 
                       ...List.generate(4, (index) {
@@ -70,7 +75,6 @@ class ResultTripDetailsPage extends StatelessWidget {
                             child: Row(
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
-                                // Leading image container
                                 Container(
                                   width: 40,
                                   height: 40,
@@ -86,13 +90,11 @@ class ResultTripDetailsPage extends StatelessWidget {
                                   ),
                                 ),
 
-                                // Title and Subtitle section
                                 Expanded(
                                   child: Column(
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: [
-                                      // Title text
                                       CommonText(
                                         "text",
                                         size: 14,
@@ -131,7 +133,7 @@ class ResultTripDetailsPage extends StatelessWidget {
               ),
               SizedBox(height: 16.h),
               CommonButton(
-                "See on Map",
+                AppLocalizations.of(context)!.see_on_map,
                 onTap: () {
                   Navigator.push(
                     context,
@@ -188,7 +190,7 @@ class _HeaderCardState extends State<_HeaderCard> {
           Align(
             alignment: Alignment.centerLeft,
             child: CommonText(
-              "Trip details",
+              AppLocalizations.of(context)!.trip_details,
               size: 14,
               fontWeight: FontWeight.w500,
             ),
@@ -197,7 +199,9 @@ class _HeaderCardState extends State<_HeaderCard> {
           Align(
             alignment: Alignment.centerLeft,
             child: CommonText(
-              "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s",
+              AppLocalizations.of(
+                context,
+              )!.lorem_ipsum_is_simply_dummy_text_of_the_printing_and_typesetting_industry_lorem_ipsum,
               color: AppColors.textSecondary,
             ),
           ),
@@ -207,7 +211,6 @@ class _HeaderCardState extends State<_HeaderCard> {
     );
   }
 
-  /// Header (Avatar + Name + Price)
   Widget _header() {
     return Row(
       children: [
@@ -288,7 +291,6 @@ class _HeaderCardState extends State<_HeaderCard> {
     );
   }
 
-  /// Vertical Stepper
   Widget _verticalStepper() {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -308,9 +310,15 @@ class _HeaderCardState extends State<_HeaderCard> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _stepText(title: "From", value: "Morelia, Avenida P. Calle 12"),
+              _stepText(
+                title: AppLocalizations.of(context)!.from,
+                value: "Morelia, Avenida P. Calle 12",
+              ),
               SizedBox(height: 10.h),
-              _stepText(title: "To", value: "Morelia, Avenida P. Calle 12"),
+              _stepText(
+                title: AppLocalizations.of(context)!.to,
+                value: "Morelia, Avenida P. Calle 12",
+              ),
             ],
           ),
         ),

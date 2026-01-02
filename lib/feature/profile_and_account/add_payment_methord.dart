@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:velozaje/core/localization/app_localizations.dart';
 import 'package:velozaje/utills/app_colors.dart';
 import 'package:velozaje/res/common_appbar.dart';
 import 'package:velozaje/res/common_button.dart';
@@ -26,7 +27,7 @@ class _AddPaymentPageState extends State<AddPaymentPage> {
     return Scaffold(
       appBar: commonAppBar(
         context,
-        title: "Add Payment",
+        title: AppLocalizations.of(context)!.add_payment,
         backgroundColor: AppColors.white,
       ),
       backgroundColor: AppColors.white,
@@ -37,11 +38,14 @@ class _AddPaymentPageState extends State<AddPaymentPage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'Add card',
+                AppLocalizations.of(context)!.add_card,
                 style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
               ),
               SizedBox(height: 16),
-              Text('Card information', style: TextStyle(color: Colors.grey)),
+              Text(
+                AppLocalizations.of(context)!.card_information,
+                style: TextStyle(color: Colors.grey),
+              ),
               SizedBox(height: 8),
               Container(
                 decoration: BoxDecoration(
@@ -51,8 +55,8 @@ class _AddPaymentPageState extends State<AddPaymentPage> {
                 child: Column(
                   children: [
                     _buildTextField(
-                      'Card information',
-                      'Card number',
+                      AppLocalizations.of(context)!.card_information,
+                      AppLocalizations.of(context)!.card_number,
                       TextInputType.number,
                     ),
                     Divider(height: 0, color: Colors.black),
@@ -79,7 +83,10 @@ class _AddPaymentPageState extends State<AddPaymentPage> {
                 ),
               ),
               SizedBox(height: 16),
-              Text('Billing address', style: TextStyle(color: Colors.grey)),
+              Text(
+                AppLocalizations.of(context)!.billing_address,
+                style: TextStyle(color: Colors.grey),
+              ),
               SizedBox(height: 8),
               Container(
                 decoration: BoxDecoration(
@@ -92,7 +99,7 @@ class _AddPaymentPageState extends State<AddPaymentPage> {
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 16.0),
                       child: _buildDropdown(
-                        'Country or region',
+                        AppLocalizations.of(context)!.country_or_region,
                         selectedCountry,
                         (String? newValue) {
                           setState(() {
@@ -102,8 +109,12 @@ class _AddPaymentPageState extends State<AddPaymentPage> {
                       ),
                     ),
                     Divider(height: 0, color: Colors.black),
-                    // ZIP Code Field
-                    _buildTextField('ZIP', 'ZIP Code', TextInputType.number),
+
+                    _buildTextField(
+                      AppLocalizations.of(context)!.zip,
+                      AppLocalizations.of(context)!.zip_code,
+                      TextInputType.number,
+                    ),
                   ],
                 ),
               ),
@@ -119,13 +130,15 @@ class _AddPaymentPageState extends State<AddPaymentPage> {
                     },
                   ),
                   Text(
-                    'Save this card for future payment',
+                    AppLocalizations.of(
+                      context,
+                    )!.save_this_card_for_future_payment,
                     style: TextStyle(fontSize: 14),
                   ),
                 ],
               ),
               SizedBox(height: 16.h),
-              CommonButton("Done"),
+              CommonButton(AppLocalizations.of(context)!.done),
               SizedBox(height: 32.h),
             ],
           ),

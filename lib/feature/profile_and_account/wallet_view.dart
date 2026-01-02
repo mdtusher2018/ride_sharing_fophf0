@@ -1,6 +1,7 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:velozaje/core/localization/app_localizations.dart';
 import 'package:velozaje/res/common_appbar.dart';
 import 'package:velozaje/res/common_image.dart';
 import 'package:velozaje/res/common_text.dart';
@@ -13,7 +14,10 @@ class WalletPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFF6F7F9),
-      appBar: commonAppBar(context, title: "Wallet"),
+      appBar: commonAppBar(
+        context,
+        title: AppLocalizations.of(context)!.wallet,
+      ),
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
@@ -23,7 +27,11 @@ class WalletPage extends StatelessWidget {
             SizedBox(height: 24),
             Row(
               children: [
-                Expanded(child: SectionHeader(title: 'Recent Activity')),
+                Expanded(
+                  child: SectionHeader(
+                    title: AppLocalizations.of(context)!.recent_activity,
+                  ),
+                ),
                 Container(
                   padding: EdgeInsets.symmetric(
                     horizontal: 16.w,
@@ -78,8 +86,12 @@ class WalletBalanceCard extends StatelessWidget {
             padding: const EdgeInsets.all(20),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              children: const [
-                CommonText('TOTAL BALANCE', color: Colors.white70, size: 12),
+              children: [
+                CommonText(
+                  AppLocalizations.of(context)!.total_balance,
+                  color: Colors.white70,
+                  size: 12,
+                ),
                 SizedBox(height: 8),
                 CommonText(
                   '\$-245.00',

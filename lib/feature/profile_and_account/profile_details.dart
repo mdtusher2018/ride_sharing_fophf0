@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:velozaje/core/localization/app_localizations.dart';
 import 'package:velozaje/utills/app_colors.dart';
 import 'package:velozaje/res/common_appbar.dart';
 import 'package:velozaje/res/common_image.dart';
@@ -16,7 +17,7 @@ class ProfileDetailsPage extends StatelessWidget {
       backgroundColor: AppColors.mainbg,
       appBar: commonAppBar(
         context,
-        title: "Driver Profile",
+        title: AppLocalizations.of(context)!.driver_profile,
         actionWidget: Padding(
           padding: EdgeInsets.only(right: 16),
           child: Image.asset("assest/image/mingcute_edit-line.png", width: 30),
@@ -82,14 +83,23 @@ class _AboutSection extends StatelessWidget {
       decoration: _cardDecoration(),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        children: const [
-          CommonText("Verifications", fontWeight: FontWeight.w600),
+        children: [
+          CommonText(
+            AppLocalizations.of(context)!.verifications,
+            fontWeight: FontWeight.w600,
+          ),
           SizedBox(height: 8),
-          _VerificationItem("Verified ID", true),
-          _VerificationItem("Confirmed email", true),
-          _VerificationItem("Car license plate number", true),
-          _VerificationItem("Photo", true),
-          _VerificationItem("Vehicle", false),
+          _VerificationItem(AppLocalizations.of(context)!.verified_id, true),
+          _VerificationItem(
+            AppLocalizations.of(context)!.confirmed_email,
+            true,
+          ),
+          _VerificationItem(
+            AppLocalizations.of(context)!.car_license_plate_number,
+            true,
+          ),
+          _VerificationItem(AppLocalizations.of(context)!.photo, true),
+          _VerificationItem(AppLocalizations.of(context)!.vehicle, false),
         ],
       ),
     );
@@ -170,7 +180,7 @@ class _HeaderCardState extends State<_HeaderCard> {
           Align(
             alignment: Alignment.centerLeft,
             child: CommonText(
-              "About me",
+              AppLocalizations.of(context)!.about_me,
               size: 14,
               fontWeight: FontWeight.w500,
             ),
@@ -179,7 +189,9 @@ class _HeaderCardState extends State<_HeaderCard> {
           Align(
             alignment: Alignment.centerLeft,
             child: CommonText(
-              "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s",
+              AppLocalizations.of(
+                context,
+              )!.lorem_ipsum_is_simply_dummy_text_of_the_printing_and_typesetting_industry_lorem_ipsum_has_been_the_industry_s_standard_dummy_text_ever_since_the_1500s,
               color: AppColors.textSecondary,
             ),
           ),
@@ -288,17 +300,31 @@ class SummaryCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _buildStatRow("Completed Trips", "84"),
+            _buildStatRow(AppLocalizations.of(context)!.completed_trips, "84"),
             Divider(),
-            _buildStatRow("Referrals", "84"),
+            _buildStatRow(AppLocalizations.of(context)!.referrals, "84"),
             Divider(),
-            _buildStatRow("Member Since", "Dec 2020"),
+            _buildStatRow(
+              AppLocalizations.of(context)!.member_since,
+              "Dec 2020",
+            ),
             Divider(),
-            _buildStatRow("Trip Cancellations", "1"),
+            _buildStatRow(
+              AppLocalizations.of(context)!.trip_cancellations,
+              "1",
+            ),
             Divider(),
-            _buildStatRow("Claims", "1", hasClaim: true),
+            _buildStatRow(
+              AppLocalizations.of(context)!.claims,
+              "1",
+              hasClaim: true,
+            ),
             Divider(),
-            _buildStatRow("Reviews", "240", isReview: true),
+            _buildStatRow(
+              AppLocalizations.of(context)!.reviews,
+              "240",
+              isReview: true,
+            ),
           ],
         ),
       ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:velozaje/core/localization/app_localizations.dart';
 import 'package:velozaje/utills/app_colors.dart';
 import 'package:velozaje/res/common_button.dart';
 import 'package:velozaje/res/common_text.dart';
@@ -54,7 +55,7 @@ Future<DateTime?> showDateTimePickerDialog(BuildContext context) async {
                     Align(
                       alignment: Alignment.centerLeft,
                       child: CommonText(
-                        "Select Time",
+                        AppLocalizations.of(context)!.select_time,
                         size: 14,
                         fontWeight: FontWeight.w500,
                       ),
@@ -112,14 +113,18 @@ Future<DateTime?> showDateTimePickerDialog(BuildContext context) async {
                                   borderRadius: BorderRadius.circular(8),
                                   border: Border.all(width: 1),
                                 ),
-                                child: Center(child: CommonText("Cancel")),
+                                child: Center(
+                                  child: CommonText(
+                                    AppLocalizations.of(context)!.cancel,
+                                  ),
+                                ),
                               ),
                             ),
                           ),
                           const SizedBox(width: 12),
                           Expanded(
                             child: CommonButton(
-                              "Ok",
+                              AppLocalizations.of(context)!.ok,
                               onTap: () {
                                 final DateTime finalDateTime = DateTime(
                                   selectedDate.year,

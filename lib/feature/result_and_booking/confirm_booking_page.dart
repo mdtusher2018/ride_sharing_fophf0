@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:velozaje/core/localization/app_localizations.dart';
 import 'package:velozaje/utills/app_colors.dart';
 import 'package:velozaje/res/common_button.dart';
 import 'package:velozaje/res/common_image.dart';
@@ -48,7 +49,7 @@ class ConfirmBookingPage extends StatelessWidget {
 
                 /// Confirm Button
                 CommonButton(
-                  "Confirm Booking",
+                  AppLocalizations.of(context)!.confirm_booking,
                   onTap: () {
                     _showWaitingDialog(context);
                   },
@@ -219,13 +220,19 @@ void _showWaitingDialog(BuildContext context) {
               SizedBox(height: 16.h),
 
               /// Title
-              CommonText("Wait for Driver Approval", size: 18, isBold: true),
+              CommonText(
+                AppLocalizations.of(context)!.wait_for_driver_approval,
+                size: 18,
+                isBold: true,
+              ),
 
               SizedBox(height: 8.h),
 
               /// Subtitle / message
               CommonText(
-                "We've sent your request. Waiting for a driver to accept.",
+                AppLocalizations.of(
+                  context,
+                )!.we_ve_sent_your_request_waiting_for_a_driver_to_accept,
                 textAlign: TextAlign.center,
                 size: 14,
               ),

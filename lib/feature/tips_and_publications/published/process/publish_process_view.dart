@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:velozaje/core/localization/app_localizations.dart';
 import 'package:velozaje/feature/home/take_image_view.dart';
 import 'package:velozaje/feature/home/widgets/date_time_picker.dart';
 import 'package:velozaje/res/common_button.dart';
@@ -115,11 +116,15 @@ class _PublishProcessPageState extends State<PublishProcessPage> {
           children: [
             Align(
               alignment: Alignment.centerLeft,
-              child: CommonText("Where are you going?", size: 18, isBold: true),
+              child: CommonText(
+                AppLocalizations.of(context)!.where_are_you_going,
+                size: 18,
+                isBold: true,
+              ),
             ),
             SizedBox(),
             _locationTile(
-              "Pick-up location",
+              AppLocalizations.of(context)!.pick_up_location,
               controller: pickuplocationController,
               icon: Container(
                 width: 20,
@@ -131,7 +136,7 @@ class _PublishProcessPageState extends State<PublishProcessPage> {
               ),
             ),
             _locationTile(
-              "Destination",
+              AppLocalizations.of(context)!.destination,
               controller: destinationController,
               icon: Icon(Icons.location_on),
             ),
@@ -161,7 +166,7 @@ class _PublishProcessPageState extends State<PublishProcessPage> {
                       child: CommonText(
                         dateTime.text.isNotEmpty
                             ? dateTime.text
-                            : "Time & Date",
+                            : AppLocalizations.of(context)!.time_date,
                         size: 13.sp,
                       ),
                     ),
@@ -171,7 +176,7 @@ class _PublishProcessPageState extends State<PublishProcessPage> {
             ),
             SizedBox(),
             CommonButton(
-              "Continue",
+              AppLocalizations.of(context)!.continue_text,
               height: 40,
               onTap: () {
                 setState(() {
@@ -218,7 +223,7 @@ class _PublishProcessPageState extends State<PublishProcessPage> {
             ),
             SizedBox(height: 16.h),
             CommonButton(
-              "Continue",
+              AppLocalizations.of(context)!.continue_text,
               onTap: () {
                 setState(() {
                   currentStep = PublishStep.vehicleSpace;
@@ -247,7 +252,11 @@ class _PublishProcessPageState extends State<PublishProcessPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            CommonText("Vehicle & Space", size: 18, isBold: true),
+            CommonText(
+              AppLocalizations.of(context)!.vehicle_space,
+              size: 18,
+              isBold: true,
+            ),
             SizedBox(height: 12.h),
             _vehicleCard(),
             SizedBox(height: 16.h),
@@ -257,7 +266,7 @@ class _PublishProcessPageState extends State<PublishProcessPage> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 CommonText(
-                  "Enable Package Delivery",
+                  AppLocalizations.of(context)!.enable_package_delivery,
                   fontWeight: FontWeight.w500,
                   size: 14,
                 ),
@@ -272,7 +281,7 @@ class _PublishProcessPageState extends State<PublishProcessPage> {
             ),
             SizedBox(height: 30.h),
             CommonButton(
-              "Continue",
+              AppLocalizations.of(context)!.continue_text,
               height: 44,
               onTap: () {
                 setState(() {
@@ -325,7 +334,7 @@ class _PublishProcessPageState extends State<PublishProcessPage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        CommonText("Empty Seats", isBold: true),
+        CommonText(AppLocalizations.of(context)!.empty_seats, isBold: true),
         SizedBox(height: 8.h),
         TextField(
           style: TextStyle(fontSize: 21),
@@ -352,7 +361,6 @@ class _PublishProcessPageState extends State<PublishProcessPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            /// Handle
             Center(
               child: Container(
                 width: 40.w,
@@ -365,11 +373,15 @@ class _PublishProcessPageState extends State<PublishProcessPage> {
               ),
             ),
 
-            CommonText("Set your price", size: 18, isBold: true),
+            CommonText(
+              AppLocalizations.of(context)!.set_your_price,
+              size: 18,
+              isBold: true,
+            ),
             SizedBox(height: 8.h),
 
             CommonText(
-              "Price per seat",
+              AppLocalizations.of(context)!.price_per_seat,
               size: 12,
               color: AppColors.textSecondary,
             ),
@@ -402,21 +414,21 @@ class _PublishProcessPageState extends State<PublishProcessPage> {
             SizedBox(height: 8.h),
 
             CommonTextfieldWithTitle(
-              "Trip Details",
+              AppLocalizations.of(context)!.trip_details,
               TextEditingController(),
               maxLine: 3,
-              hintText:
-                  "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum",
+              hintText: AppLocalizations.of(
+                context,
+              )!.lorem_ipsum_is_simply_dummy_text_of_the_printing_and_typesetting_industry_lorem_ipsum,
             ),
 
             SizedBox(height: 16.h),
 
-            /// Automatic Reservation
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 CommonText(
-                  "Automatic Reservation",
+                  AppLocalizations.of(context)!.automatic_reservation,
                   fontWeight: FontWeight.w500,
                   size: 14,
                 ),
@@ -433,7 +445,7 @@ class _PublishProcessPageState extends State<PublishProcessPage> {
             SizedBox(height: 24.h),
 
             CommonButton(
-              "Continue",
+              AppLocalizations.of(context)!.continue_text,
               height: 44,
               onTap: () {
                 Navigator.push(
