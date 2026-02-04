@@ -1,28 +1,30 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:velozaje/core/localization/app_localizations.dart';
-import 'package:velozaje/feature/auth/view/register_vehicale_view.dart';
-import 'package:velozaje/utills/app_colors.dart';
+import 'package:velozaje/feature/vehicale/view/register_vehicale_view.dart';
+import 'package:velozaje/core/utils/app_colors.dart';
+import 'package:velozaje/feature/profile_and_account/controllers/profile_controller.dart';
 import 'package:velozaje/res/common_button.dart';
 import 'package:velozaje/res/common_image.dart';
 import 'package:velozaje/res/common_text_field_with_title.dart';
 import 'package:velozaje/res/common_text.dart';
+import 'package:velozaje/res/location_search_textfield.dart';
 
-class ConfirmDetailsPage extends StatefulWidget {
+class ConfirmDetailsPage extends ConsumerStatefulWidget {
   const ConfirmDetailsPage({super.key});
 
   @override
-  State<ConfirmDetailsPage> createState() => _ConfirmDetailsPageState();
+  ConsumerState<ConfirmDetailsPage> createState() => _ConfirmDetailsPageState();
 }
 
-class _ConfirmDetailsPageState extends State<ConfirmDetailsPage> {
-  final TextEditingController emailController = TextEditingController();
+class _ConfirmDetailsPageState extends ConsumerState<ConfirmDetailsPage> {
   final TextEditingController phoneController = TextEditingController();
-  final TextEditingController fullNameController = TextEditingController();
   final TextEditingController addressController = TextEditingController();
   final TextEditingController dobController = TextEditingController();
+  DateTime? dob;
 
   File? _avatarImage;
   final ImagePicker _picker = ImagePicker();
@@ -41,16 +43,16 @@ class _ConfirmDetailsPageState extends State<ConfirmDetailsPage> {
   }
 
   Future<void> _pickDOB() async {
-    DateTime? pickedDate = await showDatePicker(
+    dob = await showDatePicker(
       context: context,
       initialDate: DateTime.tryParse(dobController.text) ?? DateTime.now(),
       firstDate: DateTime(1900),
       lastDate: DateTime.now(),
     );
 
-    if (pickedDate != null) {
+    if (dob != null) {
       dobController.text =
-          '${pickedDate.day.toString().padLeft(2, '0')}/${pickedDate.month.toString().padLeft(2, '0')}/${pickedDate.year}';
+          '${dob!.day.toString().padLeft(2, '0')}/${dob!.month.toString().padLeft(2, '0')}/${dob!.year}';
       setState(() {});
     }
   }
@@ -136,18 +138,6 @@ class _ConfirmDetailsPageState extends State<ConfirmDetailsPage> {
             SizedBox(height: 30.h),
 
             CommonTextfieldWithTitle(
-              AppLocalizations.of(context)!.email,
-              emailController,
-              hintText: AppLocalizations.of(context)!.enter_your_email,
-              keyboardType: TextInputType.emailAddress,
-              prefixIconWidget: Padding(
-                padding: EdgeInsets.all(12.r),
-                child: Icon(Icons.email, color: Colors.grey, size: 20.sp),
-              ),
-            ),
-            SizedBox(height: 16.h),
-
-            CommonTextfieldWithTitle(
               AppLocalizations.of(context)!.contact_phone,
               phoneController,
               hintText: AppLocalizations.of(context)!.enter_your_contact_number,
@@ -159,26 +149,15 @@ class _ConfirmDetailsPageState extends State<ConfirmDetailsPage> {
             ),
             SizedBox(height: 16.h),
 
-            CommonTextfieldWithTitle(
-              AppLocalizations.of(context)!.full_name,
-              fullNameController,
-              hintText: AppLocalizations.of(context)!.enter_your_full_name,
-              prefixIconWidget: Padding(
-                padding: EdgeInsets.all(12.r),
-                child: Icon(Icons.person, color: Colors.grey, size: 20.sp),
-              ),
+            LocationSearchField(
+              title: AppLocalizations.of(context)!.address,
+              hint: AppLocalizations.of(context)!.select_your_date_of_birth,
+              controller: addressController,
+              onAddressSelected: (address) {
+                addressController.text = address;
+              },
             ),
-            SizedBox(height: 16.h),
 
-            CommonTextfieldWithTitle(
-              AppLocalizations.of(context)!.address,
-              addressController,
-              hintText: AppLocalizations.of(context)!.enter_your_address,
-              prefixIconWidget: Padding(
-                padding: EdgeInsets.all(12.r),
-                child: Icon(Icons.location_on, color: Colors.grey, size: 20.sp),
-              ),
-            ),
             SizedBox(height: 16.h),
 
             CommonTextfieldWithTitle(
@@ -202,15 +181,25 @@ class _ConfirmDetailsPageState extends State<ConfirmDetailsPage> {
 
             CommonButton(
               AppLocalizations.of(context)!.confirm_data,
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) {
-                      return RegisterVehiclePage();
-                    },
-                  ),
-                );
+              onTap: () async {
+                final response = await ref
+                    .read(profileControllerProvider.notifier)
+                    .updateProfile(
+                      address: addressController.text,
+                      dateOfBirth: dob.toString(),
+                      phone: phoneController.text,
+                      image: _avatarImage,
+                    );
+                if (response ?? false) {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) {
+                        return RegisterVehiclePage();
+                      },
+                    ),
+                  );
+                }
               },
             ),
           ],

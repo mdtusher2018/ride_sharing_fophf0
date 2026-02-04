@@ -34,6 +34,8 @@ class ResetPasswordController extends BaseNotifier {
           throw Exception(response['message'] ?? 'Failed to reset password');
         }
       },
+      successMessage: "You can now login with your new password",
+      showSuccessSnack: true,
     );
   }
 }

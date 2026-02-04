@@ -1,6 +1,5 @@
 import 'dart:developer';
 import 'dart:io';
-
 import 'package:velozaje/core/services/api/i_api_service.dart';
 import 'package:velozaje/core/services/localstorage/i_local_storage_service.dart';
 import 'package:velozaje/core/services/localstorage/storage_key.dart';
@@ -15,7 +14,7 @@ class ApiService implements IApiService {
   ApiService(this._client, this._localStorage);
 
   Future<Map<String, String>> _getHeaders({Map<String, String>? extra}) async {
-    final token = await _localStorage.getString(StorageKey.token);
+    final token = await _localStorage.getString(StorageKey.accessToken);
     log(token.toString());
     final headers = {
       'Content-Type': 'application/json',
@@ -84,17 +83,21 @@ class ApiService implements IApiService {
   Future<dynamic> multipart(
     String endpoint, {
     String method = 'POST',
-    Map<String, File>? files,
+    Map<String, dynamic>? fields,
+    Map<String, List<File>>? files,
     dynamic body,
-    String bodyFieldName = 'data', // field name for JSON body
+    String bodyFieldName = 'data',
     Map<String, String>? extraHeaders,
   }) async {
     final url = Uri.parse('${ApiEndpoints.baseUrl}$endpoint');
+
     final headers = await _getHeaders(extra: extraHeaders);
+
     return _client.sendMultipart(
       url,
       method: method,
       headers: headers,
+      fields: fields,
       files: files,
       body: body,
       bodyFieldName: bodyFieldName,

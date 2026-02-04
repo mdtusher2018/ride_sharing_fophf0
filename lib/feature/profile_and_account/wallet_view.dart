@@ -5,7 +5,7 @@ import 'package:velozaje/core/localization/app_localizations.dart';
 import 'package:velozaje/res/common_appbar.dart';
 import 'package:velozaje/res/common_image.dart';
 import 'package:velozaje/res/common_text.dart';
-import 'package:velozaje/utills/app_colors.dart';
+import 'package:velozaje/core/utils/app_colors.dart';
 
 class WalletPage extends StatelessWidget {
   const WalletPage({super.key});

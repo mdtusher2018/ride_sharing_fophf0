@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:velozaje/core/localization/app_localizations.dart';
 import 'package:velozaje/feature/result_and_booking/report_user.dart';
-import 'package:velozaje/utills/app_colors.dart';
+import 'package:velozaje/core/utils/app_colors.dart';
 import 'package:velozaje/res/common_appbar.dart';
 import 'package:velozaje/res/common_text.dart';
 

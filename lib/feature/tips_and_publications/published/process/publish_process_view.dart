@@ -7,7 +7,7 @@ import 'package:velozaje/res/common_button.dart';
 import 'package:velozaje/res/common_image.dart';
 import 'package:velozaje/res/common_text.dart';
 import 'package:velozaje/res/common_text_field_with_title.dart';
-import 'package:velozaje/utills/app_colors.dart';
+import 'package:velozaje/core/utils/app_colors.dart';
 
 enum PublishStep { publishForm, routeSelection, vehicleSpace, setPrice }
 

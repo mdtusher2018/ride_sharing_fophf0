@@ -46,7 +46,10 @@ class SigninController extends BaseNotifier {
         if (response['success'] ?? false) {
           final user = SignInModel.fromJson(response);
 
-          await localStorageService.saveString(StorageKey.token, user.token);
+          await localStorageService.saveString(
+            StorageKey.accessToken,
+            user.token,
+          );
 
           // await localStorageService.saveLogin(email, password);
 
@@ -55,7 +58,7 @@ class SigninController extends BaseNotifier {
           throw Exception(response['message'] ?? 'Login failed');
         }
       },
-      successMessage: "login sucessfully",
+
       showSuccessSnack: true,
     );
   }

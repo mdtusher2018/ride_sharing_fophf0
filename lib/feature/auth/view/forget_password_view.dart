@@ -6,7 +6,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:velozaje/core/localization/app_localizations.dart';
 import 'package:velozaje/feature/auth/controllers/forget_password_controller.dart';
 import 'package:velozaje/feature/auth/widget/auth_backend.dart';
-import 'package:velozaje/utills/app_colors.dart';
+import 'package:velozaje/core/utils/app_colors.dart';
 import 'package:velozaje/res/common_button.dart';
 import 'package:velozaje/res/common_image.dart';
 import 'package:velozaje/res/common_text.dart';

@@ -10,7 +10,7 @@ import 'package:velozaje/core/utils/api_end_points.dart';
 import 'package:velozaje/core/utils/extention.dart';
 import 'package:velozaje/core/utils/global_keys.dart';
 import 'package:velozaje/feature/auth/models/signup_model.dart';
-import 'package:velozaje/feature/auth/view/email_verification_view.dart';
+import 'package:velozaje/feature/auth/view/confirm_details_view.dart';
 
 final Provider<SignupController> signupControllerProvider = Provider((ref) {
   return SignupController(
@@ -46,17 +46,16 @@ class SignupController extends BaseNotifier {
         if (response['success'] ?? false) {
           final user = SignUpModel.fromJson(response);
 
-          await localStorageService.saveString(StorageKey.token, user.token);
-
-          navigatorKey.currentContext?.navigateTo(
-            EmailVerificationPage(email: email),
+          await localStorageService.saveString(
+            StorageKey.accessToken,
+            user.token,
           );
+
+          navigatorKey.currentContext?.navigateTo(ConfirmDetailsPage());
         } else {
           throw Exception(response['message'] ?? 'Failed to send OTP failed');
         }
       },
-      successMessage: "OTP sent",
-      showSuccessSnack: true,
     );
   }
 }

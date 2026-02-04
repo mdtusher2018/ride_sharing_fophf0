@@ -1,25 +1,28 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:icons_plus/icons_plus.dart';
 import 'package:velozaje/core/localization/app_localizations.dart';
 import 'package:velozaje/feature/home/saved_place_view.dart';
 import 'package:velozaje/feature/home/widgets/saved_place_card.dart';
 
-import 'package:velozaje/utills/app_colors.dart';
+import 'package:velozaje/core/utils/app_colors.dart';
 import 'package:velozaje/feature/home/take_image_view.dart';
 import 'package:velozaje/feature/home/widgets/date_time_picker.dart';
+import 'package:velozaje/feature/notifications/notifications_controller.dart';
+import 'package:velozaje/feature/notifications/notifications_view.dart';
 import 'package:velozaje/res/common_button.dart';
 import 'package:velozaje/res/common_image.dart';
 import 'package:velozaje/res/common_text.dart';
 
-class HomePage extends StatefulWidget {
+class HomePage extends ConsumerStatefulWidget {
   const HomePage({super.key});
 
   @override
-  State<HomePage> createState() => _HomePageState();
+  ConsumerState<HomePage> createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _HomePageState extends ConsumerState<HomePage> {
   bool isTravelSelected = true;
   int personCount = 1;
   int packageCount = 0;
@@ -31,7 +34,10 @@ class _HomePageState extends State<HomePage> {
 
   List<TextEditingController> weightControllers = [];
 
-  void _initializeControllers() {
+  void _initializeControllers() async {
+    await ref
+        .read(myNotificationsControllerProvider.notifier)
+        .unreadNotificationCount();
     weightControllers.clear();
 
     for (int i = 0; i < packageCount; i++) {
@@ -103,7 +109,42 @@ class _HomePageState extends State<HomePage> {
                     ],
                   ),
                   Spacer(),
-                  Icon(Icons.notifications, color: Colors.white),
+                  InkWell(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) {
+                            return NotificationView();
+                          },
+                        ),
+                      );
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Badge(
+                        isLabelVisible:
+                            ref
+                                .watch(
+                                  myNotificationsControllerProvider.notifier,
+                                )
+                                .unreadCount >
+                            0,
+                        label: Text(
+                          ref
+                              .watch(myNotificationsControllerProvider.notifier)
+                              .unreadCount
+                              .toString(),
+                        ),
+                        smallSize: 10,
+                        child: Icon(
+                          Icons.notifications_rounded,
+                          color: AppColors.white,
+                          size: 30,
+                        ),
+                      ),
+                    ),
+                  ),
                 ],
               ),
             ),

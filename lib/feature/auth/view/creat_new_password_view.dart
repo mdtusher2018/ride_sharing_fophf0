@@ -4,14 +4,15 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:velozaje/core/localization/app_localizations.dart';
 import 'package:velozaje/feature/auth/controllers/reset_password_controller.dart';
 import 'package:velozaje/feature/auth/widget/auth_backend.dart';
-import 'package:velozaje/utills/app_colors.dart';
+import 'package:velozaje/core/utils/app_colors.dart';
 import 'package:velozaje/res/common_button.dart';
 import 'package:velozaje/res/common_image.dart';
 import 'package:velozaje/res/common_text.dart';
 import 'package:velozaje/res/common_text_field_with_title.dart';
 
 class CreateNewPasswordPage extends StatefulWidget {
-  const CreateNewPasswordPage({super.key});
+  const CreateNewPasswordPage({super.key, required this.email});
+  final String email;
 
   @override
   State<CreateNewPasswordPage> createState() => _CreateNewPasswordPageState();
@@ -79,7 +80,7 @@ class _CreateNewPasswordPageState extends State<CreateNewPasswordPage> {
                         SizedBox(height: 16.h),
                         CommonTextfieldWithTitle(
                           AppLocalizations.of(context)!.confirm_password,
-                          newPasswordController,
+                          confirmPasswordController,
                           hintText: AppLocalizations.of(
                             context,
                           )!.enter_your_confirm_password,
@@ -105,7 +106,19 @@ class _CreateNewPasswordPageState extends State<CreateNewPasswordPage> {
                                 return CommonButton(
                                   AppLocalizations.of(context)!.update_password,
                                   isLoading: value,
-                                  onTap: () {},
+                                  onTap: () {
+                                    ref
+                                        .read(resetPasswordControllerProvider)
+                                        .resetPassword(
+                                          confirmPassword:
+                                              confirmPasswordController.text
+                                                  .trim(),
+                                          newPassword: newPasswordController
+                                              .text
+                                              .trim(),
+                                          email: widget.email,
+                                        );
+                                  },
                                 );
                               },
                             );

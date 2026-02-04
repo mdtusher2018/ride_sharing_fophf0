@@ -40,9 +40,14 @@ class OTPVerificationController extends BaseNotifier {
         if (response['success'] ?? false) {
           final user = OTPVerificationModel.fromJson(response);
 
-          await localStorageService.saveString(StorageKey.token, user.token);
+          await localStorageService.saveString(
+            StorageKey.accessToken,
+            user.token,
+          );
 
-          navigatorKey.currentContext?.navigateTo(CreateNewPasswordPage());
+          navigatorKey.currentContext?.navigateTo(
+            CreateNewPasswordPage(email: email),
+          );
         } else {
           throw Exception(response['message'] ?? 'Failed to send OTP failed');
         }

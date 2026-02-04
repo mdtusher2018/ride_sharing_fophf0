@@ -10,7 +10,7 @@ import 'package:velozaje/feature/auth/controllers/signin_controller.dart';
 import 'package:velozaje/feature/auth/view/forget_password_view.dart';
 import 'package:velozaje/feature/auth/view/signup_view.dart';
 import 'package:velozaje/feature/auth/widget/auth_backend.dart';
-import 'package:velozaje/utills/app_colors.dart';
+import 'package:velozaje/core/utils/app_colors.dart';
 import 'package:velozaje/res/common_button.dart';
 import 'package:velozaje/res/common_image.dart';
 import 'package:velozaje/res/common_text.dart';
@@ -29,7 +29,7 @@ class _SignInPageState extends ConsumerState<SignInPage> {
   );
 
   final TextEditingController passwordController = TextEditingController(
-    text: kDebugMode ? "jelixey449@kudimi.com" : null,
+    text: kDebugMode ? "nesag11717@mucate.com" : null,
   );
 
   ValueNotifier<bool> isPasswordVisible = ValueNotifier(true);

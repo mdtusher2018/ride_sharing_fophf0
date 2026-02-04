@@ -50,7 +50,7 @@ class CommonText extends StatelessWidget {
         color: color,
         wordSpacing: wordSpacing,
         fontWeight: isBold
-            ? FontWeight.bold
+            ? FontWeight.w500
             : (fontWeight ?? FontWeight.normal),
       ),
     );

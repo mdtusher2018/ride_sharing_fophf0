@@ -1,6 +1,7 @@
 class ApiEndpoints {
-  static const String baseUrl = 'http://10.10.10.70:3032/api/v1/';
-  static const String baseImageUrl = 'http://10.10.10.70:3032';
+  static const String baseUrl = 'http://10.10.10.70:3033/api/v1/';
+  static const String baseImageUrl = 'http://10.10.10.70:3033';
+  static const String mapKey = 'AIzaSyAQk0BDUcdmln3zCV4CbPDn7UF2Y1PjD7Q';
 
   //authentication
   static const String signin = "auth/login";
@@ -8,4 +9,17 @@ class ApiEndpoints {
   static const String verifyOTP = "auth/verify-otp";
   static const String forgetPassword = "auth/token";
   static const String resetPassword = "auth/reset-password";
+
+  //profile
+  static const String profile = "users/profile";
+
+  //notifications
+  static const String notification = "notifications";
+  static const String unreadNotificationCount = "notifications/unread-count";
+  static const String markAllAsRead = "notifications/mark-all-read";
+  static String markAsRead(String id) => "notifications/$id/read";
+
+  //Vehicale
+  static const String registerVehicale = "vehicles/register";
+  static const String myVehicle = "vehicles/my-vehicle";
 }

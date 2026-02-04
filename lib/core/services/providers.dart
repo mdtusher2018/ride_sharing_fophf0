@@ -5,12 +5,9 @@ import 'api/api_service.dart';
 import 'localstorage/local_storage_service.dart';
 import 'api/i_api_service.dart';
 
-final appStartupProvider = FutureProvider<void>((ref) async {
-  await LocalStorageService.init();
-});
-
 final Provider<ILocalStorageService> localStorageProvider =
     Provider<ILocalStorageService>((ref) {
+      LocalStorageService.init();
       return LocalStorageService();
     });
 

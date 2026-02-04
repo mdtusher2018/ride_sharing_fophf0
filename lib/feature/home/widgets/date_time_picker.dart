@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:velozaje/core/localization/app_localizations.dart';
-import 'package:velozaje/utills/app_colors.dart';
+import 'package:velozaje/core/utils/app_colors.dart';
 import 'package:velozaje/res/common_button.dart';
 import 'package:velozaje/res/common_text.dart';
 

@@ -31,13 +31,15 @@ class ForgetPasswordController extends BaseNotifier {
       task: () async {
         final response = await apiService.post(ApiEndpoints.forgetPassword, {
           "email": email,
-
           "purpose": "passwordReset",
         });
         if (response['success'] ?? false) {
           final user = ForgetPasswordModel.fromJson(response);
 
-          await localStorageService.saveString(StorageKey.token, user.token);
+          await localStorageService.saveString(
+            StorageKey.accessToken,
+            user.token,
+          );
 
           navigatorKey.currentContext?.navigateTo(
             OtpVerificationPage(email: email),

@@ -1,24 +1,41 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:velozaje/core/localization/app_localizations.dart';
+import 'package:velozaje/core/utils/defult_values.dart';
 import 'package:velozaje/feature/profile_and_account/change_password_view.dart';
 
 import 'package:velozaje/feature/profile_and_account/contact_view.dart';
+import 'package:velozaje/feature/profile_and_account/controllers/profile_controller.dart';
 import 'package:velozaje/feature/profile_and_account/payment_methord_view.dart';
 import 'package:velozaje/feature/profile_and_account/profile_details.dart';
 import 'package:velozaje/feature/profile_and_account/referal_view.dart';
 import 'package:velozaje/feature/profile_and_account/terms_and_conditions_view.dart';
 import 'package:velozaje/feature/profile_and_account/wallet_view.dart';
 import 'package:velozaje/main.dart';
-import 'package:velozaje/utills/app_colors.dart';
+import 'package:velozaje/core/utils/app_colors.dart';
 import 'package:velozaje/res/common_image.dart';
 import 'package:velozaje/res/common_text.dart';
 
-class ProfilePage extends StatelessWidget {
+class ProfilePage extends ConsumerStatefulWidget {
   const ProfilePage({super.key});
 
   @override
+  ConsumerState<ProfilePage> createState() => _ProfilePageState();
+}
+
+class _ProfilePageState extends ConsumerState<ProfilePage> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      ref.read(profileControllerProvider.notifier).getProfile();
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final state = ref.watch(profileControllerProvider);
     return Scaffold(
       backgroundColor: AppColors.mainbg,
       appBar: AppBar(
@@ -32,249 +49,259 @@ class ProfilePage extends StatelessWidget {
         surfaceTintColor: Colors.transparent,
         elevation: 0,
       ),
-      body: ListView(
-        padding: EdgeInsets.all(16.w),
-        children: [
-          _card(
-            child: Column(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.symmetric(
-                    vertical: 8.0,
-                    horizontal: 16.0,
-                  ),
-                  child: Row(
-                    children: [
-                      Container(
-                        width: 50.w,
-                        height: 50.w,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
+      body: RefreshIndicator(
+        onRefresh: () async {
+          ref.read(profileControllerProvider.notifier).getProfile();
+        },
+        child: ListView(
+          padding: EdgeInsets.all(16.w),
+          children: [
+            _card(
+              child: Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                      vertical: 8.0,
+                      horizontal: 16.0,
+                    ),
+                    child: Row(
+                      children: [
+                        Container(
+                          width: 50.w,
+                          height: 50.w,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
 
-                          border: Border.all(
-                            color: AppColors.primary,
-                            width: 1,
+                            border: Border.all(
+                              color: AppColors.primary,
+                              width: 1,
+                            ),
+                          ),
+                          child: ClipOval(
+                            child: CommonImage(
+                              path: state.user?.image,
+                              width: 80.w,
+                              sourceType: ImageSourceType.network,
+                              height: 80.w,
+                            ),
                           ),
                         ),
-                        child: ClipOval(
-                          child: CommonImage(
-                            path:
-                                "https://static.vecteezy.com/system/resources/previews/002/002/403/non_2x/man-with-beard-avatar-character-isolated-icon-free-vector.jpg",
-
-                            width: 80.w,
-                            sourceType: ImageSourceType.network,
-                            height: 80.w,
+                        SizedBox(width: 16.w),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              CommonText(
+                                state.user?.fullName ?? AppDefaultValue.name,
+                                size: 14,
+                                isBold: true,
+                              ),
+                              SizedBox(height: 4.h),
+                              CommonText(
+                                state.user?.email ?? AppDefaultValue.email,
+                                size: 12,
+                                maxline: 1,
+                                color: AppColors.textSecondary,
+                              ),
+                            ],
                           ),
                         ),
-                      ),
-                      SizedBox(width: 16.w),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          CommonText('Leo Messi', size: 18, isBold: true),
-                          SizedBox(height: 4.h),
-                          CommonText(
-                            'leomessi@gmail.com',
-                            size: 14,
-                            color: AppColors.textSecondary,
-                          ),
-                        ],
-                      ),
-                      const Spacer(),
-                      CommonText(
-                        '\$245',
-                        size: 18,
-                        isBold: true,
-                        color: AppColors.primary,
-                      ),
-                    ],
+
+                        CommonText(
+                          '\$${state.user?.bookingCount ?? AppDefaultValue.bookingCount}',
+                          size: 16,
+                          isBold: true,
+                          color: AppColors.primary,
+                        ),
+                      ],
+                    ),
                   ),
-                ),
 
-                _divider(),
-                _tile(
-                  AppLocalizations.of(context)!.profile,
-                  "assest/icon/profile.png",
-                  ontap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) {
-                          return ProfileDetailsPage();
-                        },
-                      ),
-                    );
-                  },
-                ),
-                _divider(),
-                _tile(
-                  AppLocalizations.of(context)!.payment_methods,
-                  "assest/icon/payment.png",
-                  ontap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) {
-                          return PaymentMethodPage();
-                        },
-                      ),
-                    );
-                  },
-                ),
-                _divider(),
-                _tile(
-                  AppLocalizations.of(context)!.change_password,
-                  "assest/icon/changepassword.png",
-                  ontap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) {
-                          return ChangePasswordPage();
-                        },
-                      ),
-                    );
-                  },
-                ),
-              ],
+                  _divider(),
+                  _tile(
+                    AppLocalizations.of(context)!.profile,
+                    "assest/icon/profile.png",
+                    ontap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) {
+                            return ProfileDetailsPage();
+                          },
+                        ),
+                      );
+                    },
+                  ),
+                  _divider(),
+                  _tile(
+                    AppLocalizations.of(context)!.payment_methods,
+                    "assest/icon/payment.png",
+                    ontap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) {
+                            return PaymentMethodPage();
+                          },
+                        ),
+                      );
+                    },
+                  ),
+                  _divider(),
+                  _tile(
+                    AppLocalizations.of(context)!.change_password,
+                    "assest/icon/changepassword.png",
+                    ontap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) {
+                            return ChangePasswordPage();
+                          },
+                        ),
+                      );
+                    },
+                  ),
+                ],
+              ),
             ),
-          ),
 
-          SizedBox(height: 16.h),
+            SizedBox(height: 16.h),
 
-          /// GENERAL CARD
-          _sectionTitle(AppLocalizations.of(context)!.general),
-          _card(
-            child: Column(
-              children: [
-                _tile(
-                  AppLocalizations.of(context)!.referral_code,
-                  "assest/icon/payment.png",
-                  ontap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) {
-                          return ReferralsPage();
-                        },
-                      ),
-                    );
-                  },
-                ),
-                _divider(),
-                _tile(
-                  AppLocalizations.of(context)!.wallet_transactions,
-                  "assest/icon/wallet.png",
-                  ontap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) {
-                          return WalletPage();
-                        },
-                      ),
-                    );
-                  },
-                ),
-              ],
+            /// GENERAL CARD
+            _sectionTitle(AppLocalizations.of(context)!.general),
+            _card(
+              child: Column(
+                children: [
+                  _tile(
+                    AppLocalizations.of(context)!.referral_code,
+                    "assest/icon/payment.png",
+                    ontap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) {
+                            return ReferralsPage();
+                          },
+                        ),
+                      );
+                    },
+                  ),
+                  _divider(),
+                  _tile(
+                    AppLocalizations.of(context)!.wallet_transactions,
+                    "assest/icon/wallet.png",
+                    ontap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) {
+                            return WalletPage();
+                          },
+                        ),
+                      );
+                    },
+                  ),
+                ],
+              ),
             ),
-          ),
 
-          SizedBox(height: 16.h),
+            SizedBox(height: 16.h),
 
-          /// APP PREFERENCES CARD
-          _sectionTitle(AppLocalizations.of(context)!.app_preferences),
-          _card(
-            child: Column(
-              children: [
-                _switchTile(
-                  AppLocalizations.of(context)!.notifications,
-                  Icons.notifications,
-                ),
-                _divider(),
-                _tile(
-                  AppLocalizations.of(context)!.language,
-                  "assest/icon/language.png",
+            /// APP PREFERENCES CARD
+            _sectionTitle(AppLocalizations.of(context)!.app_preferences),
+            _card(
+              child: Column(
+                children: [
+                  _switchTile(
+                    AppLocalizations.of(context)!.notifications,
+                    Icons.notifications,
+                  ),
+                  _divider(),
+                  _tile(
+                    AppLocalizations.of(context)!.language,
+                    "assest/icon/language.png",
 
-                  trailing: Localizations.localeOf(context).languageCode == 'es'
-                      ? 'Español'
-                      : 'English',
-                  ontap: () {
-                    showModalBottomSheet(
-                      context: context,
-                      builder: (context2) => _languageBottomSheet(context),
-                    );
-                  },
-                ),
-              ],
+                    trailing:
+                        Localizations.localeOf(context).languageCode == 'es'
+                        ? 'Español'
+                        : 'English',
+                    ontap: () {
+                      showModalBottomSheet(
+                        context: context,
+                        builder: (context2) => _languageBottomSheet(context),
+                      );
+                    },
+                  ),
+                ],
+              ),
             ),
-          ),
 
-          SizedBox(height: 16.h),
+            SizedBox(height: 16.h),
 
-          /// SUPPORT & LEGAL CARD
-          _sectionTitle(AppLocalizations.of(context)!.support_legal),
-          _card(
-            child: Column(
-              children: [
-                _tile(
-                  AppLocalizations.of(context)!.contact,
-                  "assest/icon/email.png",
-                  ontap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) {
-                          return ContactPage();
-                        },
-                      ),
-                    );
-                  },
-                ),
-                _divider(),
-                _tile(
-                  AppLocalizations.of(context)!.terms_conditions,
-                  "assest/icon/wallet.png",
-                  ontap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) {
-                          return TermsAndConditionsPage();
-                        },
-                      ),
-                    );
-                  },
-                ),
-              ],
+            /// SUPPORT & LEGAL CARD
+            _sectionTitle(AppLocalizations.of(context)!.support_legal),
+            _card(
+              child: Column(
+                children: [
+                  _tile(
+                    AppLocalizations.of(context)!.contact,
+                    "assest/icon/email.png",
+                    ontap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) {
+                            return ContactPage();
+                          },
+                        ),
+                      );
+                    },
+                  ),
+                  _divider(),
+                  _tile(
+                    AppLocalizations.of(context)!.terms_conditions,
+                    "assest/icon/wallet.png",
+                    ontap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) {
+                            return TermsAndConditionsPage();
+                          },
+                        ),
+                      );
+                    },
+                  ),
+                ],
+              ),
             ),
-          ),
-          SizedBox(height: 8.h),
-          _card(
-            child: Column(
-              children: [
-                _tile(
-                  AppLocalizations.of(context)!.log_out,
-                  "assest/icon/logout.png",
-                  ontap: () {},
-                ),
-                _divider(),
-                _tile(
-                  AppLocalizations.of(context)!.delete_account,
-                  "assest/icon/delete.png",
-                  isRed: true,
-                  ontap: () {},
-                ),
-              ],
+            SizedBox(height: 8.h),
+            _card(
+              child: Column(
+                children: [
+                  _tile(
+                    AppLocalizations.of(context)!.log_out,
+                    "assest/icon/logout.png",
+                    ontap: () {},
+                  ),
+                  _divider(),
+                  _tile(
+                    AppLocalizations.of(context)!.delete_account,
+                    "assest/icon/delete.png",
+                    isRed: true,
+                    ontap: () {},
+                  ),
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
 
   // ---------- HELPERS ----------
-
   Widget _languageBottomSheet(BuildContext context) {
     return Container(
       padding: const EdgeInsets.all(16),

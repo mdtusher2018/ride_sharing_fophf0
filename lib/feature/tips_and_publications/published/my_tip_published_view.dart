@@ -3,7 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:velozaje/core/localization/app_localizations.dart';
 import 'package:velozaje/feature/tips_and_publications/published/my_published_details_view.dart';
 import 'package:velozaje/res/common_text.dart';
-import 'package:velozaje/utills/app_colors.dart';
+import 'package:velozaje/core/utils/app_colors.dart';
 
 class MyPublishedTripsPage extends StatelessWidget {
   const MyPublishedTripsPage({super.key});

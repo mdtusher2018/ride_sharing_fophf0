@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:velozaje/utills/app_colors.dart';
+import 'package:velozaje/core/utils/app_colors.dart';
 import 'dart:async';
 import 'package:velozaje/feature/splash_onboarding/onboarding_page.dart';
 

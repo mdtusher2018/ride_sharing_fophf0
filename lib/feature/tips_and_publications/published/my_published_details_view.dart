@@ -6,7 +6,7 @@ import 'package:velozaje/res/common_button.dart';
 import 'package:velozaje/res/common_image.dart';
 import 'package:velozaje/res/common_otp_field.dart';
 import 'package:velozaje/res/common_text.dart';
-import 'package:velozaje/utills/app_colors.dart';
+import 'package:velozaje/core/utils/app_colors.dart';
 
 enum Status { pending, pickupCode, ontheway, finalCode, compleated }
 

@@ -1,10 +1,33 @@
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:velozaje/core/utils/api_end_points.dart';
+import 'package:geolocator/geolocator.dart';
 
-import 'dart:convert';
+Future<void> checkClipboard(
+  List<TextEditingController> controllers,
+  List<FocusNode> _focusNodes,
+) async {
+  final clipboardData = await Clipboard.getData('text/plain');
+  if (clipboardData != null) {
+    final text = clipboardData.text ?? '';
+
+    final otpMatch = RegExp(r'\b\d{4}\b').firstMatch(text);
+
+    if (otpMatch != null) {
+      final otp = otpMatch.group(0)!;
+
+      for (int i = 0; i < 4; i++) {
+        controllers[i].text = otp[i];
+      }
+
+      _focusNodes[3].requestFocus();
+    }
+  }
+}
 
 String getFullImagePath(String imagePath) {
   if (imagePath.isEmpty) {
-    return "https://www.themealdb.com/images/media/meals/wvpsxx1468256321.jpg";
+    return "https://www.ncenet.com/wp-content/uploads/2020/04/no-image-png-2.png";
   }
   if (imagePath.contains("public")) {
     imagePath = imagePath.replaceFirst("public", "");
@@ -19,72 +42,31 @@ String getFullImagePath(String imagePath) {
   return '${ApiEndpoints.baseImageUrl}/$imagePath';
 }
 
-String timeAgo(String timestamp) {
-  DateTime? dateTime = DateTime.tryParse(timestamp);
-  if (dateTime == null) {
-    return 'Invalid date';
-  }
-  Duration difference = DateTime.now().difference(dateTime);
+// Helper method to get current location
+Future<Position?> getCurrentLocation() async {
+  bool serviceEnabled;
+  LocationPermission permission;
 
-  if (difference.inSeconds < 60) {
-    return 'Just now';
-  } else if (difference.inMinutes < 60) {
-    int minutes = difference.inMinutes;
-    return '$minutes ${minutes == 1 ? 'minute' : 'minutes'} ago';
-  } else if (difference.inHours < 24) {
-    int hours = difference.inHours;
-    return '$hours ${hours == 1 ? 'hour' : 'hours'} ago';
-  } else if (difference.inDays < 30) {
-    int days = difference.inDays;
-    return '$days ${days == 1 ? 'day' : 'days'} ago';
-  } else if (difference.inDays < 365) {
-    int months = (difference.inDays / 30).floor();
-    return '$months ${months == 1 ? 'month' : 'months'} ago';
-  } else {
-    int years = (difference.inDays / 365).floor();
-    return '$years ${years == 1 ? 'year' : 'years'} ago';
-  }
-}
-
-String formatDuration(Duration d) {
-  String twoDigits(int n) => n.toString().padLeft(2, "0");
-  String h = twoDigits(d.inHours);
-  String m = twoDigits(d.inMinutes.remainder(60));
-  String s = twoDigits(d.inSeconds.remainder(60));
-  return "$h:$m:$s";
-}
-
-extension NumDurationFormatter on num {
-  String formatDuration() {
-    final duration = Duration(seconds: toInt());
-
-    final hours = duration.inHours;
-    final minutes = duration.inMinutes.remainder(60);
-    final secs = duration.inSeconds.remainder(60);
-
-    if (hours > 0) {
-      return "${hours.toString().padLeft(2, '0')}:"
-          "${minutes.toString().padLeft(2, '0')}:"
-          "${secs.toString().padLeft(2, '0')}";
-    } else {
-      return "${minutes.toString().padLeft(2, '0')}:"
-          "${secs.toString().padLeft(2, '0')}";
-    }
-  }
-}
-
-Map<String, dynamic>? decodeJwtPayload(String token) {
-  try {
-    final parts = token.split('.');
-    if (parts.length != 3) return null;
-
-    final payload = parts[1];
-    final normalized = base64Url.normalize(payload);
-    final payloadBytes = base64Url.decode(normalized);
-    final payloadString = utf8.decode(payloadBytes);
-
-    return json.decode(payloadString) as Map<String, dynamic>;
-  } catch (e) {
+  serviceEnabled = await Geolocator.isLocationServiceEnabled();
+  if (!serviceEnabled) {
     return null;
   }
+
+  permission = await Geolocator.checkPermission();
+  if (permission == LocationPermission.denied) {
+    permission = await Geolocator.requestPermission();
+    if (permission == LocationPermission.denied) {
+      return null;
+    }
+  }
+
+  if (permission == LocationPermission.deniedForever) {
+    return null;
+  }
+
+  Position position = await Geolocator.getCurrentPosition(
+    desiredAccuracy: LocationAccuracy.high,
+  );
+
+  return position;
 }

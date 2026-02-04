@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/legacy.dart';
 import 'package:velozaje/core/utils/extention.dart';
 import 'package:velozaje/core/utils/global_keys.dart';
-import 'package:velozaje/utills/app_colors.dart';
+import 'package:velozaje/core/utils/app_colors.dart';
 
 abstract class BaseNotifier<T> extends StateNotifier<T> {
   BaseNotifier(super.state);

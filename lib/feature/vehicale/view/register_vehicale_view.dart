@@ -1,24 +1,27 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:velozaje/core/localization/app_localizations.dart';
 import 'package:velozaje/feature/auth/view/referal_view.dart';
-import 'package:velozaje/utills/app_colors.dart';
+import 'package:velozaje/core/utils/app_colors.dart';
+import 'package:velozaje/feature/vehicale/controller/vehicale_register_controller.dart';
 import 'package:velozaje/res/common_button.dart';
 import 'package:velozaje/res/common_image.dart';
 import 'package:velozaje/res/common_text_field_with_title.dart';
 import 'package:velozaje/res/common_text.dart';
 
-class RegisterVehiclePage extends StatefulWidget {
+class RegisterVehiclePage extends ConsumerStatefulWidget {
   const RegisterVehiclePage({super.key});
 
   @override
-  State<RegisterVehiclePage> createState() => _RegisterVehiclePageState();
+  ConsumerState<RegisterVehiclePage> createState() =>
+      _RegisterVehiclePageState();
 }
 
-class _RegisterVehiclePageState extends State<RegisterVehiclePage> {
+class _RegisterVehiclePageState extends ConsumerState<RegisterVehiclePage> {
   File? _vehicleImage;
   final ImagePicker _picker = ImagePicker();
 
@@ -27,13 +30,13 @@ class _RegisterVehiclePageState extends State<RegisterVehiclePage> {
   final TextEditingController brandController = TextEditingController();
   final TextEditingController modelController = TextEditingController();
   final TextEditingController licenseController = TextEditingController();
-
-  final List<String> vehicleImage = [
-    'assest/image/car.png',
-    'assest/image/taxi.png',
-    'assest/image/bike.png',
-    'assest/image/truck.png',
+  final List<Map<String, String>> vehicleImage = [
+    {'vehicleType': 'sedan', 'vehicleImage': 'assest/image/car.png'},
+    {'vehicleType': 'suv', 'vehicleImage': 'assest/image/taxi.png'},
+    {'vehicleType': 'bike', 'vehicleImage': 'assest/image/bike.png'},
+    {'vehicleType': 'van', 'vehicleImage': 'assest/image/truck.png'},
   ];
+
   int selectedTypeIndex = 0;
 
   Future<void> _pickVehicleImage() async {
@@ -154,7 +157,7 @@ class _RegisterVehiclePageState extends State<RegisterVehiclePage> {
                       ),
                       child: Center(
                         child: CommonImage(
-                          path: vehicleImage[index],
+                          path: vehicleImage[index]['vehicleImage'],
                           sourceType: ImageSourceType.asset,
                           width: 50,
                         ),
@@ -208,16 +211,35 @@ class _RegisterVehiclePageState extends State<RegisterVehiclePage> {
 
             SizedBox(height: 40.h),
 
-            CommonButton(
-              AppLocalizations.of(context)!.confirm_data,
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) {
-                      return ReferalPage();
-                    },
-                  ),
+            ValueListenableBuilder(
+              valueListenable: ref
+                  .watch(vehicaleControllerProvider.notifier)
+                  .isLoading,
+              builder: (context, value, child) {
+                return CommonButton(
+                  AppLocalizations.of(context)!.confirm_data,
+                  isLoading: value,
+                  onTap: () async {
+                    final success = await ref
+                        .read(vehicaleControllerProvider.notifier)
+                        .registerVehicale(
+                          vehicleType:
+                              vehicleImage[selectedTypeIndex]['vehicleType']!,
+                          registration: registrationController.text.trim(),
+                          year: yearController.text.trim(),
+                          brand: brandController.text.trim(),
+                          vehicleModel: modelController.text.trim(),
+                          licensePlateNumber: licenseController.text.trim(),
+                          image: _vehicleImage,
+                        );
+
+                    if (success == true && mounted) {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (_) => ReferalPage()),
+                      );
+                    }
+                  },
                 );
               },
             ),

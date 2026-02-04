@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:velozaje/utills/app_colors.dart';
+import 'package:velozaje/core/utils/app_colors.dart';
 
 class CommonOtpField extends StatelessWidget {
   final TextEditingController controller;

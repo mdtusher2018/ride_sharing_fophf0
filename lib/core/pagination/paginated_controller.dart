@@ -1,0 +1,90 @@
+import 'package:velozaje/core/base_notifier.dart';
+import 'package:velozaje/core/model/pagenation_meta_model.dart';
+
+class PaginationState<T> {
+  final List<T> items;
+  final Meta meta;
+  final bool isLoadingMore;
+  final bool hasMore;
+
+  PaginationState({
+    required this.items,
+    required this.meta,
+    this.isLoadingMore = false,
+    this.hasMore = true,
+  });
+
+  PaginationState<T> copyWith({
+    List<T>? items,
+    Meta? meta,
+    bool? isLoadingMore,
+    bool? hasMore,
+  }) {
+    return PaginationState(
+      items: items ?? this.items,
+      meta: meta ?? this.meta,
+      isLoadingMore: isLoadingMore ?? this.isLoadingMore,
+      hasMore: hasMore ?? this.hasMore,
+    );
+  }
+
+  factory PaginationState.initial() {
+    return PaginationState(
+      items: [],
+      meta: Meta(page: 1, limit: 10, total: 0, totalPage: 1),
+      hasMore: true,
+    );
+  }
+}
+
+abstract class PaginationNotifier<T> extends BaseNotifier<PaginationState<T>> {
+  PaginationNotifier() : super(PaginationState.initial());
+
+  /// API call function must be implemented
+  Future<(List<T>, Meta)> fetchPage({required int page, required int limit});
+
+  /// Initial load / refresh
+  Future<void> refresh() async {
+    await safeCall(
+      task: () async {
+        final (items, meta) = await fetchPage(page: 1, limit: state.meta.limit);
+
+        state = state.copyWith(
+          items: items,
+          meta: meta,
+          hasMore: meta.page < meta.totalPage,
+        );
+      },
+    );
+  }
+
+  /// Load more
+  Future<void> loadMore() async {
+    if (state.isLoadingMore || !state.hasMore) return;
+
+    state = state.copyWith(isLoadingMore: true);
+
+    final nextPage = state.meta.page + 1;
+
+    final result = await safeCall(
+      showErrorSnack: false,
+      task: () async {
+        return fetchPage(page: nextPage, limit: state.meta.limit);
+      },
+    );
+
+    if (result == null) {
+      state = state.copyWith(isLoadingMore: false);
+      return;
+    }
+
+    final (newItems, meta) = result;
+
+    state = state.copyWith(
+      items: [...state.items, ...newItems],
+      meta: meta,
+      isLoadingMore: false,
+      hasMore: meta.page < meta.totalPage,
+    );
+  }
+}

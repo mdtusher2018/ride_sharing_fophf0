@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:velozaje/core/utils/helper.dart';
 
 enum ImageSourceType { asset, network }
 
 class CommonImage extends StatelessWidget {
-  final String path;
+  final String? path;
   final ImageSourceType sourceType;
   final double? width;
   final double? height;
@@ -42,7 +43,7 @@ class CommonImage extends StatelessWidget {
   Widget _buildSvg(double? w, double? h) {
     if (sourceType == ImageSourceType.network) {
       return SvgPicture.network(
-        path,
+        getFullImagePath(path ?? ""),
         width: w,
         height: h,
         fit: fit,
@@ -57,7 +58,7 @@ class CommonImage extends StatelessWidget {
       );
     } else {
       return SvgPicture.asset(
-        path,
+        path ?? "",
         width: w,
         height: h,
         fit: fit,
@@ -77,7 +78,7 @@ class CommonImage extends StatelessWidget {
   Widget _buildRaster(double? w, double? h) {
     if (sourceType == ImageSourceType.network) {
       return Image.network(
-        path,
+        getFullImagePath(path ?? ""),
         width: w,
         height: h,
         fit: fit,
@@ -93,7 +94,7 @@ class CommonImage extends StatelessWidget {
       );
     } else {
       return Image.asset(
-        path,
+        path ?? "",
         width: w,
         height: h,
         fit: fit,
