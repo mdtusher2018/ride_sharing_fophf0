@@ -6,8 +6,7 @@ import 'package:velozaje/core/utils/defult_values.dart';
 import 'package:velozaje/feature/profile_and_account/change_password_view.dart';
 
 import 'package:velozaje/feature/profile_and_account/contact_view.dart';
-import 'package:velozaje/feature/profile_and_account/controllers/profile_controller.dart';
-import 'package:velozaje/feature/profile_and_account/payment_methord_view.dart';
+import 'package:velozaje/controllers/profile_controller.dart';
 import 'package:velozaje/feature/profile_and_account/profile_details.dart';
 import 'package:velozaje/feature/profile_and_account/referal_view.dart';
 import 'package:velozaje/feature/profile_and_account/terms_and_conditions_view.dart';
@@ -133,20 +132,20 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
                     },
                   ),
                   _divider(),
-                  _tile(
-                    AppLocalizations.of(context)!.payment_methods,
-                    "assest/icon/payment.png",
-                    ontap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) {
-                            return PaymentMethodPage();
-                          },
-                        ),
-                      );
-                    },
-                  ),
+                  // _tile(
+                  //   AppLocalizations.of(context)!.payment_methods,
+                  //   "assest/icon/payment.png",
+                  //   ontap: () {
+                  //     Navigator.push(
+                  //       context,
+                  //       MaterialPageRoute(
+                  //         builder: (context) {
+                  //           return PaymentMethodPage();
+                  //         },
+                  //       ),
+                  //     );
+                  //   },
+                  // ),
                   _divider(),
                   _tile(
                     AppLocalizations.of(context)!.change_password,

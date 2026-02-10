@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:velozaje/core/localization/app_localizations.dart';
-import 'package:velozaje/feature/auth/controllers/forget_password_controller.dart';
-import 'package:velozaje/feature/auth/widget/auth_backend.dart';
+import 'package:velozaje/core/services/providers.dart';
+import 'package:velozaje/feature/auth/widget/auth_background.dart';
 import 'package:velozaje/core/utils/app_colors.dart';
 import 'package:velozaje/res/common_button.dart';
 import 'package:velozaje/res/common_image.dart';
@@ -86,7 +86,7 @@ class _ForgetPasswordPageState extends State<ForgetPasswordPage> {
 
                         Consumer(
                           builder: (context, ref, _) {
-                            final state = ref.watch(forgetVerificationProvider);
+                            final state = ref.watch(authControllerProvider);
 
                             return ValueListenableBuilder(
                               valueListenable: state.isLoading,

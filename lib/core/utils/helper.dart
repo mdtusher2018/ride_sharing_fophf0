@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:intl/intl.dart';
 import 'package:velozaje/core/utils/api_end_points.dart';
 import 'package:geolocator/geolocator.dart';
 
@@ -28,9 +29,6 @@ Future<void> checkClipboard(
 String getFullImagePath(String imagePath) {
   if (imagePath.isEmpty) {
     return "https://www.ncenet.com/wp-content/uploads/2020/04/no-image-png-2.png";
-  }
-  if (imagePath.contains("public")) {
-    imagePath = imagePath.replaceFirst("public", "");
   }
 
   if (imagePath.startsWith('http')) {
@@ -69,4 +67,40 @@ Future<Position?> getCurrentLocation() async {
   );
 
   return position;
+}
+
+String formatDurationInMinutes(int durationInMinutes) {
+  int hours = durationInMinutes ~/ 60;
+  int minutes = durationInMinutes % 60;
+
+  String formattedDuration = '';
+  if (hours > 0) {
+    formattedDuration += '$hours h';
+  }
+  if (minutes > 0) {
+    if (hours > 0) {
+      formattedDuration += ' ';
+    }
+    formattedDuration += '$minutes min';
+  }
+
+  return formattedDuration.trim();
+}
+
+String formatDateTime(DateTime dateTime) {
+  final now = DateTime.now();
+  final today = DateTime(now.year, now.month, now.day);
+  final tomorrow = today.add(const Duration(days: 1));
+  final date = DateTime(dateTime.year, dateTime.month, dateTime.day);
+
+  final timeFormat = DateFormat('hh:mm a'); // 10:25 AM
+
+  if (date == today) {
+    return 'Today, ${timeFormat.format(dateTime)}';
+  } else if (date == tomorrow) {
+    return 'Tomorrow, ${timeFormat.format(dateTime)}';
+  } else {
+    final dateFormat = DateFormat('MMM dd, yyyy, hh:mm a');
+    return dateFormat.format(dateTime);
+  }
 }

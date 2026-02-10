@@ -1,532 +1,328 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' hide Route;
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:velozaje/core/localization/app_localizations.dart';
-import 'package:velozaje/feature/home/take_image_view.dart';
-import 'package:velozaje/feature/home/widgets/date_time_picker.dart';
+import 'package:velozaje/core/services/providers.dart';
+import 'package:velozaje/core/utils/api_end_points.dart';
+import 'package:velozaje/core/utils/defult_values.dart';
+import 'package:velozaje/core/utils/extention.dart';
+import 'package:velozaje/core/utils/map_helper.dart';
+import 'package:velozaje/feature/take_image_view.dart';
+import 'package:velozaje/feature/widget/date_time_picker.dart';
+import 'package:velozaje/feature/widget/vehicale_card.dart';
+import 'package:velozaje/models/request/trip_publish_request.dart';
 import 'package:velozaje/res/common_button.dart';
-import 'package:velozaje/res/common_image.dart';
 import 'package:velozaje/res/common_text.dart';
 import 'package:velozaje/res/common_text_field_with_title.dart';
 import 'package:velozaje/core/utils/app_colors.dart';
+import 'package:velozaje/res/location_search_textfield.dart';
+import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 
-enum PublishStep { publishForm, routeSelection, vehicleSpace, setPrice }
+part 'publishFormView.dart';
+part 'routeSelectionView.dart';
+part 'vehicleSpaceView.dart';
+part 'setPriceView.dart';
+
+enum PublishStep { locationPick, routeSelection, vehicleSpace, setPrice }
 
 class PublishProcessPage extends StatefulWidget {
-  PublishProcessPage({super.key});
+  const PublishProcessPage({super.key});
 
   @override
   State<PublishProcessPage> createState() => _PublishProcessPageState();
 }
 
 class _PublishProcessPageState extends State<PublishProcessPage> {
-  final TextEditingController pickuplocationController =
-      TextEditingController();
-  final TextEditingController destinationController = TextEditingController();
-  final TextEditingController dateTime = TextEditingController();
-
-  final TextEditingController priceController = TextEditingController(
-    text: "280",
+  // Pickup and Destination (Controller, LatLng)
+  (TextEditingController, LatLng?) pickup = (TextEditingController(), null);
+  (TextEditingController, LatLng?) destination = (
+    TextEditingController(),
+    null,
   );
-  final TextEditingController tripDetailsController = TextEditingController();
-  bool automaticReservation = true;
-  bool enablePackageDelivery = true;
 
-  PublishStep currentStep = PublishStep.publishForm;
+  GoogleMapController? _mapController;
+  PublishStep currentStep = PublishStep.locationPick;
 
-  int selectedSeats = 1; // default 1 seat
-  String selectedTrunk = "Small"; // default trunk
-  int selectedRouteIndex = -1; // default selected route
+  Set<Polyline> _polylines = {};
+  List<Route> _routes = const [];
+
+  // Trip data
+  TripPublishRequest publishTripData = TripPublishRequest();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Stack(
         children: [
-          // Background Image
-          Container(
-            color: Colors.grey,
-            width: MediaQuery.sizeOf(context).width,
-            height: MediaQuery.sizeOf(context).height,
-            child: CommonImage(
-              path: "https://i.sstatic.net/HILmr.png",
-              sourceType: ImageSourceType.network,
-              fit: BoxFit.cover,
-            ),
-          ),
-
-          // Back Button
-          Positioned(
-            top: 40.h,
-            left: 16.w,
-            child: InkWell(
-              onTap: () {
-                if (Navigator.canPop(context)) {
-                  Navigator.pop(context);
-                }
-              },
-              child: Container(
-                width: 40,
-                height: 40,
-                margin: EdgeInsets.only(left: 16, top: 6, bottom: 6),
-                padding: EdgeInsets.all(4),
-                decoration: BoxDecoration(
-                  color: AppColors.primary,
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Icon(Icons.arrow_back_ios_sharp, color: AppColors.white),
-              ),
-            ),
-          ),
-
-          // Bottom View
-          Positioned(bottom: 0, right: 0, left: 0, child: _buildBottomView()),
+          _buildGoogleMap(),
+          _buildBackButton(),
+          Positioned(bottom: 0, left: 0, right: 0, child: _buildBottomView()),
         ],
       ),
     );
   }
 
-  // Handles step transitions and updates the view based on the current step
+  // -------------------------
+  // Google Map Widget
+  // -------------------------
+  Widget _buildGoogleMap() {
+    return GoogleMap(
+      initialCameraPosition: CameraPosition(
+        target: AppDefaultValue.latLng,
+        zoom: 10,
+      ),
+      polylines: _polylines,
+      onMapCreated: (controller) => _mapController = controller,
+      markers: _buildMarkers(),
+    );
+  }
+
+  Set<Marker> _buildMarkers() {
+    final markers = <Marker>{};
+    if (pickup.$2 != null) {
+      markers.add(
+        Marker(
+          markerId: const MarkerId('pickup'),
+          position: pickup.$2!,
+          infoWindow: const InfoWindow(title: 'Pickup Location'),
+        ),
+      );
+    }
+    if (destination.$2 != null) {
+      markers.add(
+        Marker(
+          markerId: const MarkerId('dropoff'),
+          position: destination.$2!,
+          infoWindow: const InfoWindow(title: 'Dropoff Location'),
+        ),
+      );
+    }
+    return markers;
+  }
+
+  // -------------------------
+  // Back Button
+  // -------------------------
+  Widget _buildBackButton() {
+    return Positioned(
+      top: 40.h,
+      left: 16.w,
+      child: InkWell(
+        onTap: () {
+          if (Navigator.canPop(context)) Navigator.pop(context);
+        },
+        child: Container(
+          width: 40,
+          height: 40,
+          margin: const EdgeInsets.only(left: 16, top: 6, bottom: 6),
+          padding: const EdgeInsets.all(4),
+          decoration: BoxDecoration(
+            color: AppColors.primary,
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: Icon(Icons.arrow_back_ios_sharp, color: AppColors.white),
+        ),
+      ),
+    );
+  }
+
+  // -------------------------
+  // Bottom Step View
+  // -------------------------
   Widget _buildBottomView() {
     switch (currentStep) {
-      case PublishStep.publishForm:
-        return _publishFormView();
+      case PublishStep.locationPick:
+        return PublishFormView(
+          pickup: pickup,
+          destination: destination,
+          onContinue: (DateTime? dateTime) {
+            if (_validateCurrentStep(dateTime: dateTime)) {
+              setState(() => currentStep = PublishStep.routeSelection);
+            }
+          },
+          onPickupSelected: _onPickupSelected,
+          onDestinationSelected: _onDestinationSelected,
+        );
+
       case PublishStep.routeSelection:
-        return _routeSelectionView();
+        return RouteSelectionView(
+          routes: _routes,
+          onContinue: (routeEncoded) {
+            if (_validateCurrentStep(routeString: routeEncoded)) {
+              setState(() => currentStep = PublishStep.vehicleSpace);
+            }
+          },
+          onRouteSelected: _onRouteSelected,
+        );
+
       case PublishStep.vehicleSpace:
-        return _vehicleSpaceView();
+        return VehicleSpaceView(
+          onContinue: (vehicaleId, seats) {
+            publishTripData
+              ..vehicleId = vehicaleId
+              ..totalSeats = seats;
+            if (_validateCurrentStep()) {
+              setState(() => currentStep = PublishStep.setPrice);
+            }
+          },
+        );
+
       case PublishStep.setPrice:
-        return _setPriceView(); // 👈 NEW
+        return SetPriceView(
+          onContinue: (pricePerSeat, note) {
+            publishTripData
+              ..pricePerSeat = pricePerSeat
+              ..notes = note;
+            if (_validateCurrentStep()) {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => TakePhotoPage(
+                    forPublish: true,
+                    publishTripData: publishTripData,
+                  ),
+                ),
+              );
+            }
+          },
+        );
     }
   }
 
-  // Publish Form View
-  Widget _publishFormView() {
-    return Container(
-      padding: EdgeInsets.all(16.w),
-      constraints: BoxConstraints(
-        maxHeight: MediaQuery.sizeOf(context).height * 0.7,
-      ),
-      decoration: BoxDecoration(
-        color: AppColors.white,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)),
-      ),
-      child: SingleChildScrollView(
-        child: Column(
-          spacing: 10.h,
-          children: [
-            Align(
-              alignment: Alignment.centerLeft,
-              child: CommonText(
-                AppLocalizations.of(context)!.where_are_you_going,
-                size: 18,
-                isBold: true,
-              ),
-            ),
-            SizedBox(),
-            _locationTile(
-              AppLocalizations.of(context)!.pick_up_location,
-              controller: pickuplocationController,
-              icon: Container(
-                width: 20,
-                height: 20,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  border: Border.all(width: 7),
-                ),
-              ),
-            ),
-            _locationTile(
-              AppLocalizations.of(context)!.destination,
-              controller: destinationController,
-              icon: Icon(Icons.location_on),
-            ),
-            InkWell(
-              onTap: () async {
-                final DateTime? result = await showDateTimePickerDialog(
-                  context,
-                );
-                if (result != null) {
-                  setState(() {
-                    dateTime.text =
-                        "${result.day}/${result.month}/${result.year} ${result.hour}:${result.minute}";
-                  });
-                }
-              },
-              child: Container(
-                padding: EdgeInsets.all(12.w),
-                decoration: BoxDecoration(
-                  color: AppColors.grey.withOpacity(0.3),
-                  borderRadius: BorderRadius.circular(12.r),
-                ),
-                child: Row(
-                  children: [
-                    Icon(Icons.calendar_month, color: Colors.grey),
-                    SizedBox(width: 8.w),
-                    Expanded(
-                      child: CommonText(
-                        dateTime.text.isNotEmpty
-                            ? dateTime.text
-                            : AppLocalizations.of(context)!.time_date,
-                        size: 13.sp,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            SizedBox(),
-            CommonButton(
-              AppLocalizations.of(context)!.continue_text,
-              height: 40,
-              onTap: () {
-                setState(() {
-                  currentStep = PublishStep.routeSelection;
-                  pickuplocationController.clear();
-                  destinationController.clear();
-                  dateTime.clear();
-                });
-              },
-            ),
-            SizedBox(height: 16.h),
-          ],
-        ),
-      ),
-    );
+  // -------------------------
+  // Map interaction
+  // -------------------------
+  void _onPickupSelected(String address, LatLng latLng) {
+    if (_mapController == null) return;
+    setState(() {
+      pickup.$1.text = address;
+      pickup = (pickup.$1, latLng);
+    });
+
+    MapHelper.moveCamera(latLng, _mapController!);
+    _drawRoutesIfReady();
   }
 
-  // Route Selection View
-  Widget _routeSelectionView() {
-    return Container(
-      padding: EdgeInsets.all(16.w),
-      constraints: BoxConstraints(
-        maxHeight: MediaQuery.sizeOf(context).height * 0.7,
-      ),
-      decoration: BoxDecoration(
-        color: Colors.transparent,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)),
-      ),
-      child: SingleChildScrollView(
-        child: Column(
-          children: [
-            Column(
-              spacing: 12.h,
-              children: List.generate(3, (index) {
-                return GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      selectedRouteIndex = index;
-                    });
-                  },
-                  child: _routeTile(isSelected: selectedRouteIndex == index),
-                );
-              }),
-            ),
-            SizedBox(height: 16.h),
-            CommonButton(
-              AppLocalizations.of(context)!.continue_text,
-              onTap: () {
-                setState(() {
-                  currentStep = PublishStep.vehicleSpace;
-                });
-              },
-            ),
-            SizedBox(height: 16.h),
-          ],
-        ),
-      ),
-    );
+  void _onDestinationSelected(String address, LatLng latLng) {
+    if (_mapController == null) return;
+    setState(() {
+      destination.$1.text = address;
+      destination = (destination.$1, latLng);
+    });
+    MapHelper.moveCamera(latLng, _mapController!);
+    _drawRoutesIfReady();
   }
 
-  // Vehicle Space View
-  Widget _vehicleSpaceView() {
-    return Container(
-      padding: EdgeInsets.all(16.w),
-      constraints: BoxConstraints(
-        maxHeight: MediaQuery.sizeOf(context).height * 0.75,
-      ),
-      decoration: BoxDecoration(
-        color: AppColors.white,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)),
-      ),
-      child: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            CommonText(
-              AppLocalizations.of(context)!.vehicle_space,
-              size: 18,
-              isBold: true,
-            ),
-            SizedBox(height: 12.h),
-            _vehicleCard(),
-            SizedBox(height: 16.h),
-            _emptySeats(),
-            SizedBox(height: 16.h),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                CommonText(
-                  AppLocalizations.of(context)!.enable_package_delivery,
-                  fontWeight: FontWeight.w500,
-                  size: 14,
-                ),
-                Switch(
-                  value: enablePackageDelivery,
-                  activeColor: AppColors.primary,
-                  onChanged: (val) {
-                    setState(() => enablePackageDelivery = val);
-                  },
-                ),
-              ],
-            ),
-            SizedBox(height: 30.h),
-            CommonButton(
-              AppLocalizations.of(context)!.continue_text,
-              height: 44,
-              onTap: () {
-                setState(() {
-                  currentStep = PublishStep.setPrice;
-                });
-              },
-            ),
-            SizedBox(height: 30.h),
-          ],
-        ),
-      ),
+  Future<void> _drawRoutesIfReady() async {
+    if (_mapController == null || pickup.$2 == null || destination.$2 == null) {
+      return;
+    }
+
+    final result = await MapHelper.drawRoutes(
+      apiKey: ApiEndpoints.mapKey,
+      origin: pickup.$2!,
+      color: AppColors.primary,
+      destination: destination.$2!,
     );
+
+    if (result.polylines.isEmpty || result.routes.isEmpty) return;
+
+    setState(() {
+      _polylines = result.polylines;
+      _routes = result.routes;
+    });
+
+    MapHelper.fitBounds(result.polylines.first.points, _mapController!);
   }
 
-  // Vehicle Card
-  Widget _vehicleCard() {
-    return Card(
-      color: AppColors.white,
-      child: Padding(
-        padding: EdgeInsets.all(16),
-        child: Row(
-          children: [
-            Expanded(
-              child: CommonImage(
-                path: "assest/image/car_1.png",
-                sourceType: ImageSourceType.asset,
-              ),
-            ),
-            Expanded(
-              child: Column(
-                children: [
-                  CommonText("Volkswagen Jetta", size: 14),
-                  CommonText("2008", size: 14),
-                  CommonText(
-                    "kkp-35-466",
-                    size: 12,
-                    color: AppColors.textSecondary,
-                  ),
-                ],
-              ),
-            ),
-          ],
+  void _onRouteSelected(int selectedIndex) {
+    final updatedPolylines = <Polyline>{};
+    int i = 0;
+
+    for (final poly in _polylines) {
+      updatedPolylines.add(
+        poly.copyWith(
+          colorParam: i == selectedIndex ? Colors.blue : AppColors.primary,
+          widthParam: i == selectedIndex ? 7 : 4,
+          zIndexParam: i == selectedIndex ? 2 : 1,
         ),
-      ),
-    );
+      );
+      i++;
+    }
+
+    setState(() => _polylines = updatedPolylines);
+
+    if (_mapController != null) {
+      MapHelper.fitBounds(
+        updatedPolylines.elementAt(selectedIndex).points,
+        _mapController!,
+      );
+    }
   }
 
-  // Empty Seats
-  Widget _emptySeats() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        CommonText(AppLocalizations.of(context)!.empty_seats, isBold: true),
-        SizedBox(height: 8.h),
-        TextField(
-          style: TextStyle(fontSize: 21),
-          decoration: InputDecoration(
-            hintText: "04",
-            hintStyle: TextStyle(fontSize: 21),
-          ),
-        ),
-      ],
-    );
+  // -------------------------
+  // Validation for each step
+  // -------------------------
+  bool _validateCurrentStep({DateTime? dateTime, String? routeString}) {
+    switch (currentStep) {
+      case PublishStep.locationPick:
+        if (pickup.$2 == null) {
+          return _showError('Please select a pickup location.');
+        }
+        if (destination.$2 == null) {
+          return _showError('Please select a dropoff location.');
+        }
+        if (dateTime == null) {
+          return _showError('Please select a departure time.');
+        }
+
+        // Save to publishTripData
+        publishTripData
+          ..pickupAddress = pickup.$1.text
+          ..pickupLatLng = pickup.$2
+          ..dropoffAddress = destination.$1.text
+          ..dropoffLatLng = destination.$2
+          ..departureTime = dateTime;
+        return true;
+
+      case PublishStep.routeSelection:
+        if (_routes.isEmpty || !_polylines.any((p) => p.color == Colors.blue)) {
+          return _showError('Please select a route.');
+        }
+
+        publishTripData.routePolyLine = routeString;
+
+        return true;
+
+      case PublishStep.vehicleSpace:
+        if (publishTripData.vehicleId == null) {
+          return _showError(
+            'Failed to retrieve your vehicle. Please add a vehicle first.',
+          );
+        }
+
+        if (publishTripData.totalSeats == null ||
+            publishTripData.totalSeats! <= 0) {
+          return _showError('Please enter a valid number of seats.');
+        }
+
+        return true;
+
+      case PublishStep.setPrice:
+        if (publishTripData.pricePerSeat == null ||
+            publishTripData.pricePerSeat! <= 0) {
+          return _showError('Please set a price per seat.');
+        }
+        if (publishTripData.notes == null || publishTripData.notes!.isEmpty) {
+          return _showError('Please leave a notes for passengers.');
+        }
+        return true;
+    }
   }
 
-  Widget _setPriceView() {
-    return Container(
-      padding: EdgeInsets.all(16.w),
-      constraints: BoxConstraints(
-        maxHeight: MediaQuery.sizeOf(context).height * 0.75,
-      ),
-      decoration: BoxDecoration(
-        color: AppColors.white,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)),
-      ),
-      child: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Center(
-              child: Container(
-                width: 40.w,
-                height: 4.h,
-                margin: EdgeInsets.only(bottom: 16.h),
-                decoration: BoxDecoration(
-                  color: Colors.grey.shade400,
-                  borderRadius: BorderRadius.circular(10),
-                ),
-              ),
-            ),
-
-            CommonText(
-              AppLocalizations.of(context)!.set_your_price,
-              size: 18,
-              isBold: true,
-            ),
-            SizedBox(height: 8.h),
-
-            CommonText(
-              AppLocalizations.of(context)!.price_per_seat,
-              size: 12,
-              color: AppColors.textSecondary,
-            ),
-            SizedBox(height: 6.h),
-
-            Row(
-              children: [
-                Expanded(
-                  child: TextField(
-                    controller: priceController,
-                    keyboardType: TextInputType.number,
-                    style: TextStyle(
-                      fontSize: 24.sp,
-                      fontWeight: FontWeight.bold,
-                    ),
-
-                    decoration: InputDecoration(
-                      contentPadding: EdgeInsets.all(0),
-                      prefixText: "\$ ",
-                    ),
-                  ),
-                ),
-              ],
-            ),
-
-            SizedBox(height: 16.h),
-
-            /// Trip Details
-            CommonText("", isBold: true),
-            SizedBox(height: 8.h),
-
-            CommonTextfieldWithTitle(
-              AppLocalizations.of(context)!.trip_details,
-              TextEditingController(),
-              maxLine: 3,
-              hintText: AppLocalizations.of(
-                context,
-              )!.lorem_ipsum_is_simply_dummy_text_of_the_printing_and_typesetting_industry_lorem_ipsum,
-            ),
-
-            SizedBox(height: 16.h),
-
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                CommonText(
-                  AppLocalizations.of(context)!.automatic_reservation,
-                  fontWeight: FontWeight.w500,
-                  size: 14,
-                ),
-                Switch(
-                  value: automaticReservation,
-                  activeColor: AppColors.primary,
-                  onChanged: (val) {
-                    setState(() => automaticReservation = val);
-                  },
-                ),
-              ],
-            ),
-
-            SizedBox(height: 24.h),
-
-            CommonButton(
-              AppLocalizations.of(context)!.continue_text,
-              height: 44,
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) {
-                      return TakePhotoPage(forPublish: true);
-                    },
-                  ),
-                );
-              },
-            ),
-
-            SizedBox(height: 20.h),
-          ],
-        ),
-      ),
-    );
-  }
-
-  // Route Tile
-  Widget _routeTile({bool isSelected = false}) {
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 8),
-      width: double.infinity,
-      decoration: BoxDecoration(
-        color: isSelected ? Colors.yellow.shade50 : AppColors.white,
-        borderRadius: BorderRadius.circular(16.r),
-        border: Border.all(
-          color: isSelected ? Colors.green : Colors.grey.shade300,
-        ),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          CommonText("Barcelona  →  Real Madrid", size: 12),
-          SizedBox(height: 4.h),
-          Row(
-            children: [
-              CommonText("113 Km  ", size: 14, isBold: true),
-              CommonText(
-                "(1h 20 minutes)",
-                size: 12,
-                isBold: true,
-                color: AppColors.textSecondary,
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-
-  // Location Tile (input fields)
-  Widget _locationTile(
-    String title, {
-    required TextEditingController controller,
-    required Widget icon,
-  }) {
-    return Container(
-      padding: EdgeInsets.all(14.w),
-      height: 60,
-      decoration: BoxDecoration(
-        color: AppColors.grey.withOpacity(0.3),
-        borderRadius: BorderRadius.circular(12.r),
-      ),
-      child: Row(
-        children: [
-          icon,
-          SizedBox(width: 12.w),
-          Expanded(
-            child: TextField(
-              controller: controller,
-              decoration: InputDecoration(
-                hintText: title,
-                border: InputBorder.none,
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
+  bool _showError(String message) {
+    context.showErrorSnackbar(title: "Error", message: message);
+    return false;
   }
 }

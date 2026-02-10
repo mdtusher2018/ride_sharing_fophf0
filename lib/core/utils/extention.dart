@@ -1,6 +1,7 @@
 import 'package:another_flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:velozaje/core/utils/app_colors.dart';
 
 extension NavigationExtensions on BuildContext {
   Future<T?> navigateTo<T extends Object?>(
@@ -12,9 +13,8 @@ extension NavigationExtensions on BuildContext {
   }) {
     final route = PageRouteBuilder<T>(
       pageBuilder: (context, animation, secondaryAnimation) => page,
-      transitionsBuilder:
-          (context, animation, secondaryAnimation, child) =>
-              FadeTransition(opacity: animation, child: child),
+      transitionsBuilder: (context, animation, secondaryAnimation, child) =>
+          FadeTransition(opacity: animation, child: child),
       transitionDuration: duration,
     );
 
@@ -55,5 +55,13 @@ extension SnackbarExtensions on BuildContext {
       titleColor: textColor,
       messageColor: textColor,
     ).show(this);
+  }
+
+  void showErrorSnackbar({required String title, required String message}) {
+    showCommonSnackbar(
+      title: title,
+      message: message,
+      backgroundColor: AppColors.error,
+    );
   }
 }

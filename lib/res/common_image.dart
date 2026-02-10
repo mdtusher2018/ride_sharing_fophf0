@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:velozaje/core/utils/app_colors.dart';
 import 'package:velozaje/core/utils/helper.dart';
 
 enum ImageSourceType { asset, network }
@@ -118,9 +119,10 @@ class CommonImage extends StatelessWidget {
 
   /// Error fallback
   Widget _error(double? w, double? h) {
-    return SizedBox(
+    return Container(
       width: w,
       height: h,
+      color: AppColors.grey.withOpacity(0.5),
       child: const Icon(Icons.broken_image, color: Colors.grey),
     );
   }

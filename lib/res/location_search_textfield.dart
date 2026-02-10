@@ -9,20 +9,18 @@ import 'package:velozaje/res/common_text.dart';
 
 class LocationSearchField extends StatefulWidget {
   final String hint;
-  final String title;
+  final String? title;
   final Color iconColor;
-  final ValueChanged<String>? onAddressSelected;
-  final ValueChanged<LatLng>? onLatLngSelected;
+  final void Function(String address, LatLng latLng)? onAddressSelected;
   final bool enableCurrentLocation;
   final TextEditingController controller;
 
   const LocationSearchField({
     super.key,
     required this.hint,
-    required this.title,
+    this.title,
     this.iconColor = AppColors.primary,
     this.onAddressSelected,
-    this.onLatLngSelected,
     this.enableCurrentLocation = true,
     required this.controller,
   });
@@ -38,21 +36,22 @@ class _LocationSearchFieldState extends State<LocationSearchField> {
 
     final latLng = LatLng(position.latitude, position.longitude);
 
-    widget.controller.text = "Current Location";
-
     final placemarks = await placemarkFromCoordinates(
       position.latitude,
       position.longitude,
     );
 
+    String address = "Current Location";
+
     if (placemarks.isNotEmpty) {
       final place = placemarks.first;
-      widget.controller.text =
+      address =
           "${place.name}, ${place.locality}, ${place.administrativeArea}, ${place.country}";
     }
 
-    widget.onAddressSelected?.call(widget.controller.text);
-    widget.onLatLngSelected?.call(latLng);
+    widget.controller.text = address;
+
+    widget.onAddressSelected?.call(address, latLng);
   }
 
   @override
@@ -60,8 +59,10 @@ class _LocationSearchFieldState extends State<LocationSearchField> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        CommonText(widget.title, size: 14, isBold: true),
-        SizedBox(height: 8),
+        if (widget.title != null)
+          CommonText(widget.title!, size: 14, isBold: true),
+        if (widget.title != null) const SizedBox(height: 8),
+
         GooglePlaceAutoCompleteTextField(
           textEditingController: widget.controller,
           googleAPIKey: ApiEndpoints.mapKey,
@@ -70,7 +71,7 @@ class _LocationSearchFieldState extends State<LocationSearchField> {
 
           inputDecoration: InputDecoration(
             hintText: widget.hint,
-            prefixIcon: Icon(Icons.location_on, color: AppColors.grey),
+            prefixIcon: const Icon(Icons.location_on, color: AppColors.grey),
             suffixIcon: widget.enableCurrentLocation
                 ? IconButton(
                     icon: Icon(Icons.my_location, color: widget.iconColor),
@@ -79,7 +80,7 @@ class _LocationSearchFieldState extends State<LocationSearchField> {
                 : null,
             border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
           ),
-
+          focusNode: FocusNode(),
           getPlaceDetailWithLatLng: (prediction) {
             final address = prediction.description ?? "";
             final latLng = LatLng(
@@ -87,10 +88,9 @@ class _LocationSearchFieldState extends State<LocationSearchField> {
               double.parse(prediction.lng!),
             );
 
-            widget.onAddressSelected?.call(address);
-            widget.onLatLngSelected?.call(latLng);
+            widget.onAddressSelected?.call(address, latLng);
           },
-          focusNode: FocusNode(),
+
           itemClick: (prediction) {
             widget.controller.text = prediction.description ?? "";
             widget.controller.selection = TextSelection.fromPosition(

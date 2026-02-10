@@ -1,19 +1,8 @@
-import 'package:flutter_riverpod/legacy.dart';
-import 'package:velozaje/core/model/pagenation_meta_model.dart';
-import 'package:velozaje/core/pagination/paginated_controller.dart';
+import 'package:velozaje/models/pagenation_meta_model.dart';
+import 'package:velozaje/controllers/paginated_controller.dart';
 import 'package:velozaje/core/services/api/i_api_service.dart';
-import 'package:velozaje/core/services/providers.dart';
 import 'package:velozaje/core/utils/api_end_points.dart';
 import 'package:velozaje/feature/notifications/notification_model.dart';
-
-final myNotificationsControllerProvider =
-    StateNotifierProvider<
-      NotificationController,
-      PaginationState<NotificationItem>
-    >((ref) {
-      final repo = ref.read(apiServiceProvider);
-      return NotificationController(repo);
-    });
 
 class NotificationController extends PaginationNotifier<NotificationItem> {
   final IApiService apiService;
@@ -21,7 +10,7 @@ class NotificationController extends PaginationNotifier<NotificationItem> {
   NotificationController(this.apiService);
 
   @override
-  Future<(List<NotificationItem>, Meta)> fetchPage({
+  Future<(List<NotificationItem>, PaginationMetaModel)> fetchPage({
     required int page,
     required int limit,
   }) async {

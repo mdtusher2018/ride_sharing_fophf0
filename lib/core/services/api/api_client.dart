@@ -101,6 +101,8 @@ class ApiClient {
       request.fields[bodyFieldName] = jsonEncode(body);
     }
 
+    log(request.fields.toString());
+
     final streamedResponse = await request.send();
     final response = await http.Response.fromStream(streamedResponse);
 
@@ -110,7 +112,12 @@ class ApiClient {
   dynamic _processResponse(http.Response response) {
     final statusCode = response.statusCode;
     final body = response.body.isNotEmpty ? jsonDecode(response.body) : null;
-    log(response.body);
+    _logResponse(
+      statusCode: statusCode,
+      url: response.request?.url.toString(),
+      method: response.request?.method,
+      body: body,
+    );
     if (statusCode >= 200 && statusCode < 300) return body;
 
     throw ApiException(
@@ -118,5 +125,26 @@ class ApiClient {
       body?['message'] ?? 'Unknown error',
       data: body,
     );
+  }
+
+  void _logResponse({
+    required int statusCode,
+    String? url,
+    String? method,
+    dynamic body,
+  }) {
+    final isSuccess = statusCode >= 200 && statusCode < 300;
+
+    final emoji = isSuccess ? '✅' : '❌';
+    final title = '$emoji [$statusCode] ${method ?? ''} ${url ?? ''}';
+
+    log(title);
+
+    if (body != null) {
+      const encoder = JsonEncoder.withIndent('  ');
+      log(encoder.convert(body));
+    } else {
+      log('No response body');
+    }
   }
 }

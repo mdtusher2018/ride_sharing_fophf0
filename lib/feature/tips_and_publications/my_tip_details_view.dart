@@ -7,6 +7,7 @@ import 'package:velozaje/core/localization/app_localizations.dart';
 import 'package:velozaje/core/utils/app_colors.dart';
 import 'package:velozaje/feature/tips_and_publications/start_tip_details_view.dart';
 import 'package:velozaje/feature/tips_and_publications/widgets/tip_header_card.dart';
+import 'package:velozaje/feature/widget/vehicale_card.dart';
 import 'package:velozaje/res/common_button.dart';
 import 'package:velozaje/res/common_image.dart';
 import 'package:velozaje/res/common_text.dart';
@@ -86,33 +87,12 @@ class MyTipDetailsPage extends StatelessWidget {
                       children: [
                         TipHeaderCard(isTripStartPage: false),
                         SizedBox(height: 16.h),
-                        Card(
-                          color: AppColors.white,
-                          child: Padding(
-                            padding: EdgeInsets.all(16),
-                            child: Row(
-                              children: [
-                                Expanded(
-                                  child: CommonImage(
-                                    path: "assest/image/car_1.png",
-                                  ),
-                                ),
-                                Expanded(
-                                  child: Column(
-                                    children: [
-                                      CommonText("Volkswagen Jetta", size: 14),
-                                      CommonText("2008", size: 14),
-                                      CommonText(
-                                        "kkp-35-466",
-                                        size: 12,
-                                        color: AppColors.textSecondary,
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
+                        VehicleCard(
+                          brand: "",
+                          image: "",
+                          licensePlateNumber: "",
+                          vehicleModel: "",
+                          year: "",
                         ),
                         SizedBox(height: 16.h),
 

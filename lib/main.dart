@@ -5,7 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:velozaje/core/localization/app_localizations.dart';
 import 'package:velozaje/core/utils/global_keys.dart';
-import 'package:velozaje/feature/home/take_image_view.dart';
+import 'package:velozaje/feature/take_image_view.dart';
 import 'package:velozaje/feature/splash_onboarding/splash_screen.dart';
 
 void main() async {

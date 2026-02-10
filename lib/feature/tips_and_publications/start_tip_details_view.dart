@@ -7,6 +7,7 @@ import 'package:velozaje/core/localization/app_localizations.dart';
 import 'package:velozaje/core/utils/app_colors.dart';
 import 'package:velozaje/feature/tips_and_publications/rate_driver_bottom_sheet_view.dart';
 import 'package:velozaje/feature/tips_and_publications/widgets/tip_header_card.dart';
+import 'package:velozaje/feature/widget/vehicale_card.dart';
 import 'package:velozaje/res/common_button.dart';
 import 'package:velozaje/res/common_image.dart';
 import 'package:velozaje/res/common_text.dart';
@@ -88,33 +89,12 @@ class StartTipDetailsPage extends StatelessWidget {
                       children: [
                         TipHeaderCard(isTripStartPage: true),
                         SizedBox(height: 16.h),
-                        Card(
-                          color: AppColors.white,
-                          child: Padding(
-                            padding: EdgeInsets.all(16),
-                            child: Row(
-                              children: [
-                                Expanded(
-                                  child: CommonImage(
-                                    path: "assest/image/car_1.png",
-                                  ),
-                                ),
-                                Expanded(
-                                  child: Column(
-                                    children: [
-                                      CommonText("Volkswagen Jetta", size: 14),
-                                      CommonText("2008", size: 14),
-                                      CommonText(
-                                        "kkp-35-466",
-                                        size: 12,
-                                        color: AppColors.textSecondary,
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
+                        VehicleCard(
+                          image: "",
+                          brand: "",
+                          vehicleModel: "",
+                          year: "",
+                          licensePlateNumber: "",
                         ),
                         SizedBox(height: 16.h),
                         //passanger
@@ -238,7 +218,10 @@ class StartTipDetailsPage extends StatelessWidget {
               children: [
                 SizedBox(height: 32.h),
 
-                CommonText(AppLocalizations.of(context)!.payment_successful, size: 18),
+                CommonText(
+                  AppLocalizations.of(context)!.payment_successful,
+                  size: 18,
+                ),
 
                 SizedBox(height: 16.h),
 

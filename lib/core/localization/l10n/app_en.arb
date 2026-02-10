@@ -320,40 +320,38 @@
 
   "publish_trip": "Publish Trip",
 
-  "rate_your_driver": "rateYourDriver",
+  "rate_your_driver": "Rate Your Driver",
   "write_your_feedback": "Write your feedback...",
   "skip": "Skip >>",
   "submit": "Submit",
-  "driver_name": "driverName",
+  "driver_name": "Driver Name",
 
-  "map_placeholder": "mapPlaceholder",
+  "map_placeholder": "Map Placeholder",
   "volkswagen_jetta": "volkswagenJetta",
   "year": "year",
-  "plate_number": "plateNumber",
-  "passengers": "passengers",
-  "pay_amount": "payAmount",
-  "payment_successful": "paymentSuccessful",
-  "rate_your_driver_button": "rateYourDriverButton",
+  "plate_number": "Plate Number",
+  "passengers": "Passengers",
+  "pay_amount": "Pay Amount",
+  "payment_successful": "Payment Successful",
+  "rate_your_driver_button": "Rate Your Driver Button",
 
-  "my_tips": "myTips",
+  "my_tips": "My Tips",
 
-  "booked": "booked",
-  "published": "published",
+  "booked": "Booked",
+  "published": "Published",
 
-  "confirmed": "confirmed",
-  "pending": "pending",
-  "cancelled": "cancelled",
+  "confirmed": "Confirmed",
+  "pending": "Pending",
+  "cancelled": "Cancelled",
 
   "from": "from",
   "to": "to",
-  "start_code": "startCode",
-  "give_at_pickup": "giveAtPickup",
+  "start_code": "Start Code",
+  "give_at_pickup": "Give At Pickup",
 
-  "trip_duration": "tripDuration",
-
-  "view_my_trips": "viewMyTrips",
+  "trip_duration": "Trip Duration",
   "claim": "claim",
-  "cancel_trip": "cancelTrip",
+  "cancel_trip": "Cancel Trip",
 
 
 

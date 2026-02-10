@@ -1282,7 +1282,7 @@ abstract class AppLocalizations {
   /// No description provided for @passengers.
   ///
   /// In en, this message translates to:
-  /// **'passengers'**
+  /// **'Passengers'**
   String get passengers;
 
   /// No description provided for @see_on_map.
@@ -1453,7 +1453,7 @@ abstract class AppLocalizations {
   /// No description provided for @cancel_trip.
   ///
   /// In en, this message translates to:
-  /// **'cancelTrip'**
+  /// **'Cancel Trip'**
   String get cancel_trip;
 
   /// No description provided for @accept.
@@ -1531,7 +1531,7 @@ abstract class AppLocalizations {
   /// No description provided for @view_my_trips.
   ///
   /// In en, this message translates to:
-  /// **'viewMyTrips'**
+  /// **'View My Trips'**
   String get view_my_trips;
 
   /// No description provided for @security_handshake.
@@ -1543,13 +1543,13 @@ abstract class AppLocalizations {
   /// No description provided for @start_code.
   ///
   /// In en, this message translates to:
-  /// **'startCode'**
+  /// **'Start Code'**
   String get start_code;
 
   /// No description provided for @give_at_pickup.
   ///
   /// In en, this message translates to:
-  /// **'giveAtPickup'**
+  /// **'Give At Pickup'**
   String get give_at_pickup;
 
   /// No description provided for @end_code.
@@ -1609,19 +1609,19 @@ abstract class AppLocalizations {
   /// No description provided for @confirmed.
   ///
   /// In en, this message translates to:
-  /// **'confirmed'**
+  /// **'Confirmed'**
   String get confirmed;
 
   /// No description provided for @pending.
   ///
   /// In en, this message translates to:
-  /// **'pending'**
+  /// **'Pending'**
   String get pending;
 
   /// No description provided for @cancelled.
   ///
   /// In en, this message translates to:
-  /// **'cancelled'**
+  /// **'Cancelled'**
   String get cancelled;
 
   /// No description provided for @saturday_10_20_25.
@@ -1639,7 +1639,7 @@ abstract class AppLocalizations {
   /// No description provided for @rate_your_driver.
   ///
   /// In en, this message translates to:
-  /// **'rateYourDriver'**
+  /// **'Rate Your Driver'**
   String get rate_your_driver;
 
   /// No description provided for @write_your_feedback.
@@ -1657,13 +1657,13 @@ abstract class AppLocalizations {
   /// No description provided for @driver_name.
   ///
   /// In en, this message translates to:
-  /// **'driverName'**
+  /// **'Driver Name'**
   String get driver_name;
 
   /// No description provided for @map_placeholder.
   ///
   /// In en, this message translates to:
-  /// **'mapPlaceholder'**
+  /// **'Map Placeholder'**
   String get map_placeholder;
 
   /// No description provided for @volkswagen_jetta.
@@ -1681,49 +1681,49 @@ abstract class AppLocalizations {
   /// No description provided for @plate_number.
   ///
   /// In en, this message translates to:
-  /// **'plateNumber'**
+  /// **'Plate Number'**
   String get plate_number;
 
   /// No description provided for @pay_amount.
   ///
   /// In en, this message translates to:
-  /// **'payAmount'**
+  /// **'Pay Amount'**
   String get pay_amount;
 
   /// No description provided for @payment_successful.
   ///
   /// In en, this message translates to:
-  /// **'paymentSuccessful'**
+  /// **'Payment Successful'**
   String get payment_successful;
 
   /// No description provided for @rate_your_driver_button.
   ///
   /// In en, this message translates to:
-  /// **'rateYourDriverButton'**
+  /// **'Rate Your Driver Button'**
   String get rate_your_driver_button;
 
   /// No description provided for @my_tips.
   ///
   /// In en, this message translates to:
-  /// **'myTips'**
+  /// **'My Tips'**
   String get my_tips;
 
   /// No description provided for @booked.
   ///
   /// In en, this message translates to:
-  /// **'booked'**
+  /// **'Booked'**
   String get booked;
 
   /// No description provided for @published.
   ///
   /// In en, this message translates to:
-  /// **'published'**
+  /// **'Published'**
   String get published;
 
   /// No description provided for @trip_duration.
   ///
   /// In en, this message translates to:
-  /// **'tripDuration'**
+  /// **'Trip Duration'**
   String get trip_duration;
 
   /// No description provided for @wait_for_other_users_approval.

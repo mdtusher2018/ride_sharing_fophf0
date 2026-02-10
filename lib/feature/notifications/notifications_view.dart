@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+import 'package:velozaje/core/services/providers.dart';
 import 'package:velozaje/core/utils/app_colors.dart';
 import 'package:velozaje/feature/notifications/notification_model.dart';
-import 'package:velozaje/feature/notifications/notifications_controller.dart';
 import 'package:velozaje/res/common_appbar.dart';
 import 'package:velozaje/res/common_button.dart';
 import 'package:velozaje/res/common_text.dart';
@@ -22,10 +22,10 @@ class _NotificationViewState extends ConsumerState<NotificationView> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref.read(myNotificationsControllerProvider.notifier).refresh();
+      ref.read(notificationsControllerProvider.notifier).refresh();
     });
 
-    final controller = ref.read(myNotificationsControllerProvider.notifier);
+    final controller = ref.read(notificationsControllerProvider.notifier);
     scrollController.addListener(() {
       if (scrollController.position.pixels >
           scrollController.position.maxScrollExtent - 200) {
@@ -36,8 +36,8 @@ class _NotificationViewState extends ConsumerState<NotificationView> {
 
   @override
   Widget build(BuildContext context) {
-    final pagination = ref.watch(myNotificationsControllerProvider);
-    final notifier = ref.read(myNotificationsControllerProvider.notifier);
+    final pagination = ref.watch(notificationsControllerProvider);
+    final notifier = ref.read(notificationsControllerProvider.notifier);
 
     final notifications = pagination.items;
 
@@ -71,7 +71,7 @@ class _NotificationViewState extends ConsumerState<NotificationView> {
                   child: TextButton(
                     onPressed: () {
                       ref
-                          .watch(myNotificationsControllerProvider.notifier)
+                          .watch(notificationsControllerProvider.notifier)
                           .markAllAsRead();
                     },
                     child: CommonText("Mark all as read"),
@@ -106,9 +106,7 @@ class _NotificationViewState extends ConsumerState<NotificationView> {
                           dateTime: item.createdAt,
                           onTap: () {
                             ref
-                                .watch(
-                                  myNotificationsControllerProvider.notifier,
-                                )
+                                .watch(notificationsControllerProvider.notifier)
                                 .markAsRead(item.id);
                           },
                         );
@@ -178,7 +176,7 @@ class _NotificationViewState extends ConsumerState<NotificationView> {
           CommonButton(
             "Refresh Notifications",
             onTap: () async {
-              ref.read(myNotificationsControllerProvider.notifier).refresh();
+              ref.read(notificationsControllerProvider.notifier).refresh();
             },
           ),
           Spacer(flex: 2),

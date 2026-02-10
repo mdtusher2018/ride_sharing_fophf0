@@ -1,4 +1,4 @@
-import 'package:velozaje/core/model/pagenation_meta_model.dart';
+import 'package:velozaje/models/pagenation_meta_model.dart';
 
 class NotificationsResponse {
   final bool success;
@@ -22,7 +22,7 @@ class NotificationsResponse {
 
 class NotificationsData {
   final List<NotificationItem> notifications;
-  final Meta pagination;
+  final PaginationMetaModel pagination;
 
   NotificationsData({required this.notifications, required this.pagination});
 
@@ -31,7 +31,7 @@ class NotificationsData {
       notifications: (json['notifications'] as List)
           .map((e) => NotificationItem.fromJson(e))
           .toList(),
-      pagination: Meta.fromJson(json['pagination']),
+      pagination: PaginationMetaModel.fromJson(json['pagination']),
     );
   }
 }

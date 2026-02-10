@@ -1,0 +1,229 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:velozaje/core/localization/app_localizations.dart';
+import 'package:velozaje/core/services/providers.dart';
+import 'package:velozaje/core/utils/api_end_points.dart';
+import 'package:velozaje/core/utils/map_helper.dart';
+import 'package:velozaje/feature/home_and_passenger/search_tips_results_page.dart';
+import 'package:velozaje/core/utils/app_colors.dart';
+import 'package:velozaje/feature/widget/map_wudget.dart';
+import 'package:velozaje/models/request/trip_search_request.dart';
+import 'package:velozaje/res/common_image.dart';
+import 'package:velozaje/res/common_text.dart';
+
+class SearchingDriversPage extends ConsumerStatefulWidget {
+  final TripSearchRequest request;
+
+  const SearchingDriversPage({super.key, required this.request});
+
+  @override
+  ConsumerState<SearchingDriversPage> createState() =>
+      _FindingDriversPageState();
+}
+
+class _FindingDriversPageState extends ConsumerState<SearchingDriversPage> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      _drawRoutesIfReady();
+      _loadTrips();
+    });
+  }
+
+  GoogleMapController? _mapController;
+
+  Future<void> _loadTrips() async {
+    final controller = ref.read(passengerTripsControllerProvider.notifier);
+    final startTime = DateTime.now();
+    await controller.refresh();
+    final elapsedTime = DateTime.now().difference(startTime).inMilliseconds;
+    if (elapsedTime < 3000) {
+      await Future.delayed(Duration(milliseconds: 3000 - elapsedTime));
+    }
+
+    if (!mounted) return;
+
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (_) => SearchTipsResultsPage(request: widget.request),
+      ),
+    );
+  }
+
+  Future<void> _drawRoutesIfReady() async {
+    if (_mapController == null ||
+        widget.request.pickupLatLng == null ||
+        widget.request.destinationLatLng == null) {
+      return;
+    }
+
+    final result = await MapHelper.drawRoutes(
+      apiKey: ApiEndpoints.mapKey,
+      origin: widget.request.pickupLatLng!,
+      color: AppColors.primary,
+      destination: widget.request.destinationLatLng!,
+    );
+
+    if (result.polylines.isEmpty || result.routes.isEmpty) return;
+
+    MapHelper.fitBounds(result.polylines.first.points, _mapController!);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Stack(
+        fit: StackFit.expand,
+        children: [
+          /// 🗺️ Map Placeholder
+          ReusableMapWidget(
+            pickupLocation: widget.request.pickupLatLng,
+            destinationLocation: widget.request.destinationLatLng,
+            initialZoom: 12.0,
+            onMapCreated: (controller) {
+              _mapController = controller;
+              MapHelper.moveCamera(
+                widget.request.destinationLatLng!,
+                _mapController!,
+              );
+            },
+          ),
+
+          Positioned(
+            top: 40.h,
+            left: 16.w,
+            child: InkWell(
+              onTap: () {
+                if (Navigator.canPop(context)) {
+                  Navigator.pop(context);
+                }
+              },
+              child: Container(
+                width: 40,
+                height: 40,
+                margin: EdgeInsets.only(left: 16, top: 6, bottom: 6),
+                padding: EdgeInsets.all(4),
+                decoration: BoxDecoration(
+                  color: AppColors.primary,
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Icon(Icons.arrow_back_ios_sharp, color: AppColors.white),
+              ),
+            ),
+          ),
+
+          Positioned(
+            bottom: 0,
+            left: 0,
+            right: 0,
+            child: Container(
+              constraints: BoxConstraints(
+                maxHeight: MediaQuery.sizeOf(context).height * 0.5,
+              ),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)),
+                boxShadow: [BoxShadow(color: Colors.black12, blurRadius: 10)],
+              ),
+              child: SingleChildScrollView(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    SizedBox(height: 16.h),
+
+                    /// Handle
+                    Container(
+                      width: 40.w,
+                      height: 4.h,
+                      decoration: BoxDecoration(
+                        color: Colors.grey.shade300,
+                        borderRadius: BorderRadius.circular(4.r),
+                      ),
+                    ),
+                    SizedBox(height: 16.h),
+                    CommonText(
+                      AppLocalizations.of(context)!.finding_your_drivers,
+                      size: 16,
+                      isBold: true,
+                    ),
+                    SizedBox(height: 12.h),
+                    LinearProgressIndicator(
+                      color: AppColors.primary,
+                      minHeight: 5,
+                    ),
+
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 16.0.w),
+                      child: Column(
+                        children: [
+                          SizedBox(height: 20.h),
+                          CommonImage(
+                            path: "assest/image/finding_driver.png",
+                            width: 200,
+                            sourceType: ImageSourceType.asset,
+                          ),
+                          SizedBox(height: 30.h),
+
+                          _locationTile(
+                            widget.request.pickupAddress,
+                            icon: Container(
+                              width: 20,
+                              height: 20,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                border: Border.all(width: 7),
+                              ),
+                            ),
+                          ),
+
+                          SizedBox(height: 12.h),
+
+                          /// Destination
+                          _locationTile(
+                            widget.request.destinationAddress,
+                            icon: Icon(Icons.location_on),
+                          ),
+
+                          SizedBox(height: 40.h),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _locationTile(String title, {required Widget icon}) {
+    return Container(
+      padding: EdgeInsets.all(14.w),
+      height: 60,
+      decoration: BoxDecoration(
+        color: AppColors.grey.withOpacity(0.3),
+        borderRadius: BorderRadius.circular(12.r),
+      ),
+      child: Row(
+        children: [
+          icon,
+          SizedBox(width: 12.w),
+          Expanded(
+            child: TextField(
+              decoration: InputDecoration(
+                hintText: title,
+                border: InputBorder.none,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}

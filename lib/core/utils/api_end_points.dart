@@ -22,4 +22,19 @@ class ApiEndpoints {
   //Vehicale
   static const String registerVehicale = "vehicles/register";
   static const String myVehicle = "vehicles/my-vehicle";
+
+  static const String mySavedLocations = "saved-places";
+
+  //trip
+  static const String passengerTrips = "trips";
+  static String passengerTripDetails(String id) => "trips/$id";
+  static const String getPublishedTrips = "trips/my-trips";
+  static const String createTrips = "trips/my-trips";
+
+  //Wallet
+  static const String driverTransactions = "transactions/driver";
+  static const String driverTransactionsSummary = "transactions/driver/summary";
+
+  //Review
+  static const String giveReview = "reviews";
 }

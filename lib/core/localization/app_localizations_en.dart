@@ -616,7 +616,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get trip => 'Trip';
 
   @override
-  String get passengers => 'passengers';
+  String get passengers => 'Passengers';
 
   @override
   String get see_on_map => 'See on Map';
@@ -706,7 +706,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get seats_2 => '2 Seats';
 
   @override
-  String get cancel_trip => 'cancelTrip';
+  String get cancel_trip => 'Cancel Trip';
 
   @override
   String get accept => 'Accept';
@@ -746,16 +746,16 @@ class AppLocalizationsEn extends AppLocalizations {
       'Passengers can now book your ride to Madrid';
 
   @override
-  String get view_my_trips => 'viewMyTrips';
+  String get view_my_trips => 'View My Trips';
 
   @override
   String get security_handshake => 'Security Handshake';
 
   @override
-  String get start_code => 'startCode';
+  String get start_code => 'Start Code';
 
   @override
-  String get give_at_pickup => 'giveAtPickup';
+  String get give_at_pickup => 'Give At Pickup';
 
   @override
   String get end_code => 'END CODE';
@@ -785,13 +785,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get other => 'Other';
 
   @override
-  String get confirmed => 'confirmed';
+  String get confirmed => 'Confirmed';
 
   @override
-  String get pending => 'pending';
+  String get pending => 'Pending';
 
   @override
-  String get cancelled => 'cancelled';
+  String get cancelled => 'Cancelled';
 
   @override
   String get saturday_10_20_25 => 'Saturday 10/20/25';
@@ -800,7 +800,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get publish_trip => 'Publish Trip';
 
   @override
-  String get rate_your_driver => 'rateYourDriver';
+  String get rate_your_driver => 'Rate Your Driver';
 
   @override
   String get write_your_feedback => 'Write your feedback...';
@@ -809,10 +809,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get submit => 'Submit';
 
   @override
-  String get driver_name => 'driverName';
+  String get driver_name => 'Driver Name';
 
   @override
-  String get map_placeholder => 'mapPlaceholder';
+  String get map_placeholder => 'Map Placeholder';
 
   @override
   String get volkswagen_jetta => 'volkswagenJetta';
@@ -821,28 +821,28 @@ class AppLocalizationsEn extends AppLocalizations {
   String get year => 'year';
 
   @override
-  String get plate_number => 'plateNumber';
+  String get plate_number => 'Plate Number';
 
   @override
-  String get pay_amount => 'payAmount';
+  String get pay_amount => 'Pay Amount';
 
   @override
-  String get payment_successful => 'paymentSuccessful';
+  String get payment_successful => 'Payment Successful';
 
   @override
-  String get rate_your_driver_button => 'rateYourDriverButton';
+  String get rate_your_driver_button => 'Rate Your Driver Button';
 
   @override
-  String get my_tips => 'myTips';
+  String get my_tips => 'My Tips';
 
   @override
-  String get booked => 'booked';
+  String get booked => 'Booked';
 
   @override
-  String get published => 'published';
+  String get published => 'Published';
 
   @override
-  String get trip_duration => 'tripDuration';
+  String get trip_duration => 'Trip Duration';
 
   @override
   String get wait_for_other_users_approval => 'Wait for other users Approval';

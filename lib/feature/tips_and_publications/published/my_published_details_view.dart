@@ -2,13 +2,20 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:icons_plus/icons_plus.dart';
 import 'package:velozaje/core/localization/app_localizations.dart';
+import 'package:velozaje/feature/widget/vehicale_card.dart';
 import 'package:velozaje/res/common_button.dart';
 import 'package:velozaje/res/common_image.dart';
 import 'package:velozaje/res/common_otp_field.dart';
 import 'package:velozaje/res/common_text.dart';
 import 'package:velozaje/core/utils/app_colors.dart';
 
-enum Status { pending, pickupCode, ontheway, finalCode, compleated }
+enum PassengerTripStatus {
+  pending,
+  pickupCode,
+  ontheway,
+  finalCode,
+  compleated,
+}
 
 class MyPublishedDetailsPage extends StatelessWidget {
   const MyPublishedDetailsPage({super.key});
@@ -82,7 +89,13 @@ class MyPublishedDetailsPage extends StatelessWidget {
 
                     SizedBox(height: 12.h),
 
-                    _VehicleCard(),
+                    VehicleCard(
+                      brand: "",
+                      image: "",
+                      licensePlateNumber: "",
+                      vehicleModel: "",
+                      year: "",
+                    ),
 
                     SizedBox(height: 16.h),
 
@@ -94,10 +107,10 @@ class MyPublishedDetailsPage extends StatelessWidget {
                         isBold: true,
                       ),
                     ),
-                    _PassengerCard(status: Status.finalCode),
-                    _PassengerCard(status: Status.ontheway),
-                    _PassengerCard(status: Status.pickupCode),
-                    _PassengerCard(status: Status.compleated),
+                    _PassengerCard(status: PassengerTripStatus.finalCode),
+                    _PassengerCard(status: PassengerTripStatus.ontheway),
+                    _PassengerCard(status: PassengerTripStatus.pickupCode),
+                    _PassengerCard(status: PassengerTripStatus.compleated),
 
                     SizedBox(height: 12.h),
 
@@ -109,8 +122,8 @@ class MyPublishedDetailsPage extends StatelessWidget {
                         isBold: true,
                       ),
                     ),
-                    _PassengerCard(status: Status.pending),
-                    _PassengerCard(status: Status.pending),
+                    _PassengerCard(status: PassengerTripStatus.pending),
+                    _PassengerCard(status: PassengerTripStatus.pending),
 
                     SizedBox(height: 20.h),
 
@@ -255,39 +268,8 @@ class _InfoBox extends StatelessWidget {
   }
 }
 
-class _VehicleCard extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      elevation: 2,
-      color: AppColors.white,
-      child: Padding(
-        padding: EdgeInsets.all(16),
-        child: Row(
-          children: [
-            Expanded(child: CommonImage(path: "assest/image/car_1.png")),
-            Expanded(
-              child: Column(
-                children: [
-                  CommonText("Volkswagen Jetta", size: 14),
-                  CommonText("2008", size: 14),
-                  CommonText(
-                    "kkp-35-466",
-                    size: 12,
-                    color: AppColors.textSecondary,
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
 class _PassengerCard extends StatelessWidget {
-  final Status status;
+  final PassengerTripStatus status;
   const _PassengerCard({required this.status});
 
   @override
@@ -384,11 +366,12 @@ class _PassengerCard extends StatelessWidget {
               ],
             ),
             SizedBox(height: 8),
-            if (status == Status.pending) accetpRejectButton(context),
-            if (status == Status.pickupCode) pickupCode(context),
-            if (status == Status.ontheway) onTheWay(context),
-            if (status == Status.finalCode) finalCode(),
-            if (status == Status.compleated) compleate(context),
+            if (status == PassengerTripStatus.pending)
+              accetpRejectButton(context),
+            if (status == PassengerTripStatus.pickupCode) pickupCode(context),
+            if (status == PassengerTripStatus.ontheway) onTheWay(context),
+            if (status == PassengerTripStatus.finalCode) finalCode(),
+            if (status == PassengerTripStatus.compleated) compleate(context),
           ],
         ),
       ),

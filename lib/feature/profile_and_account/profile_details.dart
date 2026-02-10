@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:velozaje/core/localization/app_localizations.dart';
 import 'package:velozaje/core/utils/app_colors.dart';
+import 'package:velozaje/feature/widget/vehicale_card.dart';
 import 'package:velozaje/res/common_appbar.dart';
-import 'package:velozaje/res/common_image.dart';
 import 'package:velozaje/res/common_text.dart';
 
 enum MaterialType { diamond, rock, clay }
@@ -31,32 +31,12 @@ class ProfileDetailsPage extends StatelessWidget {
           spacing: 10.h,
           children: [
             _HeaderCard(),
-            Card(
-              elevation: 2,
-              color: AppColors.white,
-              child: Padding(
-                padding: EdgeInsets.all(16),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: CommonImage(path: "assest/image/car_1.png"),
-                    ),
-                    Expanded(
-                      child: Column(
-                        children: [
-                          CommonText("Volkswagen Jetta", size: 14),
-                          CommonText("2008", size: 14),
-                          CommonText(
-                            "kkp-35-466",
-                            size: 12,
-                            color: AppColors.textSecondary,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
+            VehicleCard(
+              image: "",
+              brand: "",
+              vehicleModel: "",
+              year: "",
+              licensePlateNumber: "",
             ),
 
             _AboutSection(),

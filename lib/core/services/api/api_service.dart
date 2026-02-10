@@ -29,11 +29,16 @@ class ApiService implements IApiService {
   @override
   Future<dynamic> get(
     String endpoint, {
+    Map<String, String>? queryParameters,
     Map<String, String>? extraHeaders,
   }) async {
-    final url = Uri.parse('${ApiEndpoints.baseUrl}$endpoint');
+    final uri = Uri.parse(
+      '${ApiEndpoints.baseUrl}$endpoint',
+    ).replace(queryParameters: queryParameters);
+
     final headers = await _getHeaders(extra: extraHeaders);
-    return _client.get(url, headers: headers);
+
+    return _client.get(uri, headers: headers);
   }
 
   @override

@@ -1,7 +1,11 @@
 import 'dart:io';
 
 abstract class IApiService {
-  Future<dynamic> get(String endpoint, {Map<String, String>? extraHeaders});
+  Future<dynamic> get(
+    String endpoint, {
+    Map<String, String>? extraHeaders,
+    Map<String, String>? queryParameters,
+  });
   Future<dynamic> post(
     String endpoint,
     Map<String, dynamic> body, {

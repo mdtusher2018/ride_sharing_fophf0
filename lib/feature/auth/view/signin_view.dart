@@ -6,10 +6,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:velozaje/core/localization/app_localizations.dart';
-import 'package:velozaje/feature/auth/controllers/signin_controller.dart';
+import 'package:velozaje/core/services/providers.dart';
 import 'package:velozaje/feature/auth/view/forget_password_view.dart';
 import 'package:velozaje/feature/auth/view/signup_view.dart';
-import 'package:velozaje/feature/auth/widget/auth_backend.dart';
+import 'package:velozaje/feature/auth/widget/auth_background.dart';
 import 'package:velozaje/core/utils/app_colors.dart';
 import 'package:velozaje/res/common_button.dart';
 import 'package:velozaje/res/common_image.dart';
@@ -129,7 +129,7 @@ class _SignInPageState extends ConsumerState<SignInPage> {
                         /// Login button
                         ValueListenableBuilder(
                           valueListenable: ref
-                              .watch(signInControllerProvider)
+                              .watch(authControllerProvider)
                               .isLoading,
                           builder: (context, value, child) {
                             return CommonButton(
@@ -137,7 +137,7 @@ class _SignInPageState extends ConsumerState<SignInPage> {
                               isLoading: value,
                               onTap: () {
                                 ref
-                                    .read(signInControllerProvider)
+                                    .read(authControllerProvider)
                                     .signIn(
                                       email: emailController.text,
                                       password: passwordController.text,

@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:velozaje/core/localization/app_localizations.dart';
-import 'package:velozaje/feature/auth/controllers/reset_password_controller.dart';
-import 'package:velozaje/feature/auth/widget/auth_backend.dart';
+import 'package:velozaje/core/services/providers.dart';
+import 'package:velozaje/feature/auth/widget/auth_background.dart';
 import 'package:velozaje/core/utils/app_colors.dart';
 import 'package:velozaje/res/common_button.dart';
 import 'package:velozaje/res/common_image.dart';
@@ -100,7 +100,7 @@ class _CreateNewPasswordPageState extends State<CreateNewPasswordPage> {
                           builder: (context, ref, _) {
                             return ValueListenableBuilder(
                               valueListenable: ref
-                                  .watch(resetPasswordControllerProvider)
+                                  .watch(authControllerProvider)
                                   .isLoading,
                               builder: (context, value, child) {
                                 return CommonButton(
@@ -108,7 +108,7 @@ class _CreateNewPasswordPageState extends State<CreateNewPasswordPage> {
                                   isLoading: value,
                                   onTap: () {
                                     ref
-                                        .read(resetPasswordControllerProvider)
+                                        .read(authControllerProvider)
                                         .resetPassword(
                                           confirmPassword:
                                               confirmPasswordController.text

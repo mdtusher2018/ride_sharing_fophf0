@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:velozaje/feature/chat/chat_list_view.dart';
-import 'package:velozaje/feature/home/home_view.dart';
+import 'package:velozaje/feature/home_and_passenger/home_view.dart';
 import 'package:velozaje/feature/profile_and_account/profile_view.dart';
 import 'package:velozaje/feature/tips_and_publications/published/process/publish_process_view.dart';
-import 'package:velozaje/feature/tips_and_publications/tips_and_publication_view.dart';
+import 'package:velozaje/feature/tips_and_publications/trips_and_publication_view.dart';
 
 class RootPage extends StatefulWidget {
   const RootPage({super.key});

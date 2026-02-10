@@ -6,7 +6,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:velozaje/core/localization/app_localizations.dart';
 import 'package:velozaje/feature/vehicale/view/register_vehicale_view.dart';
 import 'package:velozaje/core/utils/app_colors.dart';
-import 'package:velozaje/feature/profile_and_account/controllers/profile_controller.dart';
+import 'package:velozaje/controllers/profile_controller.dart';
 import 'package:velozaje/res/common_button.dart';
 import 'package:velozaje/res/common_image.dart';
 import 'package:velozaje/res/common_text_field_with_title.dart';
@@ -153,7 +153,7 @@ class _ConfirmDetailsPageState extends ConsumerState<ConfirmDetailsPage> {
               title: AppLocalizations.of(context)!.address,
               hint: AppLocalizations.of(context)!.select_your_date_of_birth,
               controller: addressController,
-              onAddressSelected: (address) {
+              onAddressSelected: (address, latLng) {
                 addressController.text = address;
               },
             ),

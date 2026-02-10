@@ -1,25 +1,26 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:velozaje/core/localization/app_localizations.dart';
+import 'package:velozaje/core/services/providers.dart';
 import 'package:velozaje/feature/tips_and_publications/published/published_sucessfull_page.dart';
 import 'package:velozaje/core/utils/app_colors.dart';
+import 'package:velozaje/models/request/trip_publish_request.dart';
 import 'package:velozaje/res/common_button.dart';
 
-class PublishConfirmPage extends StatelessWidget {
-  final File imageFile;
+class PublishConfirmPage extends ConsumerWidget {
+  final TripPublishRequest publishedData;
 
-  const PublishConfirmPage({super.key, required this.imageFile});
+  const PublishConfirmPage({super.key, required this.publishedData});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       body: Stack(
         fit: StackFit.expand,
         children: [
           /// Image Preview
-          Image.file(imageFile, fit: BoxFit.cover),
+          Image.file(publishedData.driverImage!, fit: BoxFit.cover),
 
           /// Back Button
           Positioned(
@@ -42,16 +43,28 @@ class PublishConfirmPage extends StatelessWidget {
             bottom: 60,
             left: 32,
             right: 32,
-            child: CommonButton(
-              AppLocalizations.of(context)!.publish_trip,
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) {
-                      return PublishedSucessfullPage();
-                    },
-                  ),
+            child: ValueListenableBuilder(
+              valueListenable: ref
+                  .watch(driverTripsControllerProvider.notifier)
+                  .isLoading,
+              builder: (context, value, child) {
+                return CommonButton(
+                  AppLocalizations.of(context)!.publish_trip,
+                  onTap: () async {
+                    final result = await ref
+                        .read(driverTripsControllerProvider.notifier)
+                        .publishTrip(publishedData: publishedData);
+                    if (result ?? false) {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) {
+                            return PublishedSucessfullPage();
+                          },
+                        ),
+                      );
+                    }
+                  },
                 );
               },
             ),

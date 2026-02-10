@@ -1,3 +1,5 @@
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+
 class AppDefaultValue {
   // Basic user info
   static const String name = "Unnamed User";
@@ -25,6 +27,7 @@ class AppDefaultValue {
   // Location
   static const double latitude = 0.0;
   static const double longitude = 0.0;
+  static const LatLng latLng = LatLng(10.380808, 51.091988);
 
   // Messages
   static const String genericErrorMessage = "Something went wrong";

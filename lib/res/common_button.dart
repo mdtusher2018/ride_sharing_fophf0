@@ -18,6 +18,7 @@ class CommonButton extends StatelessWidget {
   final Widget? iconWidget;
   final bool isLoading;
   final bool haveNextIcon;
+  final bool disable;
 
   const CommonButton(
     this.title, {
@@ -28,6 +29,7 @@ class CommonButton extends StatelessWidget {
     this.width = double.infinity,
     this.height = 50,
     this.onTap,
+    this.disable = false,
     this.textalign = TextAlign.left,
     this.boarder,
     this.boarderRadious = 10.0,
