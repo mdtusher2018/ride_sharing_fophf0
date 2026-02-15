@@ -3,10 +3,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:velozaje/controllers/profile_controller.dart';
 import 'package:velozaje/core/utils/extention.dart';
 import 'package:velozaje/feature/chat/chat_list_view.dart';
-import 'package:velozaje/feature/home_and_passenger/home_view.dart';
+import 'package:velozaje/feature/home_and_trip_search/home_view.dart';
 import 'package:velozaje/feature/profile_and_account/profile_view.dart';
-import 'package:velozaje/feature/tips_and_publications/published/process/publish_process_view.dart';
-import 'package:velozaje/feature/tips_and_publications/trips_view.dart';
+import 'package:velozaje/feature/trip/trip_publish/trips_publishing_view.dart';
+import 'package:velozaje/feature/trip/trips_view.dart';
 
 class RootPage extends ConsumerStatefulWidget {
   const RootPage({super.key});
@@ -18,7 +18,7 @@ class RootPage extends ConsumerStatefulWidget {
 class _RootPageState extends ConsumerState<RootPage> {
   final List<Widget> _pages = [
     HomePage(),
-    TipsAndPublicationPage(),
+    TipsView(),
 
     ChatListPage(),
     ProfilePage(),

@@ -20,10 +20,10 @@ import 'package:velozaje/core/utils/app_colors.dart';
 import 'package:velozaje/res/location_search_textfield.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 
-part 'publishFormView.dart';
-part 'routeSelectionView.dart';
-part 'vehicleSpaceView.dart';
-part 'setPriceView.dart';
+part 'parts_of_trip_publishing/publishFormView.dart';
+part 'parts_of_trip_publishing/routeSelectionView.dart';
+part 'parts_of_trip_publishing/vehicleSpaceView.dart';
+part 'parts_of_trip_publishing/setPriceView.dart';
 
 enum PublishStep { locationPick, routeSelection, vehicleSpace, setPrice }
 

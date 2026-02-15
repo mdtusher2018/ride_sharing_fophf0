@@ -1,28 +1,38 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:velozaje/core/localization/app_localizations.dart';
 import 'package:velozaje/core/services/providers.dart';
-import 'package:velozaje/feature/tips_and_publications/published/published_sucessfull_page.dart';
 import 'package:velozaje/core/utils/app_colors.dart';
-import 'package:velozaje/models/request/trip_publish_request.dart';
+import 'package:velozaje/models/request/trip_search_request.dart';
+import 'package:velozaje/models/response/trip/passenger_trip_model.dart';
 import 'package:velozaje/res/common_button.dart';
 
-class PublishConfirmPage extends ConsumerWidget {
-  final TripPublishRequest publishedData;
+class TripBookingConfirmView extends ConsumerWidget {
+  final File imageFile;
+  final PassengerTripModel tripDetails;
+  final TripSearchRequest tripSearched;
+  final VoidCallback? onBooking;
 
-  const PublishConfirmPage({super.key, required this.publishedData});
+  const TripBookingConfirmView({
+    super.key,
+    required this.imageFile,
+    required this.onBooking,
+    required this.tripDetails,
+    required this.tripSearched,
+  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final controller = ref.watch(tripsBookingControllerProvider.notifier);
     return Scaffold(
       body: Stack(
         fit: StackFit.expand,
         children: [
-          /// Image Preview
-          Image.file(publishedData.driverImage!, fit: BoxFit.cover),
+          Image.file(imageFile, fit: BoxFit.cover),
 
-          /// Back Button
           Positioned(
             top: 50.h,
             left: 16.w,
@@ -38,31 +48,27 @@ class PublishConfirmPage extends ConsumerWidget {
             ),
           ),
 
-          /// Bottom Action Panel
           Positioned(
             bottom: 60,
             left: 32,
             right: 32,
             child: ValueListenableBuilder(
-              valueListenable: ref
-                  .watch(driverTripsControllerProvider.notifier)
-                  .isLoading,
+              valueListenable: controller.isLoading,
               builder: (context, value, child) {
                 return CommonButton(
-                  AppLocalizations.of(context)!.publish_trip,
+                  AppLocalizations.of(context)!.confirm_booking,
+                  isLoading: value,
                   onTap: () async {
-                    final result = await ref
-                        .read(driverTripsControllerProvider.notifier)
-                        .publishTrip(publishedData: publishedData);
-                    if (result ?? false) {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) {
-                            return PublishedSucessfullPage();
-                          },
-                        ),
-                      );
+                    final success = await controller.tripBooking(
+                      passengerImage: imageFile,
+                      tripDetails: tripDetails,
+                      tripSearched: tripSearched,
+                    );
+
+                    if (success == true) {
+                      Navigator.pop(context);
+                      Navigator.pop(context);
+                      if (onBooking != null) onBooking!();
                     }
                   },
                 );

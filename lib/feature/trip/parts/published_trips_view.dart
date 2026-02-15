@@ -1,14 +1,4 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:velozaje/core/localization/app_localizations.dart';
-import 'package:velozaje/core/services/providers.dart';
-import 'package:velozaje/core/utils/enums_with_enum_extentions.dart';
-import 'package:velozaje/core/utils/helper.dart';
-import 'package:velozaje/feature/tips_and_publications/published/my_published_details_view.dart';
-import 'package:velozaje/models/response/trip/driver_published_trips.dart';
-import 'package:velozaje/res/common_text.dart';
-import 'package:velozaje/core/utils/app_colors.dart';
+part of '../trips_view.dart';
 
 class PublishedTripsPage extends ConsumerStatefulWidget {
   const PublishedTripsPage({super.key});
@@ -26,20 +16,20 @@ class _MyPublishedTripsPageState extends ConsumerState<PublishedTripsPage> {
     super.initState();
 
     Future.microtask(() {
-      ref.read(driverTripsControllerProvider.notifier).refresh();
+      ref.read(tripsPublishControllerProvider.notifier).refresh();
     });
 
     _scrollController.addListener(() {
       if (_scrollController.position.pixels >
           _scrollController.position.maxScrollExtent - 200) {
-        ref.read(driverTripsControllerProvider.notifier).loadMore();
+        ref.read(tripsPublishControllerProvider.notifier).loadMore();
       }
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    final state = ref.watch(driverTripsControllerProvider);
+    final state = ref.watch(tripsPublishControllerProvider);
 
     if (state.items.isEmpty) {
       return const Center(child: CircularProgressIndicator());

@@ -7,8 +7,8 @@ import 'package:velozaje/res/common_button.dart';
 import 'package:velozaje/res/common_image.dart';
 import 'package:velozaje/res/common_text.dart';
 
-class PublishedSucessfullPage extends StatelessWidget {
-  const PublishedSucessfullPage({super.key});
+class TripPublishedSucessfullView extends StatelessWidget {
+  const TripPublishedSucessfullView({super.key});
 
   @override
   Widget build(BuildContext context) {

@@ -1,15 +1,4 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:velozaje/core/localization/app_localizations.dart';
-import 'package:velozaje/core/services/providers.dart';
-import 'package:velozaje/core/utils/enums_with_enum_extentions.dart';
-import 'package:velozaje/core/utils/helper.dart';
-import 'package:velozaje/feature/tips_and_publications/my_tip_details_view.dart';
-import 'package:velozaje/core/utils/app_colors.dart';
-import 'package:velozaje/models/response/trip/booking_response.dart';
-import 'package:velozaje/res/common_image.dart';
-import 'package:velozaje/res/common_text.dart';
+part of '../trips_view.dart';
 
 class BookedTipsPage extends ConsumerStatefulWidget {
   const BookedTipsPage({super.key});
@@ -25,20 +14,20 @@ class _MyTipsPageState extends ConsumerState<BookedTipsPage> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      ref.read(passengerTripsBookingControllerProvider.notifier).refresh();
+      ref.read(tripsBookingControllerProvider.notifier).refresh();
     });
     scrollController.addListener(() {
       if (scrollController.position.pixels >
           scrollController.position.maxScrollExtent - 200) {
-        ref.read(passengerTripsBookingControllerProvider.notifier).loadMore();
+        ref.read(tripsBookingControllerProvider.notifier).loadMore();
       }
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    final pagination = ref.watch(passengerTripsBookingControllerProvider);
-    final notifier = ref.read(passengerTripsBookingControllerProvider.notifier);
+    final pagination = ref.watch(tripsBookingControllerProvider);
+    final notifier = ref.read(tripsBookingControllerProvider.notifier);
 
     final bookings = pagination.items;
     return ValueListenableBuilder(
@@ -61,12 +50,12 @@ class _MyTipsPageState extends ConsumerState<BookedTipsPage> {
                   context,
                   MaterialPageRoute(
                     builder: (context) {
-                      return MyTipDetailsPage();
+                      return BookedTipDetailsView(id: bookings[index].id);
                     },
                   ),
                 );
               },
-              child: MyTipCard(booking: bookings[index]),
+              child: _MyTipCard(booking: bookings[index]),
             );
           },
         );
@@ -75,15 +64,10 @@ class _MyTipsPageState extends ConsumerState<BookedTipsPage> {
   }
 }
 
-class MyTipCard extends StatefulWidget {
-  const MyTipCard({super.key, required this.booking});
+class _MyTipCard extends StatelessWidget {
+  const _MyTipCard({required this.booking});
   final PassengerBookingModel booking;
 
-  @override
-  State<MyTipCard> createState() => _MyTipCardState();
-}
-
-class _MyTipCardState extends State<MyTipCard> {
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -93,11 +77,11 @@ class _MyTipCardState extends State<MyTipCard> {
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
-            status(widget.booking.status),
+            status(booking.status),
             SizedBox(height: 8.h),
             _header(),
             SizedBox(height: 12.h),
-            _verticalStepper(),
+            _verticalStepper(context),
             SizedBox(height: 12.h),
             Divider(),
             SizedBox(height: 10.h),
@@ -171,7 +155,7 @@ class _MyTipCardState extends State<MyTipCard> {
           child: CommonText(status.name, color: color, size: 12),
         ),
         CommonText(
-          formatDateTime(widget.booking.bookingDate),
+          formatDateTime(booking.bookingDate),
           fontWeight: FontWeight.w500,
         ),
       ],
@@ -188,7 +172,7 @@ class _MyTipCardState extends State<MyTipCard> {
               child: ClipRRect(
                 borderRadius: BorderRadiusGeometry.circular(10),
                 child: CommonImage(
-                  path: getFullImagePath(widget.booking.driver.image ?? ""),
+                  path: getFullImagePath(booking.driver.image ?? ""),
                   width: 50,
                   sourceType: ImageSourceType.network,
                   height: 50,
@@ -215,7 +199,7 @@ class _MyTipCardState extends State<MyTipCard> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               CommonText(
-                widget.booking.driver.fullName,
+                booking.driver.fullName,
                 size: 14,
                 isBold: true,
                 maxline: 1,
@@ -225,16 +209,12 @@ class _MyTipCardState extends State<MyTipCard> {
                   Icon(Icons.star, size: 20, color: Colors.orange),
                   SizedBox(width: 4),
                   CommonText(
-                    (widget.booking.driver.rating ?? 0).toStringAsFixed(1),
+                    (booking.driver.rating ?? 0).toStringAsFixed(1),
                     size: 12,
                   ),
                 ],
               ),
-              CommonText(
-                "\$${widget.booking.totalPrice}",
-                size: 16,
-                isBold: true,
-              ),
+              CommonText("\$${booking.totalPrice}", size: 16, isBold: true),
             ],
           ),
         ),
@@ -259,7 +239,7 @@ class _MyTipCardState extends State<MyTipCard> {
   }
 
   /// Vertical Stepper
-  Widget _verticalStepper() {
+  Widget _verticalStepper(BuildContext context) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -268,7 +248,7 @@ class _MyTipCardState extends State<MyTipCard> {
           child: Column(
             children: [
               _stepDot(isActive: true),
-              _stepLine(),
+              Container(width: 2, height: 40, color: Colors.grey),
               _stepLocation(isActive: false),
             ],
           ),
@@ -280,12 +260,12 @@ class _MyTipCardState extends State<MyTipCard> {
             children: [
               _stepText(
                 title: AppLocalizations.of(context)!.from,
-                value: widget.booking.pickupLocation.address,
+                value: booking.pickupLocation.address,
               ),
               SizedBox(height: 10.h),
               _stepText(
                 title: AppLocalizations.of(context)!.to,
-                value: widget.booking.dropoffLocation.address,
+                value: booking.dropoffLocation.address,
               ),
             ],
           ),
@@ -297,7 +277,7 @@ class _MyTipCardState extends State<MyTipCard> {
             borderRadius: BorderRadius.circular(20),
           ),
           child: CommonText(
-            formatDurationInMinutes(widget.booking.trip.estimatedDuration),
+            formatDurationInMinutes(booking.trip.estimatedDuration),
             size: 10,
           ),
         ),
@@ -318,10 +298,6 @@ class _MyTipCardState extends State<MyTipCard> {
 
   Widget _stepLocation({required bool isActive}) {
     return Icon(isActive ? Icons.location_on : Icons.location_on_outlined);
-  }
-
-  Widget _stepLine() {
-    return Container(width: 2, height: 40, color: Colors.grey);
   }
 
   Widget _stepText({required String title, required String value}) {

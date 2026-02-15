@@ -10,10 +10,10 @@ import 'package:velozaje/core/services/providers.dart';
 import 'package:velozaje/core/utils/enums_with_enum_extentions.dart';
 import 'package:velozaje/core/utils/extention.dart';
 import 'package:velozaje/core/utils/map_helper.dart';
-import 'package:velozaje/feature/home_and_passenger/saved_place_view.dart';
-import 'package:velozaje/feature/home_and_passenger/searching_drivers_view.dart';
+import 'package:velozaje/feature/home_and_trip_search/saved_place_view.dart';
+import 'package:velozaje/feature/home_and_trip_search/searching_drivers_view.dart';
 
-import 'package:velozaje/feature/home_and_passenger/widgets/saved_place_card.dart';
+import 'package:velozaje/feature/home_and_trip_search/widgets/saved_place_card.dart';
 import 'package:velozaje/core/utils/app_colors.dart';
 import 'package:velozaje/feature/notifications/notifications_view.dart';
 import 'package:velozaje/feature/widget/date_time_picker.dart';
@@ -23,8 +23,8 @@ import 'package:velozaje/res/common_button.dart';
 import 'package:velozaje/res/common_text.dart';
 import 'package:velozaje/res/location_search_textfield.dart';
 
-part 'widgets/home_page_widgets.dart';
-part 'widgets/home_page_utils.dart';
+part 'parts_of_home/home_page_widgets.dart';
+part 'parts_of_home/home_page_utils.dart';
 
 class HomePage extends ConsumerStatefulWidget {
   const HomePage({super.key});
@@ -361,7 +361,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (_) => SearchingDriversPage(
+                              builder: (_) => SearchingDriversView(
                                 request: request, // 👈 SINGLE MODEL
                               ),
                             ),

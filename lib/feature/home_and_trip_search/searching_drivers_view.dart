@@ -5,24 +5,24 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:velozaje/core/localization/app_localizations.dart';
 import 'package:velozaje/core/services/providers.dart';
 import 'package:velozaje/core/utils/map_helper.dart';
-import 'package:velozaje/feature/home_and_passenger/search_tips_results_page.dart';
+import 'package:velozaje/feature/home_and_trip_search/tips_search_results_view.dart';
 import 'package:velozaje/core/utils/app_colors.dart';
 import 'package:velozaje/feature/widget/map_widget.dart';
 import 'package:velozaje/models/request/trip_search_request.dart';
 import 'package:velozaje/res/common_image.dart';
 import 'package:velozaje/res/common_text.dart';
 
-class SearchingDriversPage extends ConsumerStatefulWidget {
+class SearchingDriversView extends ConsumerStatefulWidget {
   final TripSearchRequest request;
 
-  const SearchingDriversPage({super.key, required this.request});
+  const SearchingDriversView({super.key, required this.request});
 
   @override
-  ConsumerState<SearchingDriversPage> createState() =>
+  ConsumerState<SearchingDriversView> createState() =>
       _FindingDriversPageState();
 }
 
-class _FindingDriversPageState extends ConsumerState<SearchingDriversPage> {
+class _FindingDriversPageState extends ConsumerState<SearchingDriversView> {
   @override
   void initState() {
     super.initState();
@@ -48,7 +48,7 @@ class _FindingDriversPageState extends ConsumerState<SearchingDriversPage> {
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(
-        builder: (_) => SearchTipsResultsPage(request: widget.request),
+        builder: (_) => TipsSearchResultsView(request: widget.request),
       ),
     );
   }

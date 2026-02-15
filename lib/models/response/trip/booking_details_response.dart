@@ -168,6 +168,7 @@ class _PassengerModel {
 class _DriverModel {
   final String id;
   final String fullName;
+  final num ratting;
   final String email;
   final String? image;
   final String? phone;
@@ -176,6 +177,7 @@ class _DriverModel {
     required this.id,
     required this.fullName,
     required this.email,
+    required this.ratting,
     this.image,
     this.phone,
   });
@@ -184,6 +186,7 @@ class _DriverModel {
     return _DriverModel(
       id: json['_id'] ?? '',
       fullName: json['fullName'] ?? '',
+      ratting: json['ratting'] ?? 0,
       email: json['email'] ?? '',
       image: json['image'],
       phone: json['phone'],
@@ -201,6 +204,7 @@ class _TripModel {
   final DateTime departureTime;
   final double pricePerSeat;
   final String status;
+  final String note;
 
   _TripModel({
     required this.id,
@@ -212,6 +216,7 @@ class _TripModel {
     required this.departureTime,
     required this.pricePerSeat,
     required this.status,
+    required this.note,
   });
 
   factory _TripModel.fromJson(Map<String, dynamic> json) {
@@ -231,6 +236,7 @@ class _TripModel {
           DateTime.fromMillisecondsSinceEpoch(0),
       pricePerSeat: (json['pricePerSeat'] as num?)?.toDouble() ?? 0.0,
       status: json['status'] ?? '',
+      note: json['note'] ?? '',
     );
   }
 }
@@ -239,12 +245,16 @@ class _VehicleModel {
   final String id;
   final int year;
   final String vehicleModel;
+  final String brand;
+  final String licensePlateNumber;
   final List<String> vehicleImages;
 
   _VehicleModel({
     required this.id,
     required this.year,
     required this.vehicleModel,
+    required this.licensePlateNumber,
+    required this.brand,
     required this.vehicleImages,
   });
 
@@ -252,6 +262,8 @@ class _VehicleModel {
     return _VehicleModel(
       id: json['_id'] ?? '',
       year: json['year'] ?? 0,
+      brand: json['brand'] ?? "",
+      licensePlateNumber: json['licensePlateNumber'] ?? "",
       vehicleModel: json['vehicleModel'] ?? '',
       vehicleImages:
           (json['vehicleImages'] as List<dynamic>?)

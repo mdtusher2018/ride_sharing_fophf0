@@ -5,11 +5,14 @@ import 'package:velozaje/core/services/api/i_api_service.dart';
 import 'package:velozaje/core/utils/api_end_points.dart';
 import 'package:velozaje/models/request/trip_publish_request.dart';
 import 'package:velozaje/models/response/trip/driver_published_trips.dart';
+import 'package:velozaje/models/response/trip/published_trip_details_response.dart';
 
-class DriverTripsController extends PaginationNotifier<DriverTripModel> {
+class TripsPublishController extends PaginationNotifier<DriverTripModel> {
   final IApiService apiService;
 
-  DriverTripsController(this.apiService);
+  TripsPublishController(this.apiService);
+
+  PublishedTripDetailsResponse? publishedTrip;
 
   @override
   Future<(List<DriverTripModel>, PaginationMetaModel)> fetchPage({
@@ -122,5 +125,16 @@ class DriverTripsController extends PaginationNotifier<DriverTripModel> {
         latLng.latitude <= 90 &&
         latLng.longitude >= -180 &&
         latLng.longitude <= 180;
+  }
+
+  Future<void> publishedTripDetailsById({required String id}) async {
+    await safeCall(
+      task: () async {
+        final res = await apiService.get(
+          ApiEndpoints.passengerBookedTripDetailsById(id),
+        );
+        publishedTrip = PublishedTripDetailsResponse.fromJson(res);
+      },
+    );
   }
 }

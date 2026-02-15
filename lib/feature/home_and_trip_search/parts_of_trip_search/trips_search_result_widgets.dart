@@ -1,4 +1,4 @@
-part of '../search_tips_results_page.dart';
+part of '../tips_search_results_view.dart';
 
 class _SearchTripsResultCard extends StatefulWidget {
   final PassengerTripModel trip;

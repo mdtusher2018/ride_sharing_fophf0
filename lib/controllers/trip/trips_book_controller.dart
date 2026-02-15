@@ -10,11 +10,10 @@ import 'package:velozaje/models/response/trip/booking_details_response.dart';
 import 'package:velozaje/models/response/trip/booking_response.dart';
 import 'package:velozaje/models/response/trip/passenger_trip_model.dart';
 
-class PassangerTripBookingController
-    extends PaginationNotifier<PassengerBookingModel> {
+class TrippBookController extends PaginationNotifier<PassengerBookingModel> {
   final IApiService apiService;
 
-  PassangerTripBookingController(this.apiService);
+  TrippBookController(this.apiService);
 
   PassengerBookingDetailsModel? bookingDetail;
 
@@ -36,7 +35,7 @@ class PassangerTripBookingController
     return (trips, meta);
   }
 
-  Future<bool?> bookTrip({
+  Future<bool?> tripBooking({
     required PassengerTripModel tripDetails,
     required TripSearchRequest tripSearched,
     required File passengerImage,
@@ -96,8 +95,8 @@ class PassangerTripBookingController
     );
   }
 
-  Future<void> bookingDetailsById({required String id}) async {
-    safeCall(
+  Future<void> bookedTripDetailsById({required String id}) async {
+    await safeCall(
       task: () async {
         final res = await apiService.get(
           ApiEndpoints.passengerBookedTripDetailsById(id),

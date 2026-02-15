@@ -6,12 +6,12 @@ import 'package:velozaje/models/response/trip/passenger_trip_details_response.da
 import 'package:velozaje/models/response/trip/passenger_trip_model.dart';
 import 'package:velozaje/models/response/trip/passenger_trips_response.dart';
 
-class PassangerTripsController extends PaginationNotifier<PassengerTripModel> {
+class TripsSearchController extends PaginationNotifier<PassengerTripModel> {
   final IApiService apiService;
 
   PassengerTripDetailsResponse? tripDetails;
 
-  PassangerTripsController(this.apiService);
+  TripsSearchController(this.apiService);
 
   @override
   Future<(List<PassengerTripModel>, PaginationMetaModel)> fetchPage({

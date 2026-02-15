@@ -3,21 +3,31 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:velozaje/core/localization/app_localizations.dart';
-import 'package:velozaje/feature/tips_and_publications/published/published_trips_view.dart';
-import 'package:velozaje/feature/tips_and_publications/passenger_booked_tips_view.dart';
 import 'package:velozaje/res/common_text.dart';
 import 'package:velozaje/core/utils/app_colors.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:velozaje/core/services/providers.dart';
+import 'package:velozaje/core/utils/enums_with_enum_extentions.dart';
+import 'package:velozaje/core/utils/helper.dart';
+import 'package:velozaje/feature/tips_and_publications/my_published_details_view.dart';
+import 'package:velozaje/models/response/trip/driver_published_trips.dart';
+import 'package:velozaje/feature/trip/trip_book/booked_tip_details_view.dart';
+import 'package:velozaje/models/response/trip/booking_response.dart';
+import 'package:velozaje/res/common_image.dart';
+
+part 'parts/booked_tips_view.dart';
+part 'parts/published_trips_view.dart';
 
 enum _TipsTab { booked, published }
 
-class TipsAndPublicationPage extends StatefulWidget {
-  const TipsAndPublicationPage({super.key});
+class TipsView extends StatefulWidget {
+  const TipsView({super.key});
 
   @override
-  State<TipsAndPublicationPage> createState() => _TipsAndPublicationPageState();
+  State<TipsView> createState() => _TipsViewState();
 }
 
-class _TipsAndPublicationPageState extends State<TipsAndPublicationPage> {
+class _TipsViewState extends State<TipsView> {
   _TipsTab selectedTab = _TipsTab.published;
 
   @override

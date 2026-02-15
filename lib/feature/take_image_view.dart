@@ -2,9 +2,9 @@ import 'dart:io';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:velozaje/feature/tips_and_publications/publish_confirm_view.dart';
+import 'package:velozaje/feature/trip/trip_publish/trip_publish_confirm_view.dart';
 import 'package:velozaje/core/utils/app_colors.dart';
-import 'package:velozaje/feature/home_and_passenger/confirm_booking_view.dart';
+import 'package:velozaje/feature/home_and_trip_search/trip_booking_confirm_view.dart';
 import 'package:velozaje/models/request/trip_publish_request.dart';
 import 'package:velozaje/models/request/trip_search_request.dart';
 import 'package:velozaje/models/response/trip/passenger_trip_model.dart';
@@ -76,14 +76,14 @@ class _TakePhotoPageState extends State<TakePhotoPage> {
         context,
         MaterialPageRoute(
           builder: (_) =>
-              PublishConfirmPage(publishedData: widget.publishTripData!),
+              TripPublishConfirmView(publishedData: widget.publishTripData!),
         ),
       );
     } else {
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (_) => ConfirmBookingPage(
+          builder: (_) => TripBookingConfirmView(
             imageFile: File(image.path),
             onBooking: widget.onConfirmBooking,
             tripDetails: widget.bookingTripDetails!,

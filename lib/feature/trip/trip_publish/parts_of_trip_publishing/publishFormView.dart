@@ -1,4 +1,4 @@
-part of 'publish_process_view.dart';
+part of '../trips_publishing_view.dart';
 
 class PublishFormView extends StatefulWidget {
   final Function(DateTime?) onContinue;

@@ -10,15 +10,15 @@ import 'package:velozaje/models/response/trip/passenger_trip_model.dart';
 import 'package:velozaje/res/common_appbar.dart';
 import 'package:icons_plus/icons_plus.dart';
 import 'package:velozaje/core/utils/helper.dart';
-import 'package:velozaje/feature/home_and_passenger/passenger_trip_details.dart';
+import 'package:velozaje/feature/home_and_trip_search/trip_details.dart';
 import 'package:velozaje/res/common_button.dart';
 import 'package:velozaje/res/common_image.dart';
 import 'package:velozaje/res/common_text.dart';
 
-part 'widgets/search_trips_result_widgets.dart';
+part 'parts_of_trip_search/trips_search_result_widgets.dart';
 
-class SearchTipsResultsPage extends ConsumerWidget {
-  const SearchTipsResultsPage({super.key, required this.request});
+class TipsSearchResultsView extends ConsumerWidget {
+  const TipsSearchResultsView({super.key, required this.request});
   final TripSearchRequest request;
   @override
   Widget build(BuildContext context, WidgetRef ref) {

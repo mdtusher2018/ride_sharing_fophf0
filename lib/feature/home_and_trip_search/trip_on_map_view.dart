@@ -11,6 +11,7 @@ import 'package:velozaje/core/utils/app_colors.dart';
 import 'package:velozaje/core/utils/helper.dart';
 import 'package:velozaje/core/utils/map_helper.dart';
 import 'package:velozaje/feature/take_image_view.dart';
+import 'package:velozaje/feature/widget/back_button.dart';
 import 'package:velozaje/feature/widget/map_widget.dart';
 import 'package:velozaje/feature/widget/vehicale_card.dart';
 import 'package:velozaje/models/request/trip_search_request.dart';
@@ -19,20 +20,20 @@ import 'package:velozaje/res/common_button.dart';
 import 'package:velozaje/res/common_image.dart';
 import 'package:velozaje/res/common_text.dart';
 
-class ConfirmBookingMapPage extends StatefulWidget {
+class TripOnMapView extends StatefulWidget {
   final PassengerTripModel tripDetails;
   final TripSearchRequest? bookingTripSearched;
-  const ConfirmBookingMapPage({
+  const TripOnMapView({
     super.key,
     required this.tripDetails,
     required this.bookingTripSearched,
   });
 
   @override
-  State<ConfirmBookingMapPage> createState() => _ConfirmBookingMapPageState();
+  State<TripOnMapView> createState() => _TripOnMapViewState();
 }
 
-class _ConfirmBookingMapPageState extends State<ConfirmBookingMapPage> {
+class _TripOnMapViewState extends State<TripOnMapView> {
   GoogleMapController? _mapController;
   Set<Polyline>? polylines;
 
@@ -198,33 +199,8 @@ class _ConfirmBookingMapPageState extends State<ConfirmBookingMapPage> {
             ),
           ),
 
-          Positioned(top: 50, left: 30, child: _BackButton()),
+          Positioned(top: 50, left: 30, child: CommonBackButton()),
         ],
-      ),
-    );
-  }
-}
-
-/// --------------------
-/// Back Button
-/// --------------------
-class _BackButton extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      borderRadius: BorderRadius.circular(10),
-      onTap: () => Navigator.pop(context),
-      child: Container(
-        padding: const EdgeInsets.all(10),
-        decoration: BoxDecoration(
-          color: Colors.green,
-          borderRadius: BorderRadius.circular(10),
-        ),
-        child: const Icon(
-          Icons.arrow_back_ios_new,
-          color: Colors.white,
-          size: 16,
-        ),
       ),
     );
   }

@@ -1,13 +1,13 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
-import 'package:velozaje/controllers/driver_trips_controller.dart';
+import 'package:velozaje/controllers/trip/trips_publish_controller.dart';
 import 'package:velozaje/controllers/paginated_controller.dart';
-import 'package:velozaje/controllers/passenger_trips_booking_controller.dart';
+import 'package:velozaje/controllers/trip/trips_book_controller.dart';
 import 'package:velozaje/controllers/wallet_controller.dart';
 import 'package:velozaje/core/services/localstorage/i_local_storage_service.dart';
 import 'package:velozaje/controllers/auth_controller.dart';
 import 'package:velozaje/controllers/saved_location_controller.dart';
-import 'package:velozaje/controllers/passenger_trips_controller.dart';
+import 'package:velozaje/controllers/trip/trips_search_controller.dart';
 import 'package:velozaje/models/response/trip/booking_response.dart';
 import 'package:velozaje/models/response/trip/driver_published_trips.dart';
 import 'package:velozaje/models/response/trip/passenger_trip_model.dart';
@@ -63,29 +63,29 @@ final savedLocationProvider =
 
 final passengerTripsControllerProvider =
     StateNotifierProvider<
-      PassangerTripsController,
+      TripsSearchController,
       PaginationState<PassengerTripModel>
     >((ref) {
       final apiService = ref.watch(apiServiceProvider);
-      return PassangerTripsController(apiService);
+      return TripsSearchController(apiService);
     });
 
-final passengerTripsBookingControllerProvider =
+final tripsBookingControllerProvider =
     StateNotifierProvider<
-      PassangerTripBookingController,
+      TrippBookController,
       PaginationState<PassengerBookingModel>
     >((ref) {
       final apiService = ref.watch(apiServiceProvider);
-      return PassangerTripBookingController(apiService);
+      return TrippBookController(apiService);
     });
 
-final driverTripsControllerProvider =
+final tripsPublishControllerProvider =
     StateNotifierProvider<
-      DriverTripsController,
+      TripsPublishController,
       PaginationState<DriverTripModel>
     >((ref) {
       final apiService = ref.watch(apiServiceProvider);
-      return DriverTripsController(apiService);
+      return TripsPublishController(apiService);
     });
 
 final StateNotifierProvider<VehicaleController, VehicaleState>
