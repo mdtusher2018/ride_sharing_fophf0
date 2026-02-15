@@ -7,7 +7,6 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:icons_plus/icons_plus.dart';
 import 'package:velozaje/core/localization/app_localizations.dart';
 import 'package:velozaje/core/services/providers.dart';
-import 'package:velozaje/core/utils/api_end_points.dart';
 import 'package:velozaje/core/utils/enums_with_enum_extentions.dart';
 import 'package:velozaje/core/utils/extention.dart';
 import 'package:velozaje/core/utils/map_helper.dart';
@@ -18,7 +17,7 @@ import 'package:velozaje/feature/home_and_passenger/widgets/saved_place_card.dar
 import 'package:velozaje/core/utils/app_colors.dart';
 import 'package:velozaje/feature/notifications/notifications_view.dart';
 import 'package:velozaje/feature/widget/date_time_picker.dart';
-import 'package:velozaje/feature/widget/map_wudget.dart';
+import 'package:velozaje/feature/widget/map_widget.dart';
 import 'package:velozaje/models/request/trip_search_request.dart';
 import 'package:velozaje/res/common_button.dart';
 import 'package:velozaje/res/common_text.dart';
@@ -90,7 +89,6 @@ class _HomePageState extends ConsumerState<HomePage> {
     }
 
     final result = await MapHelper.drawRoutes(
-      apiKey: ApiEndpoints.mapKey,
       origin: pickup.$2!,
       color: AppColors.primary,
       destination: destination.$2!,
@@ -112,6 +110,7 @@ class _HomePageState extends ConsumerState<HomePage> {
         fit: StackFit.expand,
         children: [
           ReusableMapWidget(
+            context: context,
             pickupLocation: pickup.$2,
             destinationLocation: destination.$2,
             polylines: _polylines,
@@ -295,6 +294,18 @@ class _HomePageState extends ConsumerState<HomePage> {
                                       savedLocationModel: ref
                                           .read(savedLocationProvider)
                                           .savedPlaces[index],
+                                      onRemove: () {
+                                        ref
+                                            .read(
+                                              savedLocationProvider.notifier,
+                                            )
+                                            .removeSaveLocation(
+                                              id: ref
+                                                  .read(savedLocationProvider)
+                                                  .savedPlaces[index]
+                                                  .id,
+                                            );
+                                      },
                                     );
                                   },
                                 );

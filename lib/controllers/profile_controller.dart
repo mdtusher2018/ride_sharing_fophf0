@@ -72,7 +72,7 @@ class ProfileController extends BaseNotifier<ProfileState> {
                   "image": [image],
                 }
               : null,
-          body: {
+          fields: {
             if (address != null) "address": address,
             if (dateOfBirth != null) "dateOfBirth": dateOfBirth,
             if (phone != null) "phone": phone,

@@ -1,34 +1,74 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:velozaje/core/localization/app_localizations.dart';
+import 'package:velozaje/core/services/providers.dart';
+import 'package:velozaje/core/utils/enums_with_enum_extentions.dart';
+import 'package:velozaje/core/utils/helper.dart';
 import 'package:velozaje/feature/tips_and_publications/my_tip_details_view.dart';
 import 'package:velozaje/core/utils/app_colors.dart';
+import 'package:velozaje/models/response/trip/booking_response.dart';
+import 'package:velozaje/res/common_image.dart';
 import 'package:velozaje/res/common_text.dart';
 
-class MyTipsPage extends StatefulWidget {
-  const MyTipsPage({super.key});
+class BookedTipsPage extends ConsumerStatefulWidget {
+  const BookedTipsPage({super.key});
 
   @override
-  State<MyTipsPage> createState() => _MyTipsPageState();
+  ConsumerState<BookedTipsPage> createState() => _MyTipsPageState();
 }
 
-class _MyTipsPageState extends State<MyTipsPage> {
+class _MyTipsPageState extends ConsumerState<BookedTipsPage> {
+  ScrollController scrollController = ScrollController();
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      ref.read(passengerTripsBookingControllerProvider.notifier).refresh();
+    });
+    scrollController.addListener(() {
+      if (scrollController.position.pixels >
+          scrollController.position.maxScrollExtent - 200) {
+        ref.read(passengerTripsBookingControllerProvider.notifier).loadMore();
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-      itemBuilder: (context, index) {
-        return InkWell(
-          onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) {
-                  return MyTipDetailsPage();
-                },
-              ),
+    final pagination = ref.watch(passengerTripsBookingControllerProvider);
+    final notifier = ref.read(passengerTripsBookingControllerProvider.notifier);
+
+    final bookings = pagination.items;
+    return ValueListenableBuilder(
+      valueListenable: notifier.isLoading,
+      builder: (_, isLoading, _) {
+        if (isLoading && bookings.isEmpty) {
+          return const Center(child: CircularProgressIndicator());
+        }
+
+        if (bookings.isEmpty) {
+          return CommonText("You have no bookings");
+        }
+
+        return ListView.builder(
+          itemCount: bookings.length,
+          itemBuilder: (context, index) {
+            return InkWell(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) {
+                      return MyTipDetailsPage();
+                    },
+                  ),
+                );
+              },
+              child: MyTipCard(booking: bookings[index]),
             );
           },
-          child: MyTipCard(),
         );
       },
     );
@@ -36,7 +76,8 @@ class _MyTipsPageState extends State<MyTipsPage> {
 }
 
 class MyTipCard extends StatefulWidget {
-  const MyTipCard({super.key});
+  const MyTipCard({super.key, required this.booking});
+  final PassengerBookingModel booking;
 
   @override
   State<MyTipCard> createState() => _MyTipCardState();
@@ -52,7 +93,7 @@ class _MyTipCardState extends State<MyTipCard> {
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
-            status("Confirmed"),
+            status(widget.booking.status),
             SizedBox(height: 8.h),
             _header(),
             SizedBox(height: 12.h),
@@ -89,12 +130,35 @@ class _MyTipCardState extends State<MyTipCard> {
     );
   }
 
-  Widget status(String status) {
-    final Color color = (status == "Confirmed")
-        ? Color(0xff28A745)
-        : (status == "Pending")
-        ? Color(0xffB59100)
-        : Color(0xffB50000);
+  Widget status(BookingStatus status) {
+    final Color color;
+
+    switch (status) {
+      case BookingStatus.confirmed:
+        color = const Color(0xff28A745); // Green
+        break;
+
+      case BookingStatus.pending:
+        color = const Color(0xffB59100); // Yellow
+        break;
+
+      case BookingStatus.inProgress:
+        color = const Color(0xff007BFF); // Blue
+        break;
+
+      case BookingStatus.completed:
+        color = const Color(0xff6C757D); // Grey
+        break;
+
+      case BookingStatus.cancelled:
+        color = const Color(0xffB50000); // Red
+        break;
+
+      case BookingStatus.unknown:
+        color = const Color(0xff999999); // Light Grey
+        break;
+    }
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -104,9 +168,12 @@ class _MyTipCardState extends State<MyTipCard> {
             color: color.withOpacity(0.3),
             borderRadius: BorderRadius.circular(25),
           ),
-          child: CommonText(status, color: color, size: 12),
+          child: CommonText(status.name, color: color, size: 12),
         ),
-        CommonText("Saturday 10/20/25", fontWeight: FontWeight.w500),
+        CommonText(
+          formatDateTime(widget.booking.bookingDate),
+          fontWeight: FontWeight.w500,
+        ),
       ],
     );
   }
@@ -116,19 +183,19 @@ class _MyTipCardState extends State<MyTipCard> {
       children: [
         Stack(
           children: [
-            Container(
-              width: 60,
-              margin: EdgeInsets.only(bottom: 8, right: 10),
-              height: 60,
-              decoration: BoxDecoration(
-                image: DecorationImage(
-                  image: NetworkImage(
-                    "https://randomuser.me/api/portraits/men/32.jpg",
-                  ),
+            Padding(
+              padding: EdgeInsets.only(bottom: 8, right: 10),
+              child: ClipRRect(
+                borderRadius: BorderRadiusGeometry.circular(10),
+                child: CommonImage(
+                  path: getFullImagePath(widget.booking.driver.image ?? ""),
+                  width: 50,
+                  sourceType: ImageSourceType.network,
+                  height: 50,
                 ),
-                borderRadius: BorderRadius.circular(8),
               ),
             ),
+
             Positioned(
               bottom: 0,
               right: 0,
@@ -147,15 +214,27 @@ class _MyTipCardState extends State<MyTipCard> {
             spacing: 4,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              CommonText("Lionel Messi", size: 14, isBold: true),
+              CommonText(
+                widget.booking.driver.fullName,
+                size: 14,
+                isBold: true,
+                maxline: 1,
+              ),
               Row(
                 children: [
                   Icon(Icons.star, size: 20, color: Colors.orange),
                   SizedBox(width: 4),
-                  CommonText("4.9", size: 12),
+                  CommonText(
+                    (widget.booking.driver.rating ?? 0).toStringAsFixed(1),
+                    size: 12,
+                  ),
                 ],
               ),
-              CommonText("\$280", size: 16, isBold: true),
+              CommonText(
+                "\$${widget.booking.totalPrice}",
+                size: 16,
+                isBold: true,
+              ),
             ],
           ),
         ),
@@ -201,12 +280,12 @@ class _MyTipCardState extends State<MyTipCard> {
             children: [
               _stepText(
                 title: AppLocalizations.of(context)!.from,
-                value: "Morelia, Avenida P. Calle 12",
+                value: widget.booking.pickupLocation.address,
               ),
               SizedBox(height: 10.h),
               _stepText(
                 title: AppLocalizations.of(context)!.to,
-                value: "Morelia, Avenida P. Calle 12",
+                value: widget.booking.dropoffLocation.address,
               ),
             ],
           ),
@@ -217,7 +296,10 @@ class _MyTipCardState extends State<MyTipCard> {
             color: AppColors.grey.withOpacity(.2),
             borderRadius: BorderRadius.circular(20),
           ),
-          child: CommonText("3h 30m", size: 10),
+          child: CommonText(
+            formatDurationInMinutes(widget.booking.trip.estimatedDuration),
+            size: 10,
+          ),
         ),
       ],
     );

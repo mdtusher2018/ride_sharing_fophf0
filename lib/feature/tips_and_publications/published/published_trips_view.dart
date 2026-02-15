@@ -10,15 +10,15 @@ import 'package:velozaje/models/response/trip/driver_published_trips.dart';
 import 'package:velozaje/res/common_text.dart';
 import 'package:velozaje/core/utils/app_colors.dart';
 
-class MyPublishedTripsPage extends ConsumerStatefulWidget {
-  const MyPublishedTripsPage({super.key});
+class PublishedTripsPage extends ConsumerStatefulWidget {
+  const PublishedTripsPage({super.key});
 
   @override
-  ConsumerState<MyPublishedTripsPage> createState() =>
+  ConsumerState<PublishedTripsPage> createState() =>
       _MyPublishedTripsPageState();
 }
 
-class _MyPublishedTripsPageState extends ConsumerState<MyPublishedTripsPage> {
+class _MyPublishedTripsPageState extends ConsumerState<PublishedTripsPage> {
   final ScrollController _scrollController = ScrollController();
 
   @override
@@ -116,7 +116,11 @@ class TripCard extends StatelessWidget {
                     children: [
                       const Icon(Icons.calendar_month, size: 20),
                       SizedBox(width: 6.w),
-                      CommonText(formatDateTime(trip.departureTime), size: 12),
+                      if (trip.departureTime != null)
+                        CommonText(
+                          formatDateTime(trip.departureTime!),
+                          size: 12,
+                        ),
                     ],
                   ),
                 ],

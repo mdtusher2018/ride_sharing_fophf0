@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:velozaje/core/localization/app_localizations.dart';
 import 'package:velozaje/core/services/providers.dart';
+import 'package:velozaje/core/utils/enums_with_enum_extentions.dart';
 import 'package:velozaje/feature/auth/widget/auth_background.dart';
 import 'package:velozaje/core/utils/app_colors.dart';
 import 'package:velozaje/res/common_button.dart';
@@ -14,8 +15,13 @@ import 'package:velozaje/res/common_text.dart';
 import 'package:velozaje/core/utils/helper.dart';
 
 class OtpVerificationPage extends ConsumerStatefulWidget {
-  const OtpVerificationPage({super.key, required this.email});
+  const OtpVerificationPage({
+    super.key,
+    required this.email,
+    required this.puspose,
+  });
   final String email;
+  final OTPVerificationPurpose puspose;
 
   @override
   ConsumerState<OtpVerificationPage> createState() =>
@@ -123,8 +129,9 @@ class _OtpVerificationPageState extends ConsumerState<OtpVerificationPage>
                               onTap: () {
                                 ref
                                     .read(authControllerProvider)
-                                    .otpVerification(
+                                    .verifyOTP(
                                       email: widget.email,
+                                      purpose: widget.puspose,
                                       otp: _controllers.map((e) {
                                         return e.text;
                                       }).join(),

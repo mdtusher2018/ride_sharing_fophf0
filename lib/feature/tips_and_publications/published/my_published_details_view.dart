@@ -17,9 +17,14 @@ enum PassengerTripStatus {
   compleated,
 }
 
-class MyPublishedDetailsPage extends StatelessWidget {
+class MyPublishedDetailsPage extends StatefulWidget {
   const MyPublishedDetailsPage({super.key});
 
+  @override
+  State<MyPublishedDetailsPage> createState() => _MyPublishedDetailsPageState();
+}
+
+class _MyPublishedDetailsPageState extends State<MyPublishedDetailsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(

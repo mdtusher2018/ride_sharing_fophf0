@@ -1,5 +1,6 @@
 // ignore_for_file: library_private_types_in_public_api
 
+import 'package:velozaje/core/utils/api_data_praser_helper.dart';
 import 'package:velozaje/core/utils/enums_with_enum_extentions.dart';
 import 'package:velozaje/models/location_model.dart';
 import 'package:velozaje/models/pagenation_meta_model.dart';
@@ -17,14 +18,20 @@ class DriverTripsResponse {
 
   factory DriverTripsResponse.fromJson(Map<String, dynamic> json) {
     return DriverTripsResponse(
-      success: json['success'],
-      message: json['message'],
-      data: _DriverTripsData.fromJson(json['data']),
+      success: JsonHelper.boolVal(json['success']),
+      message: JsonHelper.stringVal(json['message']),
+      data: json['data'] is Map<String, dynamic>
+          ? _DriverTripsData.fromJson(json['data'])
+          : _DriverTripsData.empty(),
     );
   }
 
-  _DriverTripsData get driverTripsData => data; // expose data if needed
+  _DriverTripsData get driverTripsData => data;
 }
+
+//
+// 🔹 DRIVER TRIPS DATA
+//
 
 class _DriverTripsData {
   final bool success;
@@ -39,9 +46,19 @@ class _DriverTripsData {
 
   factory _DriverTripsData.fromJson(Map<String, dynamic> json) {
     return _DriverTripsData(
-      success: json['success'],
-      message: json['message'],
-      data: _TripsData.fromJson(json['data']),
+      success: JsonHelper.boolVal(json['success']),
+      message: JsonHelper.stringVal(json['message']),
+      data: json['data'] is Map<String, dynamic>
+          ? _TripsData.fromJson(json['data'])
+          : _TripsData.empty(),
+    );
+  }
+
+  factory _DriverTripsData.empty() {
+    return _DriverTripsData(
+      success: false,
+      message: '',
+      data: _TripsData.empty(),
     );
   }
 
@@ -49,7 +66,10 @@ class _DriverTripsData {
   PaginationMetaModel get pagination => _data.pagination;
 }
 
-// Private inner class for trips list + pagination
+//
+// 🔹 TRIPS + PAGINATION
+//
+
 class _TripsData {
   final List<DriverTripModel> trips;
   final PaginationMetaModel pagination;
@@ -58,42 +78,59 @@ class _TripsData {
 
   factory _TripsData.fromJson(Map<String, dynamic> json) {
     return _TripsData(
-      trips: (json['trips'] as List)
-          .map((e) => DriverTripModel.fromJson(e))
-          .toList(),
-      pagination: PaginationMetaModel.fromJson(json['pagination']),
+      trips: json['trips'] is List
+          ? (json['trips'] as List)
+                .map(
+                  (e) => e is Map<String, dynamic>
+                      ? DriverTripModel.fromJson(e)
+                      : null,
+                )
+                .whereType<DriverTripModel>()
+                .toList()
+          : [],
+      pagination: json['pagination'] is Map<String, dynamic>
+          ? PaginationMetaModel.fromJson(json['pagination'])
+          : PaginationMetaModel.empty(),
     );
   }
+
+  factory _TripsData.empty() {
+    return _TripsData(trips: [], pagination: PaginationMetaModel.empty());
+  }
 }
+
+//
+// 🔹 DRIVER TRIP MODEL
+//
 
 class DriverTripModel {
   final String id;
   final LocationWithAddressModel pickupLocation;
   final LocationWithAddressModel dropoffLocation;
   final String driverId;
-  final _Vehicle _vehicle;
+  final _Vehicle vehicle;
   final String routePolyline;
-  final num distance;
-  final num estimatedDuration;
+  final double distance;
+  final double estimatedDuration;
   final String driverImage;
-  final DateTime departureTime;
-  final num pricePerSeat;
-  final num totalSeats;
-  final num availableSeats;
-  final num bookedSeats;
+  final DateTime? departureTime;
+  final double pricePerSeat;
+  final int totalSeats;
+  final int availableSeats;
+  final int bookedSeats;
   final String description;
   final bool automaticReservation;
   final bool packageDeliveryEnabled;
   final TripStatus status;
-  final DateTime createdAt;
-  final DateTime updatedAt;
+  final DateTime? createdAt;
+  final DateTime? updatedAt;
 
   DriverTripModel({
     required this.id,
     required this.pickupLocation,
     required this.dropoffLocation,
     required this.driverId,
-    required _Vehicle vehicle,
+    required this.vehicle,
     required this.routePolyline,
     required this.distance,
     required this.estimatedDuration,
@@ -109,42 +146,68 @@ class DriverTripModel {
     required this.status,
     required this.createdAt,
     required this.updatedAt,
-  }) : _vehicle = vehicle;
-
-  _Vehicle get vehicle => _vehicle;
+  });
 
   factory DriverTripModel.fromJson(Map<String, dynamic> json) {
     return DriverTripModel(
-      id: json['_id'],
-      pickupLocation: LocationWithAddressModel.fromJson(json['pickupLocation']),
-      dropoffLocation: LocationWithAddressModel.fromJson(
-        json['dropoffLocation'],
+      id: JsonHelper.stringVal(json['_id']),
+
+      pickupLocation: LocationWithAddressModel.fromJson(
+        json['pickupLocation'] ?? {},
       ),
-      driverId: json['driver'],
-      vehicle: _Vehicle.fromJson(json['vehicle']),
-      routePolyline: json['routePolyline'],
-      distance: (json['distance'] as num).toDouble(),
-      estimatedDuration: json['estimatedDuration'],
-      driverImage: json['driverImage'],
-      departureTime: DateTime.parse(json['departureTime']),
-      pricePerSeat: json['pricePerSeat'],
-      totalSeats: json['totalSeats'],
-      availableSeats: json['availableSeats'],
-      bookedSeats: json['bookedSeats'],
-      description: json['description'],
-      automaticReservation: json['automaticReservation'],
-      packageDeliveryEnabled: json['packageDeliveryEnabled'],
-      status: (json['status'] ?? "").toString().toTripStatus(),
-      createdAt: DateTime.parse(json['createdAt']),
-      updatedAt: DateTime.parse(json['updatedAt']),
+
+      dropoffLocation: LocationWithAddressModel.fromJson(
+        json['dropoffLocation'] ?? {},
+      ),
+
+      driverId: JsonHelper.stringVal(json['driver']),
+
+      vehicle: json['vehicle'] is Map<String, dynamic>
+          ? _Vehicle.fromJson(json['vehicle'])
+          : _Vehicle.empty(),
+
+      routePolyline: JsonHelper.stringVal(json['routePolyline']),
+
+      distance: JsonHelper.doubleVal(json['distance']),
+
+      estimatedDuration: JsonHelper.doubleVal(json['estimatedDuration']),
+
+      driverImage: JsonHelper.stringVal(json['driverImage']),
+
+      departureTime: JsonHelper.parseDate(json['departureTime']),
+
+      pricePerSeat: JsonHelper.doubleVal(json['pricePerSeat']),
+
+      totalSeats: JsonHelper.intVal(json['totalSeats']),
+
+      availableSeats: JsonHelper.intVal(json['availableSeats']),
+
+      bookedSeats: JsonHelper.intVal(json['bookedSeats']),
+
+      description: JsonHelper.stringVal(json['description']),
+
+      automaticReservation: JsonHelper.boolVal(json['automaticReservation']),
+
+      packageDeliveryEnabled: JsonHelper.boolVal(
+        json['packageDeliveryEnabled'],
+      ),
+
+      status: JsonHelper.stringVal(json['status']).toTripStatus(),
+
+      createdAt: JsonHelper.parseDate(json['createdAt']),
+
+      updatedAt: JsonHelper.parseDate(json['updatedAt']),
     );
   }
 }
 
-// Private vehicle model
+//
+// 🔹 PRIVATE VEHICLE MODEL
+//
+
 class _Vehicle {
   final String id;
-  final num year;
+  final int year;
   final String vehicleModel;
   final List<String> vehicleImages;
 
@@ -157,10 +220,16 @@ class _Vehicle {
 
   factory _Vehicle.fromJson(Map<String, dynamic> json) {
     return _Vehicle(
-      id: json['_id'],
-      year: json['year'],
-      vehicleModel: json['vehicleModel'],
-      vehicleImages: List<String>.from(json['vehicleImages']),
+      id: JsonHelper.stringVal(json['_id']),
+      year: JsonHelper.intVal(json['year']),
+      vehicleModel: JsonHelper.stringVal(json['vehicleModel']),
+      vehicleImages: json['vehicleImages'] is List
+          ? List<String>.from(json['vehicleImages'].map((e) => e.toString()))
+          : [],
     );
+  }
+
+  factory _Vehicle.empty() {
+    return _Vehicle(id: '', year: 0, vehicleModel: '', vehicleImages: []);
   }
 }

@@ -1,33 +1,34 @@
+import 'package:velozaje/core/utils/api_data_praser_helper.dart';
 import 'package:velozaje/models/location_model.dart';
 
 class PassengerTripModel {
   final String id;
   final LocationWithAddressModel pickupLocation;
   final LocationWithAddressModel dropoffLocation;
-  final _Driver driver;
-  final _Vehicle vehicle;
+  final _Driver? driver;
+  final _Vehicle? vehicle;
   final String routePolyline;
-  final num distance;
-  final num estimatedDuration;
+  final double distance;
+  final double estimatedDuration;
   final String driverImage;
-  final DateTime departureTime;
-  final num pricePerSeat;
-  final num totalSeats;
-  final num availableSeats;
-  final num bookedSeats;
+  final DateTime? departureTime;
+  final double pricePerSeat;
+  final int totalSeats;
+  final int availableSeats;
+  final int bookedSeats;
   final String description;
   final bool automaticReservation;
   final bool packageDeliveryEnabled;
   final String status;
-  final DateTime createdAt;
-  final DateTime updatedAt;
+  final DateTime? createdAt;
+  final DateTime? updatedAt;
 
   PassengerTripModel({
     required this.id,
     required this.pickupLocation,
     required this.dropoffLocation,
-    required this.driver,
-    required this.vehicle,
+    this.driver,
+    this.vehicle,
     required this.routePolyline,
     required this.distance,
     required this.estimatedDuration,
@@ -47,33 +48,63 @@ class PassengerTripModel {
 
   factory PassengerTripModel.fromJson(Map<String, dynamic> json) {
     return PassengerTripModel(
-      id: json['_id'],
-      pickupLocation: LocationWithAddressModel.fromJson(json['pickupLocation']),
-      dropoffLocation: LocationWithAddressModel.fromJson(
-        json['dropoffLocation'],
+      id: JsonHelper.stringVal(json['_id']),
+
+      pickupLocation: LocationWithAddressModel.fromJson(
+        json['pickupLocation'] ?? {},
       ),
-      driver: _Driver.fromJson(json['driver']),
-      vehicle: _Vehicle.fromJson(json['vehicle']),
-      routePolyline: json['routePolyline'],
-      distance: (json['distance'] as num).toDouble(),
-      estimatedDuration: json['estimatedDuration'],
-      driverImage: json['driverImage'],
-      departureTime: DateTime.parse(json['departureTime']),
-      pricePerSeat: (json['pricePerSeat'] as num).toDouble(),
-      totalSeats: json['totalSeats'],
-      availableSeats: json['availableSeats'],
-      bookedSeats: json['bookedSeats'],
-      description: json['description'],
-      automaticReservation: json['automaticReservation'],
-      packageDeliveryEnabled: json['packageDeliveryEnabled'],
-      status: json['status'],
-      createdAt: DateTime.parse(json['createdAt']),
-      updatedAt: DateTime.parse(json['updatedAt']),
+
+      dropoffLocation: LocationWithAddressModel.fromJson(
+        json['dropoffLocation'] ?? {},
+      ),
+
+      driver: json['driver'] is Map<String, dynamic>
+          ? _Driver.fromJson(json['driver'])
+          : null,
+
+      vehicle: json['vehicle'] is Map<String, dynamic>
+          ? _Vehicle.fromJson(json['vehicle'])
+          : null,
+
+      routePolyline: JsonHelper.stringVal(json['routePolyline']),
+
+      distance: JsonHelper.doubleVal(json['distance']),
+
+      estimatedDuration: JsonHelper.doubleVal(json['estimatedDuration']),
+
+      driverImage: JsonHelper.stringVal(json['driverImage']),
+
+      departureTime: JsonHelper.parseDate(json['departureTime']),
+
+      pricePerSeat: JsonHelper.doubleVal(json['pricePerSeat']),
+
+      totalSeats: JsonHelper.intVal(json['totalSeats']),
+
+      availableSeats: JsonHelper.intVal(json['availableSeats']),
+
+      bookedSeats: JsonHelper.intVal(json['bookedSeats']),
+
+      description: JsonHelper.stringVal(json['description']),
+
+      automaticReservation: JsonHelper.boolVal(json['automaticReservation']),
+
+      packageDeliveryEnabled: JsonHelper.boolVal(
+        json['packageDeliveryEnabled'],
+      ),
+
+      status: JsonHelper.stringVal(json['status']),
+
+      createdAt: JsonHelper.parseDate(json['createdAt']),
+
+      updatedAt: JsonHelper.parseDate(json['updatedAt']),
     );
   }
 }
 
-// Private Driver model
+//
+// 🔹 PRIVATE DRIVER MODEL
+//
+
 class _Driver {
   final String id;
   final String fullName;
@@ -81,7 +112,7 @@ class _Driver {
   final String image;
   final String phone;
   final bool isActive;
-  final num ratting;
+  final double ratting;
 
   _Driver({
     required this.id,
@@ -95,44 +126,48 @@ class _Driver {
 
   factory _Driver.fromJson(Map<String, dynamic> json) {
     return _Driver(
-      id: json['_id'],
-      fullName: json['fullName'],
-      email: json['email'],
-      image: json['image'],
-      phone: json['phone'],
-      isActive: json['isActive'] ?? false,
-      ratting: json['ratting'] ?? 0,
+      id: JsonHelper.stringVal(json['_id']),
+      fullName: JsonHelper.stringVal(json['fullName']),
+      email: JsonHelper.stringVal(json['email']),
+      image: JsonHelper.stringVal(json['image']),
+      phone: JsonHelper.stringVal(json['phone']),
+      isActive: JsonHelper.boolVal(json['isActive']),
+      ratting: JsonHelper.doubleVal(json['ratting']),
     );
   }
 }
 
-// Private Vehicle model
+//
+// 🔹 PRIVATE VEHICLE MODEL
+//
+
 class _Vehicle {
   final String id;
-  final num year;
+  final int year;
   final String vehicleModel;
   final String brand;
   final String licensePlateNumber;
-
   final List<String> vehicleImages;
 
   _Vehicle({
     required this.id,
     required this.year,
     required this.vehicleModel,
-    required this.vehicleImages,
     required this.brand,
     required this.licensePlateNumber,
+    required this.vehicleImages,
   });
 
   factory _Vehicle.fromJson(Map<String, dynamic> json) {
     return _Vehicle(
-      id: json['_id'],
-      year: json['year'],
-      vehicleModel: json['vehicleModel'],
-      brand: json['brand'] ?? "",
-      licensePlateNumber: json['licensePlateNumber'] ?? "",
-      vehicleImages: List<String>.from(json['vehicleImages']),
+      id: JsonHelper.stringVal(json['_id']),
+      year: JsonHelper.intVal(json['year']),
+      vehicleModel: JsonHelper.stringVal(json['vehicleModel']),
+      brand: JsonHelper.stringVal(json['brand']),
+      licensePlateNumber: JsonHelper.stringVal(json['licensePlateNumber']),
+      vehicleImages: json['vehicleImages'] is List
+          ? List<String>.from(json['vehicleImages'].map((e) => e.toString()))
+          : [],
     );
   }
 }

@@ -2,7 +2,11 @@ part of '../search_tips_results_page.dart';
 
 class _SearchTripsResultCard extends StatefulWidget {
   final PassengerTripModel trip;
-  const _SearchTripsResultCard({required this.trip});
+  final TripSearchRequest? bookingTripSearched;
+  const _SearchTripsResultCard({
+    required this.trip,
+    required this.bookingTripSearched,
+  });
 
   @override
   State<_SearchTripsResultCard> createState() => _SearchTripsResultCardState();
@@ -46,7 +50,10 @@ class _SearchTripsResultCardState extends State<_SearchTripsResultCard> {
                   context,
                   MaterialPageRoute(
                     builder: (context) {
-                      return PassengerTripDetailsPage(tripId: widget.trip.id);
+                      return PassengerTripDetailsPage(
+                        tripId: widget.trip.id,
+                        bookingTripSearched: widget.bookingTripSearched,
+                      );
                     },
                   ),
                 );
@@ -74,7 +81,7 @@ class _SearchTripsResultCardState extends State<_SearchTripsResultCard> {
                 ),
               ),
             ),
-            if (widget.trip.driver.isActive)
+            if (widget.trip.driver != null && widget.trip.driver!.isActive)
               Positioned(
                 bottom: 0,
                 right: 0,
@@ -92,15 +99,21 @@ class _SearchTripsResultCardState extends State<_SearchTripsResultCard> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              CommonText(widget.trip.driver.fullName, size: 16, isBold: true),
+              if (widget.trip.driver != null)
+                CommonText(
+                  widget.trip.driver!.fullName,
+                  size: 16,
+                  isBold: true,
+                ),
               Row(
                 children: [
                   Icon(Icons.star, size: 24, color: Colors.orange),
                   SizedBox(width: 4),
-                  CommonText(
-                    widget.trip.driver.ratting.toStringAsFixed(1),
-                    size: 14,
-                  ),
+                  if (widget.trip.driver != null)
+                    CommonText(
+                      widget.trip.driver!.ratting.toStringAsFixed(1),
+                      size: 14,
+                    ),
                 ],
               ),
             ],
@@ -237,7 +250,10 @@ class _SearchTripsResultCardState extends State<_SearchTripsResultCard> {
               color: AppColors.grey.withOpacity(.2),
               borderRadius: BorderRadius.circular(20),
             ),
-            child: CommonText(widget.trip.vehicle.vehicleModel, size: 10),
+            child: CommonText(
+              widget.trip.vehicle?.vehicleModel ?? "",
+              size: 10,
+            ),
           ),
           const Spacer(),
           CommonButton(

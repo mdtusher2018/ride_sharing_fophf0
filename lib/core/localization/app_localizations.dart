@@ -1767,6 +1767,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Arived at destination'**
   String get arived_at_destination;
+
+  /// No description provided for @place_name.
+  ///
+  /// In en, this message translates to:
+  /// **'Place Name'**
+  String get place_name;
+
+  /// No description provided for @save.
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get save;
 }
 
 class _AppLocalizationsDelegate

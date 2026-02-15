@@ -3,6 +3,7 @@ import 'dart:ui';
 
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:velozaje/core/utils/api_end_points.dart';
 
 class RouteResult {
   final Set<Polyline> polylines;
@@ -13,12 +14,11 @@ class RouteResult {
 
 class MapHelper {
   static Future<RouteResult> drawRoutes({
-    required String apiKey,
     required LatLng origin,
     required Color color,
     required LatLng destination,
   }) async {
-    final polylinePoints = PolylinePoints(apiKey: apiKey);
+    final polylinePoints = PolylinePoints(apiKey: ApiEndpoints.mapKey);
 
     RoutesApiResponse result = await polylinePoints
         .getRouteBetweenCoordinatesV2(

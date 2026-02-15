@@ -2,11 +2,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
 import 'package:velozaje/controllers/driver_trips_controller.dart';
 import 'package:velozaje/controllers/paginated_controller.dart';
+import 'package:velozaje/controllers/passenger_trips_booking_controller.dart';
 import 'package:velozaje/controllers/wallet_controller.dart';
 import 'package:velozaje/core/services/localstorage/i_local_storage_service.dart';
 import 'package:velozaje/controllers/auth_controller.dart';
 import 'package:velozaje/controllers/saved_location_controller.dart';
 import 'package:velozaje/controllers/passenger_trips_controller.dart';
+import 'package:velozaje/models/response/trip/booking_response.dart';
 import 'package:velozaje/models/response/trip/driver_published_trips.dart';
 import 'package:velozaje/models/response/trip/passenger_trip_model.dart';
 import 'package:velozaje/controllers/vehicale_register_controller.dart';
@@ -66,6 +68,15 @@ final passengerTripsControllerProvider =
     >((ref) {
       final apiService = ref.watch(apiServiceProvider);
       return PassangerTripsController(apiService);
+    });
+
+final passengerTripsBookingControllerProvider =
+    StateNotifierProvider<
+      PassangerTripBookingController,
+      PaginationState<PassengerBookingModel>
+    >((ref) {
+      final apiService = ref.watch(apiServiceProvider);
+      return PassangerTripBookingController(apiService);
     });
 
 final driverTripsControllerProvider =

@@ -14,9 +14,11 @@ class _VehicleSpaceViewState extends ConsumerState<VehicleSpaceView> {
   final TextEditingController _seatsController = TextEditingController();
 
   @override
-  void dispose() {
-    _seatsController.dispose();
-    super.dispose();
+  void initState() {
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      ref.read(vehicaleControllerProvider.notifier).getMyVehicale();
+    });
+    super.initState();
   }
 
   @override

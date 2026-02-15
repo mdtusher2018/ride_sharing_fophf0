@@ -865,4 +865,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get arived_at_destination => 'Arived at destination';
+
+  @override
+  String get place_name => 'Place Name';
+
+  @override
+  String get save => 'Save';
 }

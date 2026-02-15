@@ -8,6 +8,7 @@ import 'package:velozaje/feature/result_and_booking/confirm_booking_page.dart';
 import 'package:velozaje/feature/result_and_booking/driver_profile_when_others_visit_page.dart';
 import 'package:velozaje/core/utils/app_colors.dart';
 import 'package:velozaje/feature/widget/vehicale_card.dart';
+import 'package:velozaje/models/request/trip_search_request.dart';
 import 'package:velozaje/models/response/trip/passenger_trip_model.dart';
 import 'package:velozaje/res/common_appbar.dart';
 import 'package:velozaje/res/common_button.dart';
@@ -16,7 +17,12 @@ import 'package:velozaje/res/common_text.dart';
 
 class PassengerTripDetailsPage extends ConsumerStatefulWidget {
   final String tripId;
-  const PassengerTripDetailsPage({super.key, required this.tripId});
+  final TripSearchRequest? bookingTripSearched;
+  const PassengerTripDetailsPage({
+    super.key,
+    required this.tripId,
+    required this.bookingTripSearched,
+  });
 
   @override
   ConsumerState<PassengerTripDetailsPage> createState() =>
@@ -59,13 +65,14 @@ class _PassengerTripDetailsPageState
                 children: [
                   _HeaderCard(trip: trip),
                   SizedBox(height: 16.h),
-                  VehicleCard(
-                    image: trip.vehicle.vehicleImages.first,
-                    brand: trip.vehicle.brand,
-                    vehicleModel: trip.vehicle.vehicleModel,
-                    year: trip.vehicle.year.toString(),
-                    licensePlateNumber: trip.vehicle.licensePlateNumber,
-                  ),
+                  if (trip.vehicle != null)
+                    VehicleCard(
+                      image: trip.vehicle!.vehicleImages.first,
+                      brand: trip.vehicle!.brand,
+                      vehicleModel: trip.vehicle!.vehicleModel,
+                      year: trip.vehicle!.year.toString(),
+                      licensePlateNumber: trip.vehicle!.licensePlateNumber,
+                    ),
                   SizedBox(height: 16.h),
 
                   if (passengers.isNotEmpty)
@@ -144,7 +151,10 @@ class _PassengerTripDetailsPageState
                         context,
                         MaterialPageRoute(
                           builder: (context) {
-                            return ConfirmBookingPage();
+                            return ConfirmBookingMapPage(
+                              tripDetails: trip,
+                              bookingTripSearched: widget.bookingTripSearched,
+                            );
                           },
                         ),
                       );
@@ -241,20 +251,22 @@ class _HeaderCardState extends State<_HeaderCard> {
             spacing: 4,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              CommonText(
-                widget.trip.driver.fullName,
-                size: 14,
-                isBold: true,
-                maxline: 1,
-              ),
+              if (widget.trip.driver != null)
+                CommonText(
+                  widget.trip.driver!.fullName,
+                  size: 14,
+                  isBold: true,
+                  maxline: 1,
+                ),
               Row(
                 children: [
                   Icon(Icons.star, size: 20, color: Colors.orange),
                   SizedBox(width: 4),
-                  CommonText(
-                    widget.trip.driver.ratting.toStringAsFixed(1),
-                    size: 12,
-                  ),
+                  if (widget.trip.driver != null)
+                    CommonText(
+                      widget.trip.driver!.ratting.toStringAsFixed(1),
+                      size: 12,
+                    ),
                 ],
               ),
               CommonText(

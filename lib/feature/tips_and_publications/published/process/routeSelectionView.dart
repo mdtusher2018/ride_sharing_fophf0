@@ -64,6 +64,16 @@ class _RouteSelectionViewState extends State<RouteSelectionView> {
             CommonButton(
               AppLocalizations.of(context)!.continue_text,
               onTap: () {
+                if (selectedRouteIndex == -1) {
+                  context.showErrorSnackbar(
+                    title: "Validation Error",
+                    message: "Select a path",
+                  );
+                  return;
+                }
+                log(
+                  widget.routes[selectedRouteIndex].polylineEncoded.toString(),
+                );
                 widget.onContinue(
                   widget.routes[selectedRouteIndex].polylineEncoded,
                 );

@@ -25,8 +25,6 @@ class AppDefaultValue {
   static const int travelCount = 0;
 
   // Location
-  static const double latitude = 0.0;
-  static const double longitude = 0.0;
   static const LatLng latLng = LatLng(10.380808, 51.091988);
 
   // Messages

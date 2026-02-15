@@ -52,7 +52,6 @@ class PassangerTripsController extends PaginationNotifier<PassengerTripModel> {
 
   Future<void> getTripDetails({required String tripId}) async {
     safeCall(
-
       task: () async {
         final response = await apiService.get(
           ApiEndpoints.passengerTripDetails(tripId),
@@ -62,7 +61,6 @@ class PassangerTripsController extends PaginationNotifier<PassengerTripModel> {
         final result = PassengerTripDetailsResponse.fromJson(response);
         tripDetails = result;
       },
-
     );
   }
 }

@@ -76,12 +76,6 @@ class _SetPriceViewState extends State<SetPriceView> {
             SizedBox(height: 16.h),
 
             /// Trip Details
-            CommonText(
-              AppLocalizations.of(context)!.trip_details,
-              isBold: true,
-            ),
-            SizedBox(height: 8.h),
-
             CommonTextfieldWithTitle(
               AppLocalizations.of(context)!.trip_details,
               tripDetailsController,

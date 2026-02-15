@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:icons_plus/icons_plus.dart';
-import 'package:velozaje/models/response/saved_place_response.dart';
+import 'package:velozaje/models/save_location_model.dart';
 import 'package:velozaje/res/common_text.dart';
 import 'package:velozaje/core/utils/app_colors.dart';
 
-Widget savedPlaceCard({required SavedLocation savedLocationModel}) {
+Widget savedPlaceCard({
+  required SavedLocation savedLocationModel,
+  required VoidCallback onRemove,
+}) {
   return Container(
     padding: EdgeInsets.all(14.w),
     margin: EdgeInsets.symmetric(horizontal: 4),
@@ -38,11 +41,9 @@ Widget savedPlaceCard({required SavedLocation savedLocationModel}) {
             ],
           ),
         ),
-        Column(
-          children: [
-            Icon(Icons.star, color: Colors.yellow),
-            // CommonText("5.5 km", size: 10),
-          ],
+        InkWell(
+          onTap: onRemove,
+          child: Icon(Icons.star, color: Colors.yellow),
         ),
       ],
     ),

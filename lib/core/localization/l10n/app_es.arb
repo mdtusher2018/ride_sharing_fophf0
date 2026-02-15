@@ -361,6 +361,17 @@
   "asked_the_passanger_for_the_code_to_confirm_their_pickup": "Pidió al pasajero el código para confirmar su recogida",
   "trip_compleated": "Viaje completado",
   "trip_in_progress": "Viaje en progreso",
-  "arived_at_destination": "Llegado al destino"
+  "arived_at_destination": "Llegado al destino",
+
+
+
+"place_name": "Nombre del lugar",
+"save": "Guardar"
+
+
+
+
+
+
 
 }

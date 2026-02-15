@@ -354,20 +354,17 @@
   "cancel_trip": "Cancel Trip",
 
 
-
-
-
-
-
-
-
 "wait_for_other_users_approval": "Wait for other users Approval",
 "enable_package_delivery":"Enable Package Delivery",
 "enter_pickup_code":"Enter Pickup Code",
 "asked_the_passanger_for_the_code_to_confirm_their_pickup":"Asked the Passanger for the code to confirm their pickup",
 "trip_compleated":"Trip Compleated",
 "trip_in_progress":"Trip in Progress",
-"arived_at_destination":"Arived at destination"
+"arived_at_destination":"Arived at destination",
+
+"place_name":"Place Name",
+"save":"Save"
+
 
 }
 

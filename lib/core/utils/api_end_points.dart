@@ -23,13 +23,19 @@ class ApiEndpoints {
   static const String registerVehicale = "vehicles/register";
   static const String myVehicle = "vehicles/my-vehicle";
 
+  //Saved Place
   static const String mySavedLocations = "saved-places";
+  static const String saveLocation = "saved-places";
+  static String removeSaveLocation(String id) => "saved-places/$id";
 
   //trip
   static const String passengerTrips = "trips";
   static String passengerTripDetails(String id) => "trips/$id";
   static const String getPublishedTrips = "trips/my-trips";
-  static const String createTrips = "trips/my-trips";
+  static const String createTrips = "trips";
+  static const String bookingTrip = "bookings";
+  static const String myBookedTrip = "bookings/my-bookings";
+  static String passengerBookedTripDetailsById(String id) => "bookings/$id";
 
   //Wallet
   static const String driverTransactions = "transactions/driver";

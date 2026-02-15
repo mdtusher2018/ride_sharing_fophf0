@@ -1,10 +1,11 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart' hide Route;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:velozaje/core/localization/app_localizations.dart';
 import 'package:velozaje/core/services/providers.dart';
-import 'package:velozaje/core/utils/api_end_points.dart';
 import 'package:velozaje/core/utils/defult_values.dart';
 import 'package:velozaje/core/utils/extention.dart';
 import 'package:velozaje/core/utils/map_helper.dart';
@@ -220,7 +221,6 @@ class _PublishProcessPageState extends State<PublishProcessPage> {
     }
 
     final result = await MapHelper.drawRoutes(
-      apiKey: ApiEndpoints.mapKey,
       origin: pickup.$2!,
       color: AppColors.primary,
       destination: destination.$2!,
@@ -237,6 +237,12 @@ class _PublishProcessPageState extends State<PublishProcessPage> {
   }
 
   void _onRouteSelected(int selectedIndex) {
+    if (selectedIndex == -1) {
+      context.showErrorSnackbar(
+        title: "Validation Error",
+        message: "Select a path",
+      );
+    }
     final updatedPolylines = <Polyline>{};
     int i = 0;
 

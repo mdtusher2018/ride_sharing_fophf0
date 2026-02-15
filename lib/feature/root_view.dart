@@ -1,18 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:velozaje/controllers/profile_controller.dart';
+import 'package:velozaje/core/utils/extention.dart';
 import 'package:velozaje/feature/chat/chat_list_view.dart';
 import 'package:velozaje/feature/home_and_passenger/home_view.dart';
 import 'package:velozaje/feature/profile_and_account/profile_view.dart';
 import 'package:velozaje/feature/tips_and_publications/published/process/publish_process_view.dart';
-import 'package:velozaje/feature/tips_and_publications/trips_and_publication_view.dart';
+import 'package:velozaje/feature/tips_and_publications/trips_view.dart';
 
-class RootPage extends StatefulWidget {
+class RootPage extends ConsumerStatefulWidget {
   const RootPage({super.key});
   static int currentIndex = 0;
   @override
-  State<RootPage> createState() => _RootPageState();
+  ConsumerState<RootPage> createState() => _RootPageState();
 }
 
-class _RootPageState extends State<RootPage> {
+class _RootPageState extends ConsumerState<RootPage> {
   final List<Widget> _pages = [
     HomePage(),
     TipsAndPublicationPage(),
@@ -20,6 +23,16 @@ class _RootPageState extends State<RootPage> {
     ChatListPage(),
     ProfilePage(),
   ];
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPersistentFrameCallback((timeStamp) {
+      if (ref.read(profileControllerProvider).user == null) {
+        ref.read(profileControllerProvider.notifier).getProfile();
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -66,14 +79,27 @@ class _RootPageState extends State<RootPage> {
       // Floating Action Button (FAB)
       floatingActionButton: GestureDetector(
         onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) {
-                return PublishProcessPage();
-              },
-            ),
-          );
+          if (ref
+                  .read(profileControllerProvider)
+                  .user
+                  ?.roles
+                  .contains("driver") ??
+              false) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) {
+                  return PublishProcessPage();
+                },
+              ),
+            );
+          } else {
+            context.showCommonSnackbar(
+              title: "Not resistered",
+              message:
+                  "You are not resistered as a driver, Please resisted as a driver",
+            );
+          }
         },
         child: Container(
           width: 72,

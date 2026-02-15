@@ -47,7 +47,10 @@ class SearchTipsResultsPage extends ConsumerWidget {
                 itemBuilder: (context, index) {
                   final trip = state.items[index];
 
-                  return _SearchTripsResultCard(trip: trip);
+                  return _SearchTripsResultCard(
+                    trip: trip,
+                    bookingTripSearched: request,
+                  );
                 },
               ),
             ),

@@ -4,11 +4,10 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:velozaje/core/localization/app_localizations.dart';
 import 'package:velozaje/core/services/providers.dart';
-import 'package:velozaje/core/utils/api_end_points.dart';
 import 'package:velozaje/core/utils/map_helper.dart';
 import 'package:velozaje/feature/home_and_passenger/search_tips_results_page.dart';
 import 'package:velozaje/core/utils/app_colors.dart';
-import 'package:velozaje/feature/widget/map_wudget.dart';
+import 'package:velozaje/feature/widget/map_widget.dart';
 import 'package:velozaje/models/request/trip_search_request.dart';
 import 'package:velozaje/res/common_image.dart';
 import 'package:velozaje/res/common_text.dart';
@@ -62,7 +61,6 @@ class _FindingDriversPageState extends ConsumerState<SearchingDriversPage> {
     }
 
     final result = await MapHelper.drawRoutes(
-      apiKey: ApiEndpoints.mapKey,
       origin: widget.request.pickupLatLng!,
       color: AppColors.primary,
       destination: widget.request.destinationLatLng!,
@@ -81,6 +79,7 @@ class _FindingDriversPageState extends ConsumerState<SearchingDriversPage> {
         children: [
           /// 🗺️ Map Placeholder
           ReusableMapWidget(
+            context: context,
             pickupLocation: widget.request.pickupLatLng,
             destinationLocation: widget.request.destinationLatLng,
             initialZoom: 12.0,

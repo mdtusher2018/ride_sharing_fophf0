@@ -2,24 +2,38 @@ import 'dart:io';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:velozaje/feature/tips_and_publications/publish_confirm_view.dart';
 import 'package:velozaje/core/utils/app_colors.dart';
 import 'package:velozaje/feature/home_and_passenger/confirm_booking_view.dart';
 import 'package:velozaje/models/request/trip_publish_request.dart';
+import 'package:velozaje/models/request/trip_search_request.dart';
+import 'package:velozaje/models/response/trip/passenger_trip_model.dart';
 
 class TakePhotoPage extends StatefulWidget {
   final TripPublishRequest? publishTripData;
   static late List<CameraDescription> cameras;
   final bool forPublish;
+  final VoidCallback? onConfirmBooking;
+  final PassengerTripModel? bookingTripDetails;
+  final TripSearchRequest? bookingTripSearched;
 
   const TakePhotoPage({
     super.key,
     this.forPublish = false,
+    this.onConfirmBooking,
+    this.bookingTripDetails,
     this.publishTripData,
+    this.bookingTripSearched,
   }) : assert(
          !forPublish || publishTripData != null,
          'publishTripData is required when forPublish is true',
+       ),
+       assert(
+         forPublish ||
+             (onConfirmBooking != null &&
+                 bookingTripDetails != null &&
+                 bookingTripSearched != null),
+         'onConfirmBooking, bookingTripSearched and bookingTripDetails are required when forPublish is false',
        );
 
   @override
@@ -55,9 +69,7 @@ class _TakePhotoPageState extends State<TakePhotoPage> {
     super.dispose();
   }
 
-  Future<void> _takePicture() async {
-    await _initializeCameraFuture;
-    final XFile image = await _cameraController.takePicture();
+  void _navigatePage(XFile image) {
     if (widget.forPublish) {
       widget.publishTripData!.driverImage = File(image.path);
       Navigator.push(
@@ -71,27 +83,22 @@ class _TakePhotoPageState extends State<TakePhotoPage> {
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (_) => ConfirmBookingPage(imageFile: File(image.path)),
+          builder: (_) => ConfirmBookingPage(
+            imageFile: File(image.path),
+            onBooking: widget.onConfirmBooking,
+            tripDetails: widget.bookingTripDetails!,
+            tripSearched: widget.bookingTripSearched!,
+          ),
         ),
       );
     }
+    ;
   }
 
-  /// 🖼️ Pick From Gallery
-  Future<void> _pickFromGallery() async {
-    final XFile? image = await ImagePicker().pickImage(
-      source: ImageSource.gallery,
-      imageQuality: 85,
-    );
-
-    if (image != null) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (_) => ConfirmBookingPage(imageFile: File(image.path)),
-        ),
-      );
-    }
+  Future<void> _takePicture() async {
+    await _initializeCameraFuture;
+    final XFile image = await _cameraController.takePicture();
+    _navigatePage(image);
   }
 
   void _switchCamera() {
@@ -141,7 +148,7 @@ class _TakePhotoPageState extends State<TakePhotoPage> {
               children: [
                 _iconButton(Icons.cameraswitch, _switchCamera),
                 _captureButton(_takePicture),
-                _iconButton(Icons.photo_library, _pickFromGallery),
+                SizedBox(width: 16),
               ],
             ),
           ),

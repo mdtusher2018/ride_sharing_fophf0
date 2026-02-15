@@ -3,8 +3,10 @@ import 'package:velozaje/core/services/api/i_api_service.dart';
 import 'package:velozaje/core/services/localstorage/i_local_storage_service.dart';
 import 'package:velozaje/core/services/localstorage/storage_key.dart';
 import 'package:velozaje/core/utils/api_end_points.dart';
+import 'package:velozaje/core/utils/enums_with_enum_extentions.dart';
 import 'package:velozaje/core/utils/extention.dart';
 import 'package:velozaje/core/utils/global_keys.dart';
+import 'package:velozaje/feature/auth/view/confirm_details_view.dart';
 import 'package:velozaje/models/response/auth_response/forget_password_response.dart';
 import 'package:velozaje/feature/auth/view/otp_verification_view.dart';
 import 'package:velozaje/models/response/auth_response/otp_verification_response.dart';
@@ -14,7 +16,6 @@ import 'dart:developer';
 import 'package:velozaje/models/response/auth_response/signin_response.dart';
 import 'package:velozaje/feature/root_view.dart';
 import 'package:velozaje/models/response/auth_response/signup_response.dart';
-import 'package:velozaje/feature/auth/view/confirm_details_view.dart';
 
 class AuthController extends BaseNotifier {
   final IApiService apiService;
@@ -23,12 +24,17 @@ class AuthController extends BaseNotifier {
   AuthController({required this.apiService, required this.localStorageService})
     : super(false);
 
-  Future<void> forgetVerification({required String email}) async {
+  Future<void> sendOtp({
+    required String email,
+    required OTPVerificationPurpose purpose,
+  }) async {
     safeCall(
       task: () async {
         final response = await apiService.post(ApiEndpoints.forgetPassword, {
           "email": email,
-          "purpose": "passwordReset",
+          "purpose": (purpose == OTPVerificationPurpose.emailVerify)
+              ? "emailVerification"
+              : "passwordReset",
         });
         if (response['success'] ?? false) {
           final user = ForgetPasswordResponse.fromJson(response);
@@ -39,7 +45,7 @@ class AuthController extends BaseNotifier {
           );
 
           navigatorKey.currentContext?.navigateTo(
-            OtpVerificationPage(email: email),
+            OtpVerificationPage(email: email, puspose: purpose),
           );
         } else {
           throw Exception(response['message'] ?? 'Failed to send OTP failed');
@@ -48,16 +54,19 @@ class AuthController extends BaseNotifier {
     );
   }
 
-  Future<void> otpVerification({
+  Future<void> verifyOTP({
     required String email,
     required String otp,
+    required OTPVerificationPurpose purpose,
   }) async {
     safeCall(
       task: () async {
         final response = await apiService.post(ApiEndpoints.verifyOTP, {
           "email": email,
           "otp": otp,
-          "purpose": "passwordReset",
+          "purpose": (purpose == OTPVerificationPurpose.emailVerify)
+              ? "emailVerification"
+              : "passwordReset",
         });
         if (response['success'] ?? false) {
           final user = OTPVerificationResponse.fromJson(response);
@@ -68,7 +77,9 @@ class AuthController extends BaseNotifier {
           );
 
           navigatorKey.currentContext?.navigateTo(
-            CreateNewPasswordPage(email: email),
+            purpose == OTPVerificationPurpose.emailVerify
+                ? ConfirmDetailsPage()
+                : CreateNewPasswordPage(email: email),
           );
         } else {
           throw Exception(response['message'] ?? 'Failed to send OTP failed');
@@ -155,7 +166,12 @@ class AuthController extends BaseNotifier {
             user.token,
           );
 
-          navigatorKey.currentContext?.navigateTo(ConfirmDetailsPage());
+          navigatorKey.currentContext?.navigateTo(
+            OtpVerificationPage(
+              email: email,
+              puspose: OTPVerificationPurpose.emailVerify,
+            ),
+          );
         } else {
           throw Exception(response['message'] ?? 'Failed to send OTP failed');
         }

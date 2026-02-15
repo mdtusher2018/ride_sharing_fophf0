@@ -1,22 +1,45 @@
+import 'package:velozaje/core/utils/api_data_praser_helper.dart';
+
 class PaginationMetaModel {
   final int page;
   final int limit;
   final int total;
   final int totalPage;
 
-  PaginationMetaModel({
+  const PaginationMetaModel({
     required this.page,
     required this.limit,
     required this.total,
     required this.totalPage,
   });
 
+  /// 🔹 Normal JSON constructor (safe)
   factory PaginationMetaModel.fromJson(Map<String, dynamic> json) {
     return PaginationMetaModel(
-      page: json['page'] ?? 1,
-      limit: json['limit'] ?? 10,
-      total: json['total'] ?? 0,
-      totalPage: json['totalPage'] ?? 0,
+      page: JsonHelper.intVal(json['page'], fallback: 1),
+      limit: JsonHelper.intVal(json['limit'], fallback: 10),
+      total: JsonHelper.intVal(json['total']),
+      totalPage: JsonHelper.intVal(json['totalPage']),
     );
+  }
+
+  /// 🔹 Empty constructor
+  factory PaginationMetaModel.empty() {
+    return const PaginationMetaModel(
+      page: 1,
+      limit: 10,
+      total: 0,
+      totalPage: 0,
+    );
+  }
+
+  /// 🔹 Optional: Convert back to JSON
+  Map<String, dynamic> toJson() {
+    return {
+      'page': page,
+      'limit': limit,
+      'total': total,
+      'totalPage': totalPage,
+    };
   }
 }
