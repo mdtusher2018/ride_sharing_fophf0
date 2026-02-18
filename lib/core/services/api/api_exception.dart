@@ -1,5 +1,3 @@
-import 'package:flutter/foundation.dart';
-
 class ApiException implements Exception {
   final int statusCode;
   final String message;
@@ -8,6 +6,5 @@ class ApiException implements Exception {
   ApiException(this.statusCode, this.message, {this.data});
 
   @override
-  String toString() =>
-      kDebugMode ? 'ApiException: $statusCode - $message' : message;
+  String toString() => message;
 }

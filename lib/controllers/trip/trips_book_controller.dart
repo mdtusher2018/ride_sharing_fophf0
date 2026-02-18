@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:velozaje/core/utils/enums_with_enum_extentions.dart';
 import 'package:velozaje/models/pagenation_meta_model.dart';
 import 'package:velozaje/controllers/paginated_controller.dart';
@@ -9,11 +8,36 @@ import 'package:velozaje/models/request/trip_search_request.dart';
 import 'package:velozaje/models/response/trip/booking_details_response.dart';
 import 'package:velozaje/models/response/trip/booking_response.dart';
 import 'package:velozaje/models/response/trip/passenger_trip_model.dart';
+import 'package:velozaje/models/response/trip/published_trip_details_response.dart';
+
+class TripsBookingState {
+  final List<BookingsOfPublishedTrip> pendingBookings;
+  final List<BookingsOfPublishedTrip> confirmedBookings;
+
+  const TripsBookingState({
+    this.pendingBookings = const [],
+    this.confirmedBookings = const [],
+  });
+
+  factory TripsBookingState.initial() {
+    return const TripsBookingState();
+  }
+
+  TripsBookingState copyWith({
+    List<BookingsOfPublishedTrip>? pendingBookings,
+    List<BookingsOfPublishedTrip>? confirmedBookings,
+  }) {
+    return TripsBookingState(
+      pendingBookings: pendingBookings ?? this.pendingBookings,
+      confirmedBookings: confirmedBookings ?? this.confirmedBookings,
+    );
+  }
+}
 
 class TrippBookController extends PaginationNotifier<PassengerBookingModel> {
   final IApiService apiService;
 
-  TrippBookController(this.apiService);
+  TrippBookController(this.apiService) : super(extraState: TripsBookingState());
 
   PassengerBookingDetailsModel? bookingDetail;
 
@@ -41,11 +65,11 @@ class TrippBookController extends PaginationNotifier<PassengerBookingModel> {
     required File passengerImage,
   }) async {
     // Build multipart fields map from inputs
-    final Map<String, String> fields = {
+    final Map<String, dynamic> fields = {
       'trip': tripDetails.id,
-      'seatsBooked': tripSearched.passengersCount.toString(),
-      'bookingType':
-          tripSearched.bookingType.name, // Assuming enum extension .name
+      if (tripSearched.bookingType == BookingType.travel)
+        'seatsBooked': tripSearched.passengersCount.toString(),
+      'bookingType': tripSearched.bookingType.name,
 
       'pickupLocation[address]': tripSearched.pickupAddress,
       'pickupLocation[coordinates][0]': tripSearched.pickupLatLng!.longitude
@@ -67,15 +91,17 @@ class TrippBookController extends PaginationNotifier<PassengerBookingModel> {
 
     if (tripSearched.bookingType == BookingType.package &&
         tripSearched.packages.isNotEmpty) {
-      final package = tripSearched.packages.first;
-
-      fields.addAll({
-        'packageDetails[weight]': package.weightKg.toString(),
-        'packageDetails[quantity]': tripSearched.packages.length.toString(),
-        'packageDetails[dimensions][length]': package.lengthCm.toString(),
-        'packageDetails[dimensions][width]': package.widthCm.toString(),
-        'packageDetails[dimensions][height]': package.heightCm.toString(),
-      });
+      for (int i = 0; i < tripSearched.packages.length; i++) {
+        final package = tripSearched.packages[i];
+        fields.addAll({
+          'packages[$i][weight]': package.weightKg.toString(),
+          'packages[$i][quantity]': tripSearched.packages.length.toString(),
+          'packages[$i][dimensions][length]': package.lengthCm.toString(),
+          'packages[$i][dimensions][width]': package.widthCm.toString(),
+          'packages[$i][dimensions][height]': package.heightCm.toString(),
+          'packages[$i][description]': 'package $i',
+        });
+      }
     }
 
     final Map<String, List<File>> files = {
@@ -102,6 +128,58 @@ class TrippBookController extends PaginationNotifier<PassengerBookingModel> {
           ApiEndpoints.passengerBookedTripDetailsById(id),
         );
         bookingDetail = PassengerBookedDetailsResponse.fromJson(res).booking;
+      },
+    );
+  }
+
+  void initializedBookingsOfAPublishedTrips({
+    required List<BookingsOfPublishedTrip> pendingBookings,
+    required List<BookingsOfPublishedTrip> confirmedBookings,
+  }) {
+    final extra = state.extraState as TripsBookingState;
+    state = state.copyWith(
+      extraState: extra.copyWith(
+        pendingBookings: pendingBookings,
+        confirmedBookings: confirmedBookings,
+      ),
+    );
+  }
+
+  Future<void> acceptBookingById({required String bookingId}) async {
+    await safeCall(
+      task: () async {
+        await apiService.patch(ApiEndpoints.acceptBooking(bookingId), {});
+      },
+    );
+  }
+
+  Future<void> rejectBookingById({required String bookingId}) async {
+    await safeCall(
+      task: () async {
+        await apiService.patch(ApiEndpoints.rejectBooking(bookingId), {});
+        final extra = state.extraState as TripsBookingState;
+
+        final updatedPending = extra.pendingBookings
+            .where((e) => e.id != bookingId)
+            .toList();
+
+        state = state.copyWith(
+          extraState: extra.copyWith(pendingBookings: updatedPending),
+        );
+      },
+      showLoading: false,
+    );
+  }
+
+  Future<void> verifyOtpToStartRide({
+    required String bookingId,
+    required String otp,
+  }) async {
+    await safeCall(
+      task: () async {
+        await apiService.patch(ApiEndpoints.verifyOtpToStartRide(bookingId), {
+          'otp': otp,
+        });
       },
     );
   }

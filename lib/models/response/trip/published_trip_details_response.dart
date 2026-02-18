@@ -22,7 +22,7 @@ class PublishedTripDetailsResponse {
 }
 
 class _PublishedTripData {
-  final List<PublishedTripDetail> bookings;
+  final List<BookingsOfPublishedTrip> bookings;
 
   _PublishedTripData({required this.bookings});
 
@@ -30,18 +30,18 @@ class _PublishedTripData {
     return _PublishedTripData(
       bookings:
           (json['bookings'] as List<dynamic>?)
-              ?.map((e) => PublishedTripDetail.fromJson(e))
+              ?.map((e) => BookingsOfPublishedTrip.fromJson(e))
               .toList() ??
           [],
     );
   }
 }
 
-class PublishedTripDetail {
+class BookingsOfPublishedTrip {
   final String id;
   final String trip;
   final String driver;
-  final String bookingType;
+  final BookingType bookingType;
   final String passengerImage;
   final int seatsBooked;
   final num totalPrice;
@@ -56,10 +56,10 @@ class PublishedTripDetail {
   final LocationWithAddressModel pickupLocation;
   final LocationWithAddressModel dropoffLocation;
   final TripPassenger passenger;
-  final TripPackageDetails packageDetails;
-  final List<dynamic> packages;
 
-  PublishedTripDetail({
+  final List<_PackageDetails> packages;
+
+  BookingsOfPublishedTrip({
     required this.id,
     required this.trip,
     required this.driver,
@@ -77,16 +77,16 @@ class PublishedTripDetail {
     required this.pickupLocation,
     required this.dropoffLocation,
     required this.passenger,
-    required this.packageDetails,
+
     required this.packages,
   });
 
-  factory PublishedTripDetail.fromJson(Map<String, dynamic> json) {
-    return PublishedTripDetail(
+  factory BookingsOfPublishedTrip.fromJson(Map<String, dynamic> json) {
+    return BookingsOfPublishedTrip(
       id: json['_id'] ?? '',
       trip: json['trip'] ?? '',
       driver: json['driver'] ?? '',
-      bookingType: json['bookingType'] ?? '',
+      bookingType: ((json['bookingType'] ?? '').toString()).toBookingType(),
       passengerImage: json['passengerImage'] ?? '',
       seatsBooked: json['seatsBooked'] ?? 0,
       totalPrice: json['totalPrice'] ?? 0,
@@ -105,8 +105,12 @@ class PublishedTripDetail {
         json['dropoffLocation'] ?? {},
       ),
       passenger: TripPassenger.fromJson(json['passenger'] ?? {}),
-      packageDetails: TripPackageDetails.fromJson(json['packageDetails'] ?? {}),
-      packages: json['packages'] ?? [],
+
+      packages:
+          (json['packages'] as List<dynamic>?)
+              ?.map((e) => _PackageDetails.fromJson(e))
+              .toList() ??
+          [],
     );
   }
 }
@@ -131,12 +135,51 @@ class TripPassenger {
   }
 }
 
-class TripPackageDetails {
+class _PackageDetails {
+  final String id;
+  final _PackageDimensions dimensions;
+  final double weight;
   final int quantity;
+  final String description;
+  final String price;
 
-  TripPackageDetails({required this.quantity});
+  _PackageDetails({
+    required this.id,
+    required this.dimensions,
+    required this.weight,
+    required this.quantity,
+    required this.description,
+    required this.price,
+  });
 
-  factory TripPackageDetails.fromJson(Map<String, dynamic> json) {
-    return TripPackageDetails(quantity: json['quantity'] ?? 0);
+  factory _PackageDetails.fromJson(Map<String, dynamic> json) {
+    return _PackageDetails(
+      id: json['_id'] ?? '',
+      dimensions: _PackageDimensions.fromJson(json['dimensions'] ?? {}),
+      weight: (json['weight'] as num?)?.toDouble() ?? 0.0,
+      quantity: json['quantity'] ?? 0,
+      description: json['description'] ?? '',
+      price: json['price'] ?? '0',
+    );
+  }
+}
+
+class _PackageDimensions {
+  final int length;
+  final int width;
+  final int height;
+
+  _PackageDimensions({
+    required this.length,
+    required this.width,
+    required this.height,
+  });
+
+  factory _PackageDimensions.fromJson(Map<String, dynamic> json) {
+    return _PackageDimensions(
+      length: (json['length'] as num?)?.toInt() ?? 0,
+      width: (json['width'] as num?)?.toInt() ?? 0,
+      height: (json['height'] as num?)?.toInt() ?? 0,
+    );
   }
 }

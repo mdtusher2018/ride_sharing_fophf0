@@ -18,10 +18,11 @@ abstract class BaseNotifier<T> extends StateNotifier<T> {
     bool showSuccessSnack = false,
     void Function()? onStart,
     void Function()? onComplete,
+    bool showLoading = true,
   }) async {
     try {
       onStart?.call();
-      isLoading.value = true;
+      if (showLoading) isLoading.value = true;
       errorMessage.value = null;
 
       final result = await task();

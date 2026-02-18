@@ -68,7 +68,7 @@ class TripCard extends StatelessWidget {
           context,
           MaterialPageRoute(
             builder: (context) {
-              return MyPublishedDetailsPage();
+              return PublishedTripDetailsView(id: trip.id);
             },
           ),
         );

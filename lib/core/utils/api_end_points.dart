@@ -35,7 +35,13 @@ class ApiEndpoints {
   static const String createTrips = "trips";
   static const String bookingTrip = "bookings";
   static const String myBookedTrip = "bookings/my-bookings";
-  static String passengerBookedTripDetailsById(String id) => "bookings/$id";
+  static String acceptBooking(String id) => "bookings/$id/accept";
+  static String rejectBooking(String id) => "bookings/$id/cancle";
+  static String passengerBookedTripDetailsById(String id) =>
+      "bookings/trip/$id";
+  static String verifyOtpToStartRide(String id) => "bookings/$id/verify-otp";
+  static String generateDropOffOtp(String id) =>
+      "bookings/$id/generate-dropoff-otp";
 
   //Wallet
   static const String driverTransactions = "transactions/driver";

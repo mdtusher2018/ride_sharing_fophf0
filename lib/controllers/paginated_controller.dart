@@ -7,12 +7,14 @@ class PaginationState<T> {
   final PaginationMetaModel meta;
   final bool isLoadingMore;
   final bool hasMore;
+  final Object? extraState;
 
   PaginationState({
     required this.items,
     required this.meta,
     this.isLoadingMore = false,
     this.hasMore = true,
+    this.extraState,
   });
 
   PaginationState<T> copyWith({
@@ -20,26 +22,30 @@ class PaginationState<T> {
     PaginationMetaModel? meta,
     bool? isLoadingMore,
     bool? hasMore,
+    Object? extraState,
   }) {
     return PaginationState(
       items: items ?? this.items,
       meta: meta ?? this.meta,
       isLoadingMore: isLoadingMore ?? this.isLoadingMore,
       hasMore: hasMore ?? this.hasMore,
+      extraState: extraState ?? this.extraState,
     );
   }
 
-  factory PaginationState.initial() {
+  factory PaginationState.initial({Object? extraState}) {
     return PaginationState(
       items: [],
       meta: PaginationMetaModel(page: 1, limit: 10, total: 0, totalPage: 1),
       hasMore: true,
+      extraState: extraState,
     );
   }
 }
 
 abstract class PaginationNotifier<T> extends BaseNotifier<PaginationState<T>> {
-  PaginationNotifier() : super(PaginationState.initial());
+  PaginationNotifier({Object? extraState})
+    : super(PaginationState.initial(extraState: extraState));
 
   /// API call function must be implemented
   Future<(List<T>, PaginationMetaModel)> fetchPage({

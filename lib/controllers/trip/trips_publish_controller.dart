@@ -7,12 +7,27 @@ import 'package:velozaje/models/request/trip_publish_request.dart';
 import 'package:velozaje/models/response/trip/driver_published_trips.dart';
 import 'package:velozaje/models/response/trip/published_trip_details_response.dart';
 
+class TripsPublishState {
+  final PublishedTripDetailsResponse? publishedTrip;
+
+  const TripsPublishState({this.publishedTrip});
+
+  factory TripsPublishState.initial() {
+    return const TripsPublishState();
+  }
+
+  TripsPublishState copyWith({PublishedTripDetailsResponse? publishedTrip}) {
+    return TripsPublishState(
+      publishedTrip: publishedTrip ?? this.publishedTrip,
+    );
+  }
+}
+
 class TripsPublishController extends PaginationNotifier<DriverTripModel> {
   final IApiService apiService;
 
-  TripsPublishController(this.apiService);
-
-  PublishedTripDetailsResponse? publishedTrip;
+  TripsPublishController(this.apiService)
+    : super(extraState: TripsPublishState());
 
   @override
   Future<(List<DriverTripModel>, PaginationMetaModel)> fetchPage({
@@ -133,7 +148,11 @@ class TripsPublishController extends PaginationNotifier<DriverTripModel> {
         final res = await apiService.get(
           ApiEndpoints.passengerBookedTripDetailsById(id),
         );
-        publishedTrip = PublishedTripDetailsResponse.fromJson(res);
+        final tempPublishedTrip = PublishedTripDetailsResponse.fromJson(res);
+        final extra = state.extraState as TripsPublishState;
+        state = state.copyWith(
+          extraState: extra.copyWith(publishedTrip: tempPublishedTrip),
+        );
       },
     );
   }

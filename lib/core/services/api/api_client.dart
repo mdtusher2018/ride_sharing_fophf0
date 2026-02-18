@@ -122,7 +122,9 @@ class ApiClient {
 
     throw ApiException(
       statusCode,
-      body?['message'] ?? 'Unknown error',
+      (body?['error'] != null)
+          ? body['error']
+          : body?['message'] ?? 'Unknown error',
       data: body,
     );
   }

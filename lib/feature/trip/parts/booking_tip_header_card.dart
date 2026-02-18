@@ -95,14 +95,13 @@ class TipHeaderCard extends StatelessWidget {
             ),
 
             Divider(),
-            if (bookingDetails.status != BookingStatus.pending)
+            if (bookingDetails.status == BookingStatus.pending)
               CommonText(
                 "Booked not confirm by driver yet...",
                 size: 16,
                 color: AppColors.white,
               ),
-            if (bookingDetails.status == BookingStatus.pending ||
-                bookingDetails.status == BookingStatus.confirmed ||
+            if (bookingDetails.status == BookingStatus.confirmed ||
                 bookingDetails.status == BookingStatus.inProgress ||
                 bookingDetails.status == BookingStatus.completed ||
                 bookingDetails.status == BookingStatus.cancelled)

@@ -90,3 +90,16 @@ extension BookingStatusParser on String? {
     }
   }
 }
+
+extension BookingTypeParser on String? {
+  BookingType toBookingType() {
+    switch (this?.toLowerCase()) {
+      case 'travel':
+        return BookingType.travel;
+      case 'package':
+        return BookingType.package;
+      default:
+        return BookingType.travel;
+    }
+  }
+}

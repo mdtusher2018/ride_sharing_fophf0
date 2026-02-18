@@ -9,7 +9,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:velozaje/core/services/providers.dart';
 import 'package:velozaje/core/utils/enums_with_enum_extentions.dart';
 import 'package:velozaje/core/utils/helper.dart';
-import 'package:velozaje/feature/tips_and_publications/my_published_details_view.dart';
+import 'package:velozaje/feature/trip/trip_publish/published_trip_details_view.dart';
 import 'package:velozaje/models/response/trip/driver_published_trips.dart';
 import 'package:velozaje/feature/trip/trip_book/booked_tip_details_view.dart';
 import 'package:velozaje/models/response/trip/booking_response.dart';
