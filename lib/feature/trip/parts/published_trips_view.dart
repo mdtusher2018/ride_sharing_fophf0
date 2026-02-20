@@ -35,22 +35,27 @@ class _MyPublishedTripsPageState extends ConsumerState<PublishedTripsPage> {
       return const Center(child: CircularProgressIndicator());
     }
 
-    return ListView.builder(
-      controller: _scrollController,
-      padding: EdgeInsets.all(16.w),
-      itemCount: state.items.length + (state.hasMore ? 1 : 0),
-      itemBuilder: (context, index) {
-        if (index >= state.items.length) {
-          return const Padding(
-            padding: EdgeInsets.all(16),
-            child: Center(child: CircularProgressIndicator()),
-          );
-        }
-
-        final trip = state.items[index];
-
-        return TripCard(trip: trip);
+    return RefreshIndicator(
+      onRefresh: () async {
+        ref.read(tripsPublishControllerProvider.notifier).refresh();
       },
+      child: ListView.builder(
+        controller: _scrollController,
+        padding: EdgeInsets.all(16.w),
+        itemCount: state.items.length + (state.hasMore ? 1 : 0),
+        itemBuilder: (context, index) {
+          if (index >= state.items.length) {
+            return const Padding(
+              padding: EdgeInsets.all(16),
+              child: Center(child: CircularProgressIndicator()),
+            );
+          }
+
+          final trip = state.items[index];
+
+          return TripCard(trip: trip);
+        },
+      ),
     );
   }
 }

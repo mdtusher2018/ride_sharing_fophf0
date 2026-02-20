@@ -5,7 +5,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:velozaje/core/localization/app_localizations.dart';
-import 'package:velozaje/core/services/providers.dart';
+import 'package:velozaje/core/providers.dart';
 import 'package:velozaje/feature/auth/view/referal_view.dart';
 import 'package:velozaje/core/utils/app_colors.dart';
 import 'package:velozaje/res/common_button.dart';

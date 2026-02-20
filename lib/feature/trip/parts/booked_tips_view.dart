@@ -28,36 +28,42 @@ class _MyTipsPageState extends ConsumerState<BookedTipsPage> {
   Widget build(BuildContext context) {
     final pagination = ref.watch(tripsBookingControllerProvider);
     final notifier = ref.read(tripsBookingControllerProvider.notifier);
-
-    final bookings = pagination.items;
     return ValueListenableBuilder(
       valueListenable: notifier.isLoading,
       builder: (_, isLoading, _) {
-        if (isLoading && bookings.isEmpty) {
+        if (isLoading && pagination.items.isEmpty) {
           return const Center(child: CircularProgressIndicator());
         }
 
-        if (bookings.isEmpty) {
+        if (pagination.items.isEmpty) {
           return CommonText("You have no bookings");
         }
 
-        return ListView.builder(
-          itemCount: bookings.length,
-          itemBuilder: (context, index) {
-            return InkWell(
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) {
-                      return BookedTipDetailsView(id: bookings[index].id);
-                    },
-                  ),
-                );
-              },
-              child: _MyTipCard(booking: bookings[index]),
-            );
+        return RefreshIndicator(
+          onRefresh: () async {
+            notifier.refresh();
           },
+          child: ListView.builder(
+            itemCount: pagination.items.length,
+            controller: scrollController,
+            itemBuilder: (context, index) {
+              return InkWell(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) {
+                        return BookedTipDetailsView(
+                          id: pagination.items[index].id,
+                        );
+                      },
+                    ),
+                  );
+                },
+                child: _MyTipCard(booking: pagination.items[index]),
+              );
+            },
+          ),
         );
       },
     );

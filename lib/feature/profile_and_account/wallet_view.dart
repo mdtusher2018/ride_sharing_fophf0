@@ -4,7 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:velozaje/controllers/wallet_controller.dart';
 import 'package:velozaje/core/localization/app_localizations.dart';
-import 'package:velozaje/core/services/providers.dart';
+import 'package:velozaje/core/providers.dart';
 import 'package:velozaje/core/utils/helper.dart';
 import 'package:velozaje/models/response/wallet_response.dart';
 import 'package:velozaje/res/common_appbar.dart';

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:velozaje/core/localization/app_localizations.dart';
-import 'package:velozaje/core/services/providers.dart';
+import 'package:velozaje/core/providers.dart';
 import 'package:velozaje/core/utils/app_colors.dart';
 import 'package:velozaje/feature/result_and_booking/widget/filter_widget.dart';
 import 'package:velozaje/models/request/trip_search_request.dart';
@@ -17,12 +17,38 @@ import 'package:velozaje/res/common_text.dart';
 
 part 'parts_of_trip_search/trips_search_result_widgets.dart';
 
-class TipsSearchResultsView extends ConsumerWidget {
+class TipsSearchResultsView extends ConsumerStatefulWidget {
   const TipsSearchResultsView({super.key, required this.request});
   final TripSearchRequest request;
+
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final state = ref.watch(passengerTripsControllerProvider);
+  ConsumerState<TipsSearchResultsView> createState() =>
+      _TipsSearchResultsViewState();
+}
+
+class _TipsSearchResultsViewState extends ConsumerState<TipsSearchResultsView> {
+  ScrollController scrollController = ScrollController();
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(passengerTripsControllerProvider.notifier).refresh();
+    });
+
+    final controller = ref.read(passengerTripsControllerProvider.notifier);
+    scrollController.addListener(() {
+      if (scrollController.position.pixels >
+          scrollController.position.maxScrollExtent - 200) {
+        controller.loadMore();
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final pagination = ref.watch(passengerTripsControllerProvider);
+    final notifier = ref.read(passengerTripsControllerProvider.notifier);
 
     return Scaffold(
       backgroundColor: AppColors.mainbg,
@@ -36,26 +62,34 @@ class TipsSearchResultsView extends ConsumerWidget {
           child: const Icon(Icons.filter_alt_rounded),
         ),
       ),
-      body: Padding(
-        padding: EdgeInsets.all(16.w),
-        child: Column(
-          children: [
-            Expanded(
-              child: ListView.separated(
-                itemCount: state.items.length,
-                separatorBuilder: (_, __) => SizedBox(height: 16.h),
-                itemBuilder: (context, index) {
-                  final trip = state.items[index];
+      body: ValueListenableBuilder(
+        valueListenable: notifier.isLoading,
+        builder: (_, isLoading, _) {
+          if (isLoading && pagination.items.isEmpty) {
+            return const Center(child: CircularProgressIndicator());
+          }
 
-                  return _SearchTripsResultCard(
-                    trip: trip,
-                    bookingTripSearched: request,
-                  );
-                },
-              ),
+          if (pagination.items.isEmpty) {
+            return CommonText("No search found");
+          }
+
+          return Padding(
+            padding: EdgeInsets.all(16.w),
+            child: ListView.separated(
+              controller: scrollController,
+              itemCount: pagination.items.length,
+              separatorBuilder: (_, __) => SizedBox(height: 16.h),
+              itemBuilder: (context, index) {
+                final trip = pagination.items[index];
+
+                return _SearchTripsResultCard(
+                  trip: trip,
+                  bookingTripSearched: widget.request,
+                );
+              },
             ),
-          ],
-        ),
+          );
+        },
       ),
     );
   }

@@ -1,16 +1,41 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:velozaje/controllers/conversation_controller.dart';
 import 'package:velozaje/core/localization/app_localizations.dart';
+import 'package:velozaje/core/providers.dart';
+import 'package:velozaje/core/utils/extention.dart';
 import 'package:velozaje/feature/chat/chat_view.dart';
 import 'package:velozaje/core/utils/app_colors.dart';
+import 'package:velozaje/models/conversation_model.dart';
 import 'package:velozaje/res/common_text.dart';
 import 'package:velozaje/res/common_image.dart';
 
-class ChatListPage extends StatelessWidget {
-  const ChatListPage({super.key});
+class AllConversationView extends ConsumerStatefulWidget {
+  const AllConversationView({super.key});
+
+  @override
+  ConsumerState<AllConversationView> createState() =>
+      _AllConversationViewState();
+}
+
+class _AllConversationViewState extends ConsumerState<AllConversationView> {
+  @override
+  void initState() {
+    super.initState();
+    // Make the API call only once when the widget is initialized
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      if (mounted) {
+        ref.read(conversationControllerProvider.notifier).getAllConversations();
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
+    final state =
+        (ref.watch(conversationControllerProvider).extraState
+            as ConversationState);
     return Scaffold(
       backgroundColor: AppColors.white,
       appBar: AppBar(
@@ -46,17 +71,26 @@ class ChatListPage extends StatelessWidget {
 
           /// 💬 Chat List
           Expanded(
-            child: ListView.builder(
-              itemCount: 10,
+            child: Consumer(
+              builder: (_, context, _) {
+                if (state.isLoading) {
+                  return Center(child: CircularProgressIndicator());
+                }
+                return RefreshIndicator(
+                  onRefresh: () async {
+                    ref
+                        .read(conversationControllerProvider.notifier)
+                        .getAllConversations();
+                  },
+                  child: ListView.builder(
+                    itemCount: state.allConversations.length,
 
-              itemBuilder: (context, index) {
-                return _ChatTile(
-                  image:
-                      "https://static.vecteezy.com/system/resources/previews/002/002/403/non_2x/man-with-beard-avatar-character-isolated-icon-free-vector.jpg",
-                  name: 'Username $index',
-                  message: 'Hey! Your document is verified.',
-                  time: '5 min',
-                  unreadCount: index < 2 ? 2 : 0,
+                    itemBuilder: (context, index) {
+                      return _ChatTile(
+                        conversation: state.allConversations[index],
+                      );
+                    },
+                  ),
                 );
               },
             ),
@@ -68,19 +102,9 @@ class ChatListPage extends StatelessWidget {
 }
 
 class _ChatTile extends StatelessWidget {
-  final String image;
-  final String name;
-  final String message;
-  final String time;
-  final int unreadCount;
+  final ConversationModel conversation;
 
-  const _ChatTile({
-    required this.image,
-    required this.name,
-    required this.message,
-    required this.time,
-    required this.unreadCount,
-  });
+  const _ChatTile({required this.conversation});
 
   @override
   Widget build(BuildContext context) {
@@ -90,7 +114,12 @@ class _ChatTile extends StatelessWidget {
           context,
           MaterialPageRoute(
             builder: (context) {
-              return ChatPage();
+              return ChatPage(
+                bookingId: conversation.bookingId,
+                reciverId: conversation.otherUser.id,
+                reciverImage: conversation.otherUser.id,
+                reciverName: conversation.otherUser.name,
+              );
             },
           ),
         );
@@ -101,7 +130,7 @@ class _ChatTile extends StatelessWidget {
         leading: CircleAvatar(
           radius: 30.r,
           child: CommonImage(
-            path: image,
+            path: conversation.otherUser.image,
             sourceType: ImageSourceType.network,
 
             height: 52.w,
@@ -109,13 +138,17 @@ class _ChatTile extends StatelessWidget {
         ),
 
         /// 🧑 Name
-        title: CommonText(name, size: 15.sp, fontWeight: FontWeight.w600),
+        title: CommonText(
+          conversation.otherUser.name,
+          size: 15.sp,
+          fontWeight: FontWeight.w600,
+        ),
 
         /// 💬 Last Message
         subtitle: Padding(
           padding: EdgeInsets.only(top: 4.h),
           child: CommonText(
-            message,
+            conversation.lastMessage.content,
             size: 13.sp,
             color: AppColors.textSecondary,
             maxline: 1,
@@ -126,21 +159,23 @@ class _ChatTile extends StatelessWidget {
         trailing: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            CommonText(time, size: 11.sp, color: Colors.grey),
-
-            if (unreadCount > 0)
+            if (!conversation.lastMessage.isRead)
               Container(
                 padding: EdgeInsets.all(6),
                 decoration: BoxDecoration(
-                  color: AppColors.primary,
+                  color: AppColors.error,
                   shape: BoxShape.circle,
                 ),
                 child: CommonText(
-                  unreadCount.toString(),
+                  "".toString(),
                   size: 10.sp,
                   color: Colors.white,
                 ),
               ),
+            CommonText(
+              conversation.lastMessage.createdAt.customFormat(),
+              size: 11.sp,
+            ),
           ],
         ),
       ),

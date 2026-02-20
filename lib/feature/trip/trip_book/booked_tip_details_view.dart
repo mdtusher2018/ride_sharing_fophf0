@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:velozaje/core/localization/app_localizations.dart';
-import 'package:velozaje/core/services/providers.dart';
+import 'package:velozaje/core/providers.dart';
 import 'package:velozaje/core/utils/app_colors.dart';
 import 'package:velozaje/core/utils/enums_with_enum_extentions.dart';
 import 'package:velozaje/core/utils/helper.dart';
@@ -99,170 +99,188 @@ class _BookedTipDetailsViewState extends ConsumerState<BookedTipDetailsView> {
                     return Center(child: CircularProgressIndicator());
                   }
 
-                  return SingleChildScrollView(
-                    child: Column(
-                      children: [
-                        Container(
-                          width: 40.w,
-                          height: 4.h,
-                          decoration: BoxDecoration(
-                            color: Colors.grey.shade300,
-                            borderRadius: BorderRadius.circular(4.r),
-                          ),
-                        ),
-
-                        SizedBox(height: 12.h),
-                        Column(
-                          children: [
-                            TipHeaderCard(bookingDetails: bookingDetails),
-                            SizedBox(height: 16.h),
-                            VehicleCard(
-                              brand: bookingDetails.trip.vehicle.brand,
-                              image: bookingDetails
-                                  .trip
-                                  .vehicle
-                                  .vehicleImages
-                                  .first,
-                              licensePlateNumber: bookingDetails
-                                  .trip
-                                  .vehicle
-                                  .licensePlateNumber,
-                              vehicleModel:
-                                  bookingDetails.trip.vehicle.vehicleModel,
-                              year: bookingDetails.trip.vehicle.year.toString(),
+                  return RefreshIndicator(
+                    onRefresh: () async {
+                      ref
+                          .read(tripsBookingControllerProvider.notifier)
+                          .bookedTripDetailsById(id: widget.id);
+                    },
+                    child: SingleChildScrollView(
+                      physics: AlwaysScrollableScrollPhysics(),
+                      child: Column(
+                        children: [
+                          Container(
+                            width: 40.w,
+                            height: 4.h,
+                            decoration: BoxDecoration(
+                              color: Colors.grey.shade300,
+                              borderRadius: BorderRadius.circular(4.r),
                             ),
-                            SizedBox(height: 16.h),
+                          ),
 
-                            Card(
-                              color: AppColors.white,
-                              child: Padding(
-                                padding: EdgeInsets.all(16),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    CommonText(
-                                      AppLocalizations.of(context)!.passengers,
-                                      size: 16,
-                                      isBold: true,
-                                    ),
-                                    SizedBox(height: 8.h),
+                          SizedBox(height: 12.h),
+                          Column(
+                            children: [
+                              TipHeaderCard(bookingDetails: bookingDetails),
+                              SizedBox(height: 16.h),
+                              VehicleCard(
+                                brand: bookingDetails.trip.vehicle.brand,
+                                image: bookingDetails
+                                    .trip
+                                    .vehicle
+                                    .vehicleImages
+                                    .first,
+                                licensePlateNumber: bookingDetails
+                                    .trip
+                                    .vehicle
+                                    .licensePlateNumber,
+                                vehicleModel:
+                                    bookingDetails.trip.vehicle.vehicleModel,
+                                year: bookingDetails.trip.vehicle.year
+                                    .toString(),
+                              ),
+                              SizedBox(height: 16.h),
 
-                                    ...List.generate(4, (index) {
-                                      return InkWell(
-                                        onTap: () {},
-                                        child: Container(
-                                          margin: EdgeInsets.symmetric(
-                                            vertical: 8,
-                                          ),
-                                          child: Row(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.center,
-                                            children: [
-                                              // Leading image container
-                                              Container(
-                                                width: 40,
-                                                height: 40,
-                                                margin: EdgeInsets.only(
-                                                  right: 10,
-                                                ),
-                                                decoration: BoxDecoration(
-                                                  image: DecorationImage(
-                                                    image: NetworkImage(
-                                                      "https://randomuser.me/api/portraits/men/32.jpg",
-                                                    ),
-                                                    fit: BoxFit.cover,
+                              Card(
+                                color: AppColors.white,
+                                child: Padding(
+                                  padding: EdgeInsets.all(16),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      CommonText(
+                                        AppLocalizations.of(
+                                          context,
+                                        )!.passengers,
+                                        size: 16,
+                                        isBold: true,
+                                      ),
+                                      SizedBox(height: 8.h),
+
+                                      ...List.generate(4, (index) {
+                                        return InkWell(
+                                          onTap: () {},
+                                          child: Container(
+                                            margin: EdgeInsets.symmetric(
+                                              vertical: 8,
+                                            ),
+                                            child: Row(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.center,
+                                              children: [
+                                                // Leading image container
+                                                Container(
+                                                  width: 40,
+                                                  height: 40,
+                                                  margin: EdgeInsets.only(
+                                                    right: 10,
                                                   ),
-                                                  borderRadius:
-                                                      BorderRadius.circular(8),
-                                                ),
-                                              ),
-
-                                              // Title and Subtitle section
-                                              Expanded(
-                                                child: Column(
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
-                                                  children: [
-                                                    // Title text
-                                                    CommonText(
-                                                      "text",
-                                                      size: 14,
-                                                      isBold: true,
+                                                  decoration: BoxDecoration(
+                                                    image: DecorationImage(
+                                                      image: NetworkImage(
+                                                        "https://randomuser.me/api/portraits/men/32.jpg",
+                                                      ),
+                                                      fit: BoxFit.cover,
                                                     ),
-
-                                                    // Subtitle row with rating
-                                                    Row(
-                                                      children: [
-                                                        Icon(
-                                                          Icons.star,
-                                                          color: Colors.orange,
-                                                          size: 16,
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                          8,
                                                         ),
-                                                        SizedBox(width: 8),
-                                                        CommonText("4.9"),
-                                                      ],
-                                                    ),
-                                                  ],
+                                                  ),
                                                 ),
-                                              ),
 
-                                              // Trailing arrow icon
-                                              Icon(
-                                                Icons
-                                                    .arrow_forward_ios_outlined,
-                                                size: 16,
-                                              ),
-                                            ],
+                                                // Title and Subtitle section
+                                                Expanded(
+                                                  child: Column(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
+                                                    children: [
+                                                      // Title text
+                                                      CommonText(
+                                                        "text",
+                                                        size: 14,
+                                                        isBold: true,
+                                                      ),
+
+                                                      // Subtitle row with rating
+                                                      Row(
+                                                        children: [
+                                                          Icon(
+                                                            Icons.star,
+                                                            color:
+                                                                Colors.orange,
+                                                            size: 16,
+                                                          ),
+                                                          SizedBox(width: 8),
+                                                          CommonText("4.9"),
+                                                        ],
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+
+                                                // Trailing arrow icon
+                                                Icon(
+                                                  Icons
+                                                      .arrow_forward_ios_outlined,
+                                                  size: 16,
+                                                ),
+                                              ],
+                                            ),
                                           ),
-                                        ),
-                                      );
-                                    }),
-                                  ],
+                                        );
+                                      }),
+                                    ],
+                                  ),
                                 ),
                               ),
-                            ),
-                            SizedBox(height: 16.h),
-                            Row(
-                              spacing: 16.w,
-                              children: [
-                                Expanded(
-                                  child: CommonButton(
-                                    AppLocalizations.of(context)!.claim,
-                                    color: Colors.transparent,
-                                    boarder: Border.all(color: AppColors.error),
+                              SizedBox(height: 16.h),
+                              Row(
+                                spacing: 16.w,
+                                children: [
+                                  Expanded(
+                                    child: CommonButton(
+                                      AppLocalizations.of(context)!.claim,
+                                      color: Colors.transparent,
+                                      boarder: Border.all(
+                                        color: AppColors.error,
+                                      ),
 
-                                    onTap: () {
-                                      // Navigator.push(
-                                      //   context,
-                                      //   MaterialPageRoute(
-                                      //     builder: (context) {
-                                      //       return StartTipDetailsPage();
-                                      //     },
-                                      //   ),
-                                      // );
-                                    },
+                                      onTap: () {
+                                        // Navigator.push(
+                                        //   context,
+                                        //   MaterialPageRoute(
+                                        //     builder: (context) {
+                                        //       return StartTipDetailsPage();
+                                        //     },
+                                        //   ),
+                                        // );
+                                      },
 
-                                    iconWidget: Icon(
-                                      Icons.warning_amber,
-                                      color: AppColors.error,
+                                      iconWidget: Icon(
+                                        Icons.warning_amber,
+                                        color: AppColors.error,
+                                      ),
+                                      textColor: AppColors.error,
                                     ),
-                                    textColor: AppColors.error,
                                   ),
-                                ),
-                                Expanded(
-                                  child: CommonButton(
-                                    AppLocalizations.of(context)!.cancel_trip,
-                                    color: AppColors.error,
-                                    onTap: () => showCancelRideSheet(context),
+                                  Expanded(
+                                    child: CommonButton(
+                                      AppLocalizations.of(context)!.cancel_trip,
+                                      color: AppColors.error,
+                                      onTap: () => showCancelRideSheet(context),
+                                    ),
                                   ),
-                                ),
-                              ],
-                            ),
-                            SizedBox(height: 40.h),
-                          ],
-                        ),
-                      ],
+                                ],
+                              ),
+                              SizedBox(height: 40.h),
+                            ],
+                          ),
+                        ],
+                      ),
                     ),
                   );
                 },

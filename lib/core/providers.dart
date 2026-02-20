@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
+import 'package:velozaje/controllers/conversation_controller.dart';
 import 'package:velozaje/controllers/trip/trips_publish_controller.dart';
 import 'package:velozaje/controllers/paginated_controller.dart';
 import 'package:velozaje/controllers/trip/trips_book_controller.dart';
@@ -8,6 +9,7 @@ import 'package:velozaje/core/services/localstorage/i_local_storage_service.dart
 import 'package:velozaje/controllers/auth_controller.dart';
 import 'package:velozaje/controllers/saved_location_controller.dart';
 import 'package:velozaje/controllers/trip/trips_search_controller.dart';
+import 'package:velozaje/models/response/chat/messages_for_a_spacific_conversation_response.dart';
 import 'package:velozaje/models/response/trip/booking_response.dart';
 import 'package:velozaje/models/response/trip/driver_published_trips.dart';
 import 'package:velozaje/models/response/trip/passenger_trip_model.dart';
@@ -15,10 +17,10 @@ import 'package:velozaje/controllers/vehicale_register_controller.dart';
 import 'package:velozaje/feature/notifications/notification_model.dart';
 import 'package:velozaje/feature/notifications/notifications_controller.dart';
 import 'package:velozaje/models/response/wallet_response.dart';
-import 'api/api_client.dart';
-import 'api/api_service.dart';
-import 'localstorage/local_storage_service.dart';
-import 'api/i_api_service.dart';
+import 'services/api/api_client.dart';
+import 'services/api/api_service.dart';
+import 'services/localstorage/local_storage_service.dart';
+import 'services/api/i_api_service.dart';
 
 /////////////////
 ///    Core   ///
@@ -115,4 +117,13 @@ final walletControllerProvider =
     ) {
       final apiService = ref.read(apiServiceProvider);
       return WalletController(apiService: apiService);
+    });
+
+final conversationControllerProvider =
+    StateNotifierProvider<
+      ConversationController,
+      PaginationState<Message>
+    >((ref) {
+      final apiService = ref.read(apiServiceProvider);
+      return ConversationController(apiService);
     });

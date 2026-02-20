@@ -125,7 +125,7 @@ class TrippBookController extends PaginationNotifier<PassengerBookingModel> {
     await safeCall(
       task: () async {
         final res = await apiService.get(
-          ApiEndpoints.passengerBookedTripDetailsById(id),
+          ApiEndpoints.bookedTripDetailsById(id),
         );
         bookingDetail = PassengerBookedDetailsResponse.fromJson(res).booking;
       },

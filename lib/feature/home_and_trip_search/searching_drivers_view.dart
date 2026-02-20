@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:velozaje/core/localization/app_localizations.dart';
-import 'package:velozaje/core/services/providers.dart';
+import 'package:velozaje/core/providers.dart';
 import 'package:velozaje/core/utils/map_helper.dart';
 import 'package:velozaje/feature/home_and_trip_search/tips_search_results_view.dart';
 import 'package:velozaje/core/utils/app_colors.dart';

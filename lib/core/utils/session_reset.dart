@@ -1,6 +1,6 @@
 // session_reset.dart
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:velozaje/core/services/providers.dart';
+import 'package:velozaje/core/providers.dart';
 
 void resetSession(WidgetRef ref) {
   // 🔁 Authentication

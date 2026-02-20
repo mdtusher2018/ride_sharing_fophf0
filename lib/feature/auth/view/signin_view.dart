@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:velozaje/core/localization/app_localizations.dart';
-import 'package:velozaje/core/services/providers.dart';
+import 'package:velozaje/core/providers.dart';
 import 'package:velozaje/feature/auth/view/forget_password_view.dart';
 import 'package:velozaje/feature/auth/view/signup_view.dart';
 import 'package:velozaje/feature/auth/widget/auth_background.dart';

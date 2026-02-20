@@ -76,7 +76,7 @@ class TripsPublishController extends PaginationNotifier<DriverTripModel> {
             'pricePerSeat': publishedData.pricePerSeat!.toString(),
             'totalSeats': publishedData.totalSeats!.toString(),
             'vehicle': publishedData.vehicleId!,
-            'routePolyLine': publishedData.routePolyLine!,
+            'routePolyline': publishedData.routePolyLine!,
           },
           files: {
             'driverImage': [publishedData.driverImage!],
@@ -146,7 +146,7 @@ class TripsPublishController extends PaginationNotifier<DriverTripModel> {
     await safeCall(
       task: () async {
         final res = await apiService.get(
-          ApiEndpoints.passengerBookedTripDetailsById(id),
+          ApiEndpoints.publishedTripDetailsById(id),
         );
         final tempPublishedTrip = PublishedTripDetailsResponse.fromJson(res);
         final extra = state.extraState as TripsPublishState;

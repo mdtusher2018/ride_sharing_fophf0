@@ -37,11 +37,18 @@ class ApiEndpoints {
   static const String myBookedTrip = "bookings/my-bookings";
   static String acceptBooking(String id) => "bookings/$id/accept";
   static String rejectBooking(String id) => "bookings/$id/cancle";
-  static String passengerBookedTripDetailsById(String id) =>
-      "bookings/trip/$id";
+  static String bookedTripDetailsById(String id) => "bookings/$id";
+  static String publishedTripDetailsById(String id) => "bookings/trip/$id";
   static String verifyOtpToStartRide(String id) => "bookings/$id/verify-otp";
   static String generateDropOffOtp(String id) =>
       "bookings/$id/generate-dropoff-otp";
+
+  //Chat
+  static const String allConversation = "messages/conversations";
+  static const String sendMessage = "messages";
+  static const String unreadMessage = "messages/unread-count";
+  static String conversationForSpacificBooking(String id) =>
+      "messages/booking/$id";
 
   //Wallet
   static const String driverTransactions = "transactions/driver";

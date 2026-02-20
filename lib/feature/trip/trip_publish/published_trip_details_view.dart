@@ -5,9 +5,10 @@ import 'package:icons_plus/icons_plus.dart';
 import 'package:velozaje/controllers/trip/trips_book_controller.dart';
 import 'package:velozaje/controllers/trip/trips_publish_controller.dart';
 import 'package:velozaje/core/localization/app_localizations.dart';
-import 'package:velozaje/core/services/providers.dart';
+import 'package:velozaje/core/providers.dart';
 import 'package:velozaje/core/utils/enums_with_enum_extentions.dart';
 import 'package:velozaje/feature/widget/back_button.dart';
+import 'package:velozaje/feature/widget/vehicale_card.dart';
 import 'package:velozaje/models/response/trip/published_trip_details_response.dart';
 import 'package:velozaje/res/common_button.dart';
 import 'package:velozaje/res/common_image.dart';
@@ -120,80 +121,86 @@ class _MyPublishedDetailsPageState
                     );
                   }
 
-                  return SingleChildScrollView(
-                    child: Column(
-                      children: [
-                        _SheetHandle(),
-                        SizedBox(height: 12.h),
+                  return RefreshIndicator(
+                    onRefresh: () async {
+                      ref
+                          .read(tripsPublishControllerProvider.notifier)
+                          .publishedTripDetailsById(id: widget.id);
+                    },
+                    child: SingleChildScrollView(
+                      physics: AlwaysScrollableScrollPhysics(),
+                      child: Column(
+                        children: [
+                          _SheetHandle(),
+                          SizedBox(height: 12.h),
 
-                        CommonText(
-                          AppLocalizations.of(context)!.trip_details,
-                          size: 16,
-                          fontWeight: FontWeight.w600,
-                        ),
-
-                        SizedBox(height: 16.h),
-
-                        _TripSummaryCard(),
-
-                        SizedBox(height: 12.h),
-
-                        // VehicleCard(
-                        //   brand: "",
-                        //   image: "",
-                        //   licensePlateNumber: "",
-                        //   vehicleModel: "",
-                        //   year: "",
-                        // ),
-                        SizedBox(height: 16.h),
-
-                        Align(
-                          alignment: AlignmentGeometry.centerLeft,
-                          child: CommonText(
-                            AppLocalizations.of(context)!.confirmed_passengers,
-                            size: 14,
-                            isBold: true,
+                          CommonText(
+                            AppLocalizations.of(context)!.trip_details,
+                            size: 16,
+                            fontWeight: FontWeight.w600,
                           ),
-                        ),
 
-                        // _PassengerCard(status: PassengerTripStatus.finalCode),
-                        // _PassengerCard(status: PassengerTripStatus.ontheway),
-                        // _PassengerCard(status: PassengerTripStatus.pickupCode),
-                        // _PassengerCard(status: PassengerTripStatus.compleated),
-                        ...(bookingState.extraState as TripsBookingState)
-                            .confirmedBookings
-                            .map((e) {
-                              return _PassengerCard(
-                                key: ValueKey(e.id),
-                                bookings: e,
-                                tripId: widget.id,
-                              );
-                            }),
-                        SizedBox(height: 12.h),
+                          SizedBox(height: 16.h),
 
-                        Align(
-                          alignment: AlignmentGeometry.centerLeft,
-                          child: CommonText(
-                            AppLocalizations.of(context)!.pending_requests_2,
-                            size: 14,
-                            isBold: true,
+                          _TripSummaryCard(),
+
+                          SizedBox(height: 12.h),
+
+                          VehicleCard(
+                            brand: "",
+                            image: "",
+                            licensePlateNumber: "",
+                            vehicleModel: "",
+                            year: "",
                           ),
-                        ),
-                        ...(bookingState.extraState as TripsBookingState)
-                            .pendingBookings
-                            .map((e) {
-                              return _PassengerCard(
-                                key: ValueKey(e.id),
-                                bookings: e,
-                                tripId: widget.id,
-                              );
-                            }),
+                          SizedBox(height: 16.h),
 
-                        SizedBox(height: 20.h),
+                          Align(
+                            alignment: AlignmentGeometry.centerLeft,
+                            child: CommonText(
+                              AppLocalizations.of(
+                                context,
+                              )!.confirmed_passengers,
+                              size: 14,
+                              isBold: true,
+                            ),
+                          ),
 
-                        _BottomButtons(),
-                        SizedBox(height: 20.h),
-                      ],
+                          ...(bookingState.extraState as TripsBookingState)
+                              .confirmedBookings
+                              .map((e) {
+                                return _PassengerCard(
+                                  key: ValueKey(e.id),
+                                  bookings: e,
+                                  tripId: widget.id,
+                                );
+                              }),
+                          SizedBox(height: 12.h),
+
+                          Align(
+                            alignment: AlignmentGeometry.centerLeft,
+                            child: CommonText(
+                              AppLocalizations.of(context)!.pending_requests_2,
+                              size: 14,
+                              isBold: true,
+                            ),
+                          ),
+                          ...(bookingState.extraState as TripsBookingState)
+                              .pendingBookings
+                              .map((e) {
+                                return _PassengerCard(
+                                  key: ValueKey(e.id),
+                                  bookings: e,
+                                  tripId: widget.id,
+                                );
+                              }),
+
+                          SizedBox(height: 20.h),
+
+                          _BottomButtons(),
+                          SizedBox(height: 20.h),
+                        ],
+                      ),
                     ),
                   );
                 },

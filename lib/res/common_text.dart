@@ -8,6 +8,7 @@ class CommonText extends StatelessWidget {
   final bool isBold;
   final bool? softwarp;
   final double? wordSpacing;
+  final double? letterSpacing;
   final int maxline;
   final bool haveUnderline;
   final FontWeight? fontWeight;
@@ -22,6 +23,7 @@ class CommonText extends StatelessWidget {
     this.isBold = false,
     this.softwarp,
     this.wordSpacing,
+    this.letterSpacing,
     this.maxline = 1000,
     this.haveUnderline = false,
     this.haveStrike = false,
@@ -49,6 +51,7 @@ class CommonText extends StatelessWidget {
             : TextDecoration.none,
         color: color,
         wordSpacing: wordSpacing,
+        letterSpacing: letterSpacing,
         fontWeight: isBold
             ? FontWeight.w500
             : (fontWeight ?? FontWeight.normal),

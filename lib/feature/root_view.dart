@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:velozaje/controllers/profile_controller.dart';
 import 'package:velozaje/core/utils/extention.dart';
-import 'package:velozaje/feature/chat/chat_list_view.dart';
+import 'package:velozaje/feature/chat/all_conversation_view.dart';
 import 'package:velozaje/feature/home_and_trip_search/home_view.dart';
 import 'package:velozaje/feature/profile_and_account/profile_view.dart';
 import 'package:velozaje/feature/trip/trip_publish/trips_publishing_view.dart';
@@ -20,7 +20,7 @@ class _RootPageState extends ConsumerState<RootPage> {
     HomePage(),
     TipsView(),
 
-    ChatListPage(),
+    AllConversationView(),
     ProfilePage(),
   ];
 

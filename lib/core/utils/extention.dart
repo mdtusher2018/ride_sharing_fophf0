@@ -2,6 +2,7 @@ import 'package:another_flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:velozaje/core/utils/app_colors.dart';
+import 'package:timeago/timeago.dart' as timeago;
 
 extension NavigationExtensions on BuildContext {
   Future<T?> navigateTo<T extends Object?>(
@@ -63,5 +64,25 @@ extension SnackbarExtensions on BuildContext {
       message: message,
       backgroundColor: AppColors.error,
     );
+  }
+}
+
+extension CustomTimeAgo on DateTime {
+  String customFormat() {
+    // Get the time ago string using timeago
+    String result = timeago.format(this);
+
+    // Ensure it fits within 8 characters
+    if (result.length > 8) {
+      if (result.contains("minute") || result.contains("minutes")) {
+        result = "${result.split(" ")[0]} min"; // Shorten to "5 min"
+      } else if (result.contains("hour") || result.contains("hours")) {
+        result = "${result.split(" ")[0]} hr"; // Shorten to "1 hr"
+      } else if (result.contains("day") || result.contains("days")) {
+        result = "${result.split(" ")[0]} day"; // Shorten to "2 day"
+      }
+    }
+
+    return result;
   }
 }

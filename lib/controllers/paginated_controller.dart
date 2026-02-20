@@ -81,6 +81,7 @@ abstract class PaginationNotifier<T> extends BaseNotifier<PaginationState<T>> {
       task: () async {
         return fetchPage(page: nextPage, limit: state.meta.limit);
       },
+      showLoading: false,
     );
 
     if (result == null) {

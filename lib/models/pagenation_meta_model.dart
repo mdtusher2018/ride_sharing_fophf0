@@ -19,7 +19,7 @@ class PaginationMetaModel {
       page: JsonHelper.intVal(json['page'], fallback: 1),
       limit: JsonHelper.intVal(json['limit'], fallback: 10),
       total: JsonHelper.intVal(json['total']),
-      totalPage: JsonHelper.intVal(json['totalPage']),
+      totalPage: JsonHelper.intVal(json['totalPages']),
     );
   }
 

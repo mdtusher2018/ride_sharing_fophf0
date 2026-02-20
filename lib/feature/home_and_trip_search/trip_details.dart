@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:velozaje/core/localization/app_localizations.dart';
-import 'package:velozaje/core/services/providers.dart';
+import 'package:velozaje/core/providers.dart';
 import 'package:velozaje/core/utils/helper.dart';
 import 'package:velozaje/feature/home_and_trip_search/trip_on_map_view.dart';
 import 'package:velozaje/feature/result_and_booking/driver_profile_when_others_visit_page.dart';

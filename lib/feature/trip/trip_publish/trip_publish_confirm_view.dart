@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:velozaje/core/localization/app_localizations.dart';
-import 'package:velozaje/core/services/providers.dart';
+import 'package:velozaje/core/providers.dart';
 import 'package:velozaje/feature/trip/trip_publish/trip_published_sucessfull_view.dart';
 import 'package:velozaje/core/utils/app_colors.dart';
 import 'package:velozaje/models/request/trip_publish_request.dart';

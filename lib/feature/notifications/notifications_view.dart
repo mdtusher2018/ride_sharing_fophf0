@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
-import 'package:velozaje/core/services/providers.dart';
+import 'package:velozaje/core/providers.dart';
 import 'package:velozaje/core/utils/app_colors.dart';
 import 'package:velozaje/feature/notifications/notification_model.dart';
 import 'package:velozaje/res/common_appbar.dart';

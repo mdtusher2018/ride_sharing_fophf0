@@ -6,7 +6,7 @@ import 'package:velozaje/core/base_notifier.dart';
 import 'package:velozaje/models/user_model.dart';
 import 'package:velozaje/core/services/api/i_api_service.dart';
 import 'package:velozaje/core/services/localstorage/i_local_storage_service.dart';
-import 'package:velozaje/core/services/providers.dart';
+import 'package:velozaje/core/providers.dart';
 import 'package:velozaje/core/utils/api_end_points.dart';
 import 'package:velozaje/models/response/profile_response/profile_response.dart';
 

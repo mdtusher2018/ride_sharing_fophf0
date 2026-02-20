@@ -6,7 +6,7 @@ import 'package:velozaje/core/localization/app_localizations.dart';
 import 'package:velozaje/res/common_text.dart';
 import 'package:velozaje/core/utils/app_colors.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:velozaje/core/services/providers.dart';
+import 'package:velozaje/core/providers.dart';
 import 'package:velozaje/core/utils/enums_with_enum_extentions.dart';
 import 'package:velozaje/core/utils/helper.dart';
 import 'package:velozaje/feature/trip/trip_publish/published_trip_details_view.dart';

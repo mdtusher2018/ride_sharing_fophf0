@@ -1,29 +1,56 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:velozaje/core/localization/app_localizations.dart';
+import 'package:velozaje/core/providers.dart';
 import 'package:velozaje/core/utils/app_colors.dart';
+import 'package:velozaje/core/utils/helper.dart';
 import 'package:velozaje/res/common_text.dart';
 import 'package:velozaje/res/common_image.dart';
 import 'package:icons_plus/icons_plus.dart';
 
-class ChatPage extends StatefulWidget {
-  const ChatPage({super.key});
+class ChatPage extends ConsumerStatefulWidget {
+  final String bookingId;
+  final String reciverId;
+  final String reciverName;
+  final String reciverImage;
+  const ChatPage({
+    super.key,
+    required this.bookingId,
+    required this.reciverId,
+    required this.reciverImage,
+    required this.reciverName,
+  });
 
   @override
-  State<ChatPage> createState() => _ChatPageState();
+  ConsumerState<ChatPage> createState() => _ChatPageState();
 }
 
-class _ChatPageState extends State<ChatPage> {
+class _ChatPageState extends ConsumerState<ChatPage> {
   final TextEditingController messageController = TextEditingController();
+  ScrollController scrollController = ScrollController();
 
-  final List<Map<String, dynamic>> messages = [
-    {"text": "Hello! 👋", "isMe": false, "time": "9:30 AM"},
-    {"text": "Hi, I uploaded my documents.", "isMe": true, "time": "9:31 AM"},
-    {"text": "Great! We are reviewing them.", "isMe": false, "time": "9:32 AM"},
-  ];
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      ref
+          .read(conversationControllerProvider.notifier)
+          .loadaSpacificConversation(id: widget.bookingId);
+    });
+    scrollController.addListener(() {
+      if (scrollController.position.pixels >
+          scrollController.position.maxScrollExtent - 200) {
+        ref.watch(conversationControllerProvider.notifier).loadMore();
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
+    final state = ref.watch(conversationControllerProvider);
+    final controller = ref.watch(conversationControllerProvider.notifier);
+
     return Scaffold(
       backgroundColor: AppColors.mainbg,
 
@@ -66,15 +93,34 @@ class _ChatPageState extends State<ChatPage> {
         children: [
           /// Messages
           Expanded(
-            child: ListView.builder(
-              padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
-              itemCount: messages.length,
-              itemBuilder: (context, index) {
-                final msg = messages[index];
-                return _ChatBubble(
-                  text: msg['text'],
-                  time: msg['time'],
-                  isMe: msg['isMe'],
+            child: ValueListenableBuilder(
+              valueListenable: controller.isLoading,
+              builder: (context, isloading, child) {
+                if (isloading) {
+                  return Center(child: CircularProgressIndicator());
+                } else if (state.items.isEmpty) {
+                  return CommonText("No chat found. Send the frist message");
+                }
+                return ListView.builder(
+                  controller: scrollController,
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 16.w,
+                    vertical: 12.h,
+                  ),
+
+                  itemCount: state.items.length + (state.isLoadingMore ? 1 : 0),
+                  reverse: true,
+                  itemBuilder: (context, index) {
+                    if (index >= state.items.length) {
+                      return Center(child: CircularProgressIndicator());
+                    }
+                    final msg = state.items.reversed.toList()[index];
+                    return _ChatBubble(
+                      text: msg.content,
+                      time: formatDateTime(msg.createdAt),
+                      isMe: msg.sender.id == widget.reciverId,
+                    );
+                  },
                 );
               },
             ),
@@ -162,13 +208,13 @@ class _ChatPageState extends State<ChatPage> {
                     ),
                     onPressed: () {
                       if (messageController.text.trim().isEmpty) return;
+                      controller.sendMessage(
+                        content: messageController.text,
+                        bookingId: widget.bookingId,
+                        receiverId: widget.reciverId,
+                      );
 
                       setState(() {
-                        messages.add({
-                          "text": messageController.text,
-                          "isMe": true,
-                          "time": "Now",
-                        });
                         messageController.clear();
                       });
                     },

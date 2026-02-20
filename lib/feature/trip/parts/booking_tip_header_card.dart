@@ -123,9 +123,9 @@ class TipHeaderCard extends StatelessWidget {
                             alignment: AlignmentGeometry.center,
                             children: [
                               CommonText(
-                                '4 9 2 1',
+                                bookingDetails.pickupOTP.toString(),
                                 size: 18,
-
+                                letterSpacing: 6,
                                 color: AppColors.textSecondary,
                                 isBold: true,
                               ),
