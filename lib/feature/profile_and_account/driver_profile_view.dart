@@ -1,15 +1,42 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:velozaje/controllers/profile_controller.dart';
 import 'package:velozaje/core/localization/app_localizations.dart';
+import 'package:velozaje/core/providers.dart';
+import 'package:velozaje/core/utils/helper.dart';
 import 'package:velozaje/feature/result_and_booking/report_user.dart';
 import 'package:velozaje/core/utils/app_colors.dart';
+import 'package:velozaje/models/review_model.dart';
+import 'package:velozaje/models/user_model.dart';
 import 'package:velozaje/res/common_appbar.dart';
+import 'package:velozaje/res/common_image.dart';
 import 'package:velozaje/res/common_text.dart';
 
-class DriverProfilePageWhenOthersVisitsPage extends StatelessWidget {
-  const DriverProfilePageWhenOthersVisitsPage({super.key});
+class DriverProfileView extends ConsumerStatefulWidget {
+  const DriverProfileView({super.key, required this.id});
+  final String id;
+
+  @override
+  ConsumerState<DriverProfileView> createState() => _DriverProfileViewState();
+}
+
+class _DriverProfileViewState extends ConsumerState<DriverProfileView> {
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      ref
+          .read(profileControllerProvider.notifier)
+          .getProfileById(id: widget.id);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
+    final state = ref.watch(profileControllerProvider);
+    final controller = ref.read(profileControllerProvider.notifier);
+
     return Scaffold(
       backgroundColor: AppColors.mainbg,
       appBar: commonAppBar(
@@ -33,20 +60,31 @@ class DriverProfilePageWhenOthersVisitsPage extends StatelessWidget {
         ),
       ),
 
-      body: SingleChildScrollView(
-        physics: AlwaysScrollableScrollPhysics(),
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          children: const [
-            _ProfileHeader(),
-            SizedBox(height: 16),
-            _StatsRow(),
-            SizedBox(height: 16),
-            _AboutSection(),
-            SizedBox(height: 16),
-            _ReviewsSection(),
-          ],
-        ),
+      body: ValueListenableBuilder(
+        valueListenable: controller.isLoading,
+        builder: (_, isLoading, _) {
+          if (isLoading || widget.id != state.driver?.id) {
+            return Center(child: CircularProgressIndicator());
+          }
+          if (!isLoading && state.driver == null) {
+            return CommonText("Could not fetch driver details");
+          }
+          return SingleChildScrollView(
+            physics: AlwaysScrollableScrollPhysics(),
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              children: [
+                _ProfileHeader(driver: state.driver!),
+                SizedBox(height: 16),
+                _StatsRow(),
+                SizedBox(height: 16),
+                _AboutSection(driver: state.driver!),
+                SizedBox(height: 16),
+                _ReviewsSection(widget.id),
+              ],
+            ),
+          );
+        },
       ),
     );
   }
@@ -56,7 +94,8 @@ class DriverProfilePageWhenOthersVisitsPage extends StatelessWidget {
 /// Profile Header
 /// --------------------
 class _ProfileHeader extends StatelessWidget {
-  const _ProfileHeader();
+  const _ProfileHeader({required this.driver});
+  final UserModel driver;
 
   @override
   Widget build(BuildContext context) {
@@ -64,19 +103,11 @@ class _ProfileHeader extends StatelessWidget {
       children: [
         Stack(
           children: [
-            Container(
+            CommonImage(
+              path: driver.image,
               width: 60,
               height: 60,
-              margin: EdgeInsets.only(right: 10),
-              decoration: BoxDecoration(
-                image: DecorationImage(
-                  image: NetworkImage(
-                    "https://randomuser.me/api/portraits/men/32.jpg",
-                  ),
-                  fit: BoxFit.cover,
-                ),
-                borderRadius: BorderRadius.circular(8),
-              ),
+              sourceType: ImageSourceType.network,
             ),
             Positioned(
               bottom: 0,
@@ -90,7 +121,7 @@ class _ProfileHeader extends StatelessWidget {
           ],
         ),
         const SizedBox(height: 8),
-        const CommonText("Lionel Messi", size: 18, fontWeight: FontWeight.w600),
+        CommonText(driver.fullName, size: 18, fontWeight: FontWeight.w600),
         const SizedBox(height: 4),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -171,8 +202,8 @@ class _StatCard extends StatelessWidget {
 /// About & Verifications
 /// --------------------
 class _AboutSection extends StatelessWidget {
-  const _AboutSection();
-
+  const _AboutSection({required this.driver});
+  final UserModel driver;
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -187,9 +218,7 @@ class _AboutSection extends StatelessWidget {
           ),
           SizedBox(height: 8),
           CommonText(
-            AppLocalizations.of(
-              context,
-            )!.punctuality_you_could_smoke_i_make_stops_to_go_to_the_bathroom,
+            driver.about,
             color: AppColors.grey,
           ),
           SizedBox(height: 16),
@@ -242,11 +271,49 @@ class _VerificationItem extends StatelessWidget {
 /// --------------------
 /// Reviews
 /// --------------------
-class _ReviewsSection extends StatelessWidget {
-  const _ReviewsSection();
+class _ReviewsSection extends ConsumerStatefulWidget {
+  const _ReviewsSection(this.id);
+  final String id;
+
+  @override
+  ConsumerState<_ReviewsSection> createState() => _ReviewsSectionState();
+}
+
+class _ReviewsSectionState extends ConsumerState<_ReviewsSection> {
+  @override
+  void initState() {
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      ref
+          .read(reviewControllerProvider.notifier)
+          .getAllReviewById(id: widget.id);
+    });
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
+    final state = ref.watch(reviewControllerProvider);
+    final controller = ref.read(reviewControllerProvider.notifier);
+    if (controller.isLoading.value && state.items.isEmpty) {
+      return Center(child: CircularProgressIndicator());
+    } else if (state.items.isEmpty) {
+      return Column(
+        children: [
+          Row(
+            children: [
+              CommonText(
+                AppLocalizations.of(context)!.recent_reviews,
+                fontWeight: FontWeight.w600,
+                size: 14,
+              ),
+            ],
+          ),
+
+          const SizedBox(height: 12),
+          CommonText("No review Found"),
+        ],
+      );
+    }
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -257,14 +324,18 @@ class _ReviewsSection extends StatelessWidget {
         ),
 
         const SizedBox(height: 12),
-        ...List.generate(3, (_) => const _ReviewTile()),
+        ...List.generate(
+          state.items.length,
+          (index) => _ReviewTile(review: state.items[index]),
+        ),
       ],
     );
   }
 }
 
 class _ReviewTile extends StatelessWidget {
-  const _ReviewTile();
+  const _ReviewTile({required this.review});
+  final ReviewModel review;
 
   @override
   Widget build(BuildContext context) {
@@ -274,32 +345,32 @@ class _ReviewTile extends StatelessWidget {
       decoration: _cardDecoration(),
       child: Row(
         children: [
-          const CircleAvatar(
+          CircleAvatar(
             backgroundColor: Colors.amber,
             radius: 20,
             backgroundImage: NetworkImage(
-              "https://randomuser.me/api/portraits/men/32.jpg",
+              getFullImagePath(review.passengerImage),
             ),
           ),
           const SizedBox(width: 12),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              children: const [
+              children: [
                 Row(
                   children: [
-                    CommonText("Maria", fontWeight: FontWeight.w600),
+                    CommonText(
+                      review.passengerName,
+                      fontWeight: FontWeight.w600,
+                    ),
 
                     SizedBox(width: 6),
                     Icon(Icons.star, color: Colors.amber, size: 14),
-                    CommonText("5"),
+                    CommonText(review.rating.toStringAsFixed(1)),
                   ],
                 ),
                 SizedBox(height: 4),
-                CommonText(
-                  "Great Driver, Very Punctual",
-                  color: AppColors.grey,
-                ),
+                CommonText(review.review, color: AppColors.grey),
               ],
             ),
           ),

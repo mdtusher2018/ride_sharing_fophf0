@@ -82,6 +82,7 @@ class ConversationController extends PaginationNotifier<Message> {
         isLoading: false,
       ),
     );
+    markAsRead();
   }
 
   @override
@@ -111,6 +112,22 @@ class ConversationController extends PaginationNotifier<Message> {
 
     state = state.copyWith(
       extraState: currentState.copyWith(unreadCount: result.count),
+    );
+  }
+
+  Future<void> markAsRead() async {
+    safeCall(
+      showLoading: false,
+      showErrorSnack: false,
+      showSuccessSnack: false,
+      task: () async {
+        final currentState = state.extraState as ConversationState?;
+        await apiService.get(
+          ApiEndpoints.conversationMarkAsRead(
+            currentState?.selectedConversation ?? "",
+          ),
+        );
+      },
     );
   }
 

@@ -6,6 +6,7 @@ class UserModel {
   final String fullName;
   final String image;
   final String email;
+  final String about;
   final Location? currentLocation;
   final List<String> roles;
   final bool emailVerified;
@@ -22,6 +23,7 @@ class UserModel {
   UserModel({
     required this.id,
     required this.fullName,
+    required this.about,
     required this.image,
     required this.email,
     this.currentLocation,
@@ -42,6 +44,7 @@ class UserModel {
     return UserModel(
       id: JsonHelper.stringVal(json['_id']),
       fullName: JsonHelper.stringVal(json['fullName']),
+      about: JsonHelper.stringVal(json['about']),
       image: JsonHelper.stringVal(json['image']),
       email: JsonHelper.stringVal(json['email']),
       currentLocation: json['currentLocation'] != null

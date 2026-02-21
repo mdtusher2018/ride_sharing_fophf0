@@ -5,7 +5,7 @@ import 'package:velozaje/core/localization/app_localizations.dart';
 import 'package:velozaje/core/providers.dart';
 import 'package:velozaje/core/utils/helper.dart';
 import 'package:velozaje/feature/home_and_trip_search/trip_on_map_view.dart';
-import 'package:velozaje/feature/result_and_booking/driver_profile_when_others_visit_page.dart';
+import 'package:velozaje/feature/profile_and_account/driver_profile_view.dart';
 import 'package:velozaje/core/utils/app_colors.dart';
 import 'package:velozaje/feature/widget/vehicale_card.dart';
 import 'package:velozaje/models/request/trip_search_request.dart';
@@ -291,7 +291,7 @@ class _HeaderCardState extends State<_HeaderCard> {
               context,
               MaterialPageRoute(
                 builder: (context) {
-                  return DriverProfilePageWhenOthersVisitsPage();
+                  return DriverProfileView(id: widget.trip.driver?.id ?? "");
                 },
               ),
             );

@@ -24,11 +24,21 @@ profileControllerProvider =
 
 class ProfileState {
   final UserModel? user;
+  final UserModel? driver;
+  final UserModel? othersUser;
 
-  const ProfileState({this.user});
+  const ProfileState({this.user, this.driver, this.othersUser});
 
-  ProfileState copyWith({UserModel? user}) {
-    return ProfileState(user: user ?? this.user);
+  ProfileState copyWith({
+    UserModel? user,
+    UserModel? driver,
+    UserModel? othersUser,
+  }) {
+    return ProfileState(
+      user: user ?? this.user,
+      driver: driver ?? this.driver,
+      othersUser: othersUser ?? this.othersUser,
+    );
   }
 }
 
@@ -83,6 +93,28 @@ class ProfileController extends BaseNotifier<ProfileState> {
           final user = UserProfileResponse.fromJson(response);
           state = state.copyWith(user: user.data);
           return true;
+        } else {
+          throw Exception(response['message'] ?? 'Profile fatch faield');
+        }
+      },
+    );
+  }
+
+  Future<void> getProfileById({
+    required String id,
+    bool isDriverFrofile = true,
+  }) async {
+    safeCall(
+      task: () async {
+        final response = await apiService.get(ApiEndpoints.userById(id));
+
+        if (response['success'] ?? false) {
+          final user = UserProfileResponse.fromJson(response);
+          if (isDriverFrofile) {
+            state = state.copyWith(driver: user.data);
+          } else {
+            state = state.copyWith(othersUser: user.data);
+          }
         } else {
           throw Exception(response['message'] ?? 'Profile fatch faield');
         }

@@ -12,6 +12,7 @@ class ApiEndpoints {
 
   //profile
   static const String profile = "users/profile";
+  static String userById(String id) => "users/$id";
 
   //notifications
   static const String notification = "notifications";
@@ -49,6 +50,8 @@ class ApiEndpoints {
   static const String unreadMessage = "messages/unread-count";
   static String conversationForSpacificBooking(String id) =>
       "messages/booking/$id";
+  static String conversationMarkAsRead(String id) =>
+      "messages/booking/$id/read";
 
   //Wallet
   static const String driverTransactions = "transactions/driver";
@@ -56,4 +59,6 @@ class ApiEndpoints {
 
   //Review
   static const String giveReview = "reviews";
+  static String getAllReviewById(String id) =>
+      "reviews/driver/$id?populate=passenger";
 }

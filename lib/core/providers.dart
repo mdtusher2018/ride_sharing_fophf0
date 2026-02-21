@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
 import 'package:velozaje/controllers/conversation_controller.dart';
+import 'package:velozaje/controllers/review_controller.dart';
 import 'package:velozaje/controllers/trip/trips_publish_controller.dart';
 import 'package:velozaje/controllers/paginated_controller.dart';
 import 'package:velozaje/controllers/trip/trips_book_controller.dart';
@@ -17,6 +18,7 @@ import 'package:velozaje/controllers/vehicale_register_controller.dart';
 import 'package:velozaje/feature/notifications/notification_model.dart';
 import 'package:velozaje/feature/notifications/notifications_controller.dart';
 import 'package:velozaje/models/response/wallet_response.dart';
+import 'package:velozaje/models/review_model.dart';
 import 'services/api/api_client.dart';
 import 'services/api/api_service.dart';
 import 'services/localstorage/local_storage_service.dart';
@@ -120,10 +122,16 @@ final walletControllerProvider =
     });
 
 final conversationControllerProvider =
-    StateNotifierProvider<
-      ConversationController,
-      PaginationState<Message>
-    >((ref) {
+    StateNotifierProvider<ConversationController, PaginationState<Message>>((
+      ref,
+    ) {
       final apiService = ref.read(apiServiceProvider);
       return ConversationController(apiService);
+    });
+final reviewControllerProvider =
+    StateNotifierProvider<ReviewController, PaginationState<ReviewModel>>((
+      ref,
+    ) {
+      final apiService = ref.read(apiServiceProvider);
+      return ReviewController(apiService: apiService);
     });
