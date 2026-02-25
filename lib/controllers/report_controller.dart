@@ -1,0 +1,59 @@
+import 'package:velozaje/core/base_notifier.dart';
+import 'package:velozaje/core/services/api/i_api_service.dart';
+import 'package:velozaje/core/utils/api_end_points.dart';
+import 'package:velozaje/models/response/report_subject_response.dart';
+
+class ReportState {
+  final List<ReportSubject> data;
+  final bool isLoading;
+  final String? error;
+
+  ReportState({required this.data, this.isLoading = false, this.error});
+
+  ReportState copyWith({List<ReportSubject>? data}) {
+    return ReportState(data: data ?? this.data);
+  }
+}
+
+class ReportController extends BaseNotifier<ReportState> {
+  final IApiService _apiService;
+
+  ReportController(this._apiService)
+    : super(ReportState(data: [], isLoading: false));
+
+  Future<void> fetchReportSubjects() async {
+    safeCall(
+      task: () async {
+        final response = await _apiService.get(ApiEndpoints.reportSubjects);
+
+        final model = ReportSubjectsResponse.fromJson(response);
+
+        state = state.copyWith(data: model.data);
+      },
+    );
+  }
+
+  Future<void> submitAReport({
+    required String reportedUserId,
+    required String reportSubjectId,
+    String? additionalDetails,
+  }) async {
+    await safeCall(
+      task: () async {
+        final response = await _apiService.post(ApiEndpoints.submitAReport, {
+          'reportedUserId': reportedUserId,
+          'reportSubjectId': reportSubjectId,
+          'additionalDetails': additionalDetails,
+        });
+        final bool success = response['success'] ?? false;
+        final String message = response['message'] ?? 'UnKnown Error occoured';
+
+        if (!success) {
+          throw Exception(message);
+        }
+      },
+      showSuccessSnack: true,
+      successMessage: "Report Submited Sucessfully",
+    );
+  }
+}

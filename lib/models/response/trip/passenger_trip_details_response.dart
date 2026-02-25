@@ -45,7 +45,7 @@ class _TripData {
 
 class Passenger {
   final PassengerDetails passenger;
-  final int seatsBooked;
+  final int? seatsBooked;
   final String bookingType;
   final String status;
   final DateTime bookedAt;

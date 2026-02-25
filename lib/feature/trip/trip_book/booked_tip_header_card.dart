@@ -1,6 +1,6 @@
 // ignore_for_file: must_be_immutable
 
-part of '../trip_book/booked_tip_details_view.dart';
+part of 'booked_tip_details_view.dart';
 
 class TipHeaderCard extends StatelessWidget {
   TipHeaderCard({super.key, required this.bookingDetails});
@@ -27,7 +27,7 @@ class TipHeaderCard extends StatelessWidget {
         children: [
           securityHandShake(context),
           SizedBox(height: 12.h),
-          _header(),
+          _header(context),
           SizedBox(height: 12.h),
           _verticalStepper(context),
           SizedBox(height: 12.h),
@@ -45,7 +45,7 @@ class TipHeaderCard extends StatelessWidget {
           Align(
             alignment: Alignment.centerLeft,
             child: CommonText(
-              bookingDetails.trip.note,
+              bookingDetails.trip.description,
               color: AppColors.textSecondary,
             ),
           ),
@@ -58,10 +58,10 @@ class TipHeaderCard extends StatelessWidget {
   Widget securityHandShake(BuildContext context) {
     final int length = 4;
 
-    List<TextEditingController> controllers = List.generate(
-      length,
-      (_) => TextEditingController(),
-    );
+    // List<TextEditingController> controllers = List.generate(
+    //   length,
+    //   (_) => TextEditingController(),
+    // );
     List<FocusNode> focusNodes = List.generate(length, (_) => FocusNode());
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -95,30 +95,47 @@ class TipHeaderCard extends StatelessWidget {
             ),
 
             Divider(),
-            if (bookingDetails.status == BookingStatus.pending)
-              CommonText(
-                "Booked not confirm by driver yet...",
-                size: 16,
-                color: AppColors.white,
-              ),
-            if (bookingDetails.status == BookingStatus.confirmed ||
-                bookingDetails.status == BookingStatus.inProgress ||
-                bookingDetails.status == BookingStatus.completed ||
-                bookingDetails.status == BookingStatus.cancelled)
-              Row(
-                spacing: 16,
-                children: [
-                  Expanded(
-                    child: Align(
-                      alignment: AlignmentGeometry.centerLeft,
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
 
-                        children: [
-                          CommonText(
-                            AppLocalizations.of(context)!.start_code,
-                            color: AppColors.white,
+            Row(
+              spacing: 16,
+              children: [
+                Expanded(
+                  child: Align(
+                    alignment: AlignmentGeometry.centerLeft,
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      spacing: 8.h,
+
+                      children: [
+                        CommonText(
+                          AppLocalizations.of(context)!.start_code,
+                          color: AppColors.white,
+                          size: 12.sp,
+                        ),
+                        if (bookingDetails.status == BookingStatus.pending)
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: List.generate(
+                              4,
+                              (index) => Container(
+                                padding: EdgeInsets.all(4),
+                                width: 35,
+                                height: 35,
+                                decoration: BoxDecoration(
+                                  color: AppColors.white,
+                                  borderRadius: BorderRadius.circular(8),
+                                  border: Border.all(
+                                    width: 2,
+                                    color: AppColors.primary,
+                                  ),
+                                ),
+
+                                child: Icon(Icons.lock_outline),
+                              ),
+                            ),
                           ),
+
+                        if (bookingDetails.status != BookingStatus.pending) ...[
                           Stack(
                             alignment: AlignmentGeometry.center,
                             children: [
@@ -129,8 +146,7 @@ class TipHeaderCard extends StatelessWidget {
                                 color: AppColors.textSecondary,
                                 isBold: true,
                               ),
-
-                              if (!(bookingDetails.status ==
+                              if ((bookingDetails.status !=
                                   BookingStatus.confirmed))
                                 Container(
                                   height: 2,
@@ -144,95 +160,79 @@ class TipHeaderCard extends StatelessWidget {
                             color: AppColors.grey,
                           ),
                         ],
-                      ),
+                      ],
                     ),
                   ),
-                  Container(height: 60, width: 1, color: AppColors.grey),
-                  Expanded(
-                    child: Column(
-                      spacing: 8.h,
-                      children: [
-                        CommonText(
-                          AppLocalizations.of(context)!.end_code,
-                          size: 12,
-                          color: Colors.white,
-                        ),
+                ),
+                Container(height: 60, width: 1, color: AppColors.grey),
+                Expanded(
+                  child: Column(
+                    spacing: 8.h,
+                    children: [
+                      CommonText(
+                        AppLocalizations.of(context)!.end_code,
+                        size: 12,
+                        color: Colors.white,
+                      ),
+                      if (bookingDetails.dropoffOTP == null)
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: List.generate(
                             4,
-                            (index) =>
-                                (!(bookingDetails.status ==
-                                    BookingStatus.confirmed))
-                                ? FittedBox(
-                                    fit: BoxFit.scaleDown,
-                                    child: Container(
-                                      padding: EdgeInsets.all(4),
-                                      width: 35,
-                                      height: 35,
-                                      decoration: BoxDecoration(
-                                        color: AppColors.white,
-                                        borderRadius: BorderRadius.circular(8),
-                                        border: Border.all(
-                                          width: 2,
-                                          color: AppColors.primary,
-                                        ),
-                                      ),
-                                      child: TextField(
-                                        maxLength: 1,
-                                        controller: controllers[index],
-                                        focusNode: focusNodes[index],
-                                        textAlign: TextAlign.center,
-                                        keyboardType: TextInputType.number,
-                                        style: TextStyle(
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                        decoration: const InputDecoration(
-                                          border: InputBorder.none,
-                                          counterText: '',
-                                          isDense: true,
-                                          contentPadding: EdgeInsets.zero,
-                                        ),
-                                        onChanged: (value) {
-                                          if (value.isNotEmpty) {
-                                            if (index < length - 1) {
-                                              focusNodes[index + 1]
-                                                  .requestFocus();
-                                            } else {
-                                              focusNodes[index].unfocus();
-                                            }
-                                          } else {
-                                            if (index > 0) {
-                                              focusNodes[index - 1]
-                                                  .requestFocus();
-                                            }
-                                          }
-                                        },
-                                      ),
-                                    ),
-                                  )
-                                : Container(
-                                    padding: EdgeInsets.all(4),
-                                    width: 35,
-                                    height: 35,
-                                    decoration: BoxDecoration(
-                                      color: AppColors.white,
-                                      borderRadius: BorderRadius.circular(8),
-                                      border: Border.all(
-                                        width: 2,
-                                        color: AppColors.primary,
-                                      ),
-                                    ),
+                            (index) => Container(
+                              padding: EdgeInsets.all(4),
+                              width: 35,
+                              height: 35,
+                              decoration: BoxDecoration(
+                                color: AppColors.white,
+                                borderRadius: BorderRadius.circular(8),
+                                border: Border.all(
+                                  width: 2,
+                                  color: AppColors.primary,
+                                ),
+                              ),
 
-                                    child: Icon(Icons.lock_outline),
-                                  ),
+                              child: Icon(Icons.lock_outline),
+                            ),
                           ),
                         ),
+                      if (bookingDetails.dropoffOTP != null) ...[
+                        Stack(
+                          alignment: AlignmentGeometry.center,
+                          children: [
+                            CommonText(
+                              bookingDetails.dropoffOTP.toString(),
+                              size: 18,
+                              letterSpacing: 6,
+                              color: AppColors.textSecondary,
+                              isBold: true,
+                            ),
+                            if ((bookingDetails.status ==
+                                BookingStatus.completed))
+                              Container(
+                                height: 2,
+                                color: AppColors.textSecondary,
+                                width: 60.sp,
+                              ),
+                          ],
+                        ),
+                        CommonText(
+                          "${AppLocalizations.of(context)!.give_to} ${bookingDetails.driver.fullName}",
+                          color: AppColors.grey,
+                          maxline: 1,
+                        ),
                       ],
-                    ),
+                    ],
                   ),
-                ],
+                ),
+              ],
+            ),
+            SizedBox(height: 8),
+            if (bookingDetails.status == BookingStatus.pending)
+              CommonText(
+                "Booked not confirm by driver yet...",
+                size: 12,
+                color: AppColors.white,
               ),
           ],
         ),
@@ -240,7 +240,7 @@ class TipHeaderCard extends StatelessWidget {
     );
   }
 
-  Widget _header() {
+  Widget _header(BuildContext context) {
     return Row(
       children: [
         Stack(
@@ -306,12 +306,24 @@ class TipHeaderCard extends StatelessWidget {
             child: Icon(Icons.email, color: AppColors.primary),
           ),
         ),
-        Card(
-          elevation: 2,
-          color: AppColors.white,
-          child: Padding(
-            padding: EdgeInsets.all(8),
-            child: Icon(Icons.person_2, color: AppColors.primary),
+        InkWell(
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) {
+                  return DriverProfileView(id: bookingDetails.driver.id);
+                },
+              ),
+            );
+          },
+          child: Card(
+            elevation: 2,
+            color: AppColors.white,
+            child: Padding(
+              padding: EdgeInsets.all(8),
+              child: Icon(Icons.person_2, color: AppColors.primary),
+            ),
           ),
         ),
       ],
@@ -326,9 +338,9 @@ class TipHeaderCard extends StatelessWidget {
           padding: const EdgeInsets.only(top: 4.0),
           child: Column(
             children: [
-              _stepDot(isActive: true),
-              _stepLine(),
-              _stepLocation(isActive: false),
+              Icon(Icons.radio_button_checked),
+              Container(width: 2, height: 40, color: Colors.grey),
+              Icon(Icons.location_on_outlined),
             ],
           ),
         ),
@@ -362,25 +374,6 @@ class TipHeaderCard extends StatelessWidget {
         ),
       ],
     );
-  }
-
-  Widget _stepDot({required bool isActive}) {
-    return Container(
-      width: 20,
-      height: 20,
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        border: Border.all(width: isActive ? 7 : 2.5),
-      ),
-    );
-  }
-
-  Widget _stepLocation({required bool isActive}) {
-    return Icon(isActive ? Icons.location_on : Icons.location_on_outlined);
-  }
-
-  Widget _stepLine() {
-    return Container(width: 2, height: 40, color: Colors.grey);
   }
 
   Widget _stepText({required String title, required String value}) {

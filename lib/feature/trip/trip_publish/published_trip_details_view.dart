@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -7,22 +9,19 @@ import 'package:velozaje/controllers/trip/trips_publish_controller.dart';
 import 'package:velozaje/core/localization/app_localizations.dart';
 import 'package:velozaje/core/providers.dart';
 import 'package:velozaje/core/utils/enums_with_enum_extentions.dart';
+import 'package:velozaje/core/utils/helper.dart';
 import 'package:velozaje/feature/widget/back_button.dart';
 import 'package:velozaje/feature/widget/vehicale_card.dart';
+import 'package:velozaje/models/response/trip/passenger_trip_model.dart';
 import 'package:velozaje/models/response/trip/published_trip_details_response.dart';
+import 'package:velozaje/res/bottom_sheet_handeler.dart';
 import 'package:velozaje/res/common_button.dart';
 import 'package:velozaje/res/common_image.dart';
 import 'package:velozaje/res/common_otp_field.dart';
 import 'package:velozaje/res/common_text.dart';
 import 'package:velozaje/core/utils/app_colors.dart';
-
-enum PassengerTripStatus {
-  pending,
-  pickupCode,
-  ontheway,
-  finalCode,
-  compleated,
-}
+part 'parts_of_trip_details/bottom_buttons.dart';
+part 'parts_of_trip_details/trip_summary_card.dart';
 
 class PublishedTripDetailsView extends ConsumerStatefulWidget {
   final String id;
@@ -38,37 +37,38 @@ class _MyPublishedDetailsPageState
   @override
   void initState() {
     super.initState();
+
     loadInitialData();
   }
 
-  void loadInitialData() {
-    ref.read(tripsPublishControllerProvider.notifier).isLoading.value = true;
+  void loadInitialData() async {
+    final tripDetails = await ref
+        .read(passengerTripsControllerProvider.notifier)
+        .getTripDetails(tripId: widget.id);
 
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      ref
-          .read(tripsPublishControllerProvider.notifier)
-          .publishedTripDetailsById(id: widget.id);
-      final publisheState =
-          ref.watch(tripsPublishControllerProvider).extraState
-              as TripsPublishState?;
-      final bookingController = ref.read(
-        tripsBookingControllerProvider.notifier,
+    await ref
+        .read(tripsPublishControllerProvider.notifier)
+        .publishedTripDetailsById(id: widget.id, tripDetails: tripDetails);
+    final publisheState =
+        ref.watch(tripsPublishControllerProvider).extraState
+            as TripsPublishState?;
+    final bookingController = ref.read(tripsBookingControllerProvider.notifier);
+    if (publisheState != null &&
+        publisheState.bookingsOfPublishedTrip != null) {
+      bookingController.initializedBookingsOfAPublishedTrips(
+        pendingBookings: publisheState.bookingsOfPublishedTrip!.data.bookings
+            .where((element) {
+              return element.status == BookingStatus.pending;
+            })
+            .toList(),
+        confirmedBookings: publisheState.bookingsOfPublishedTrip!.data.bookings
+            .where((element) {
+              return element.status != BookingStatus.pending;
+            })
+            .toList(),
       );
-      if (publisheState != null && publisheState.publishedTrip != null) {
-        bookingController.initializedBookingsOfAPublishedTrips(
-          pendingBookings: publisheState.publishedTrip!.data.bookings.where((
-            element,
-          ) {
-            return element.status == BookingStatus.pending;
-          }).toList(),
-          confirmedBookings: publisheState.publishedTrip!.data.bookings.where((
-            element,
-          ) {
-            return element.status != BookingStatus.pending;
-          }).toList(),
-        );
-      }
-    });
+    }
+    log("==============>>>>>>>>>>>>> init called");
   }
 
   @override
@@ -112,26 +112,26 @@ class _MyPublishedDetailsPageState
                     .watch(tripsPublishControllerProvider.notifier)
                     .isLoading,
                 builder: (context, isLoading, child) {
-                  if (isLoading) {
+                  if (isLoading ||
+                      widget.id != publisheState?.tripDetails?.data.trip.id) {
                     return Center(child: CircularProgressIndicator());
                   } else if (publisheState == null ||
-                      publisheState.publishedTrip == null) {
+                      publisheState.bookingsOfPublishedTrip == null ||
+                      publisheState.tripDetails == null) {
                     return const Center(
                       child: CommonText("Could not fetch details"),
                     );
                   }
-
+                  final vehicle = publisheState.tripDetails!.data.trip.vehicle;
                   return RefreshIndicator(
                     onRefresh: () async {
-                      ref
-                          .read(tripsPublishControllerProvider.notifier)
-                          .publishedTripDetailsById(id: widget.id);
+                      loadInitialData();
                     },
                     child: SingleChildScrollView(
                       physics: AlwaysScrollableScrollPhysics(),
                       child: Column(
                         children: [
-                          _SheetHandle(),
+                          SheetHandle(),
                           SizedBox(height: 12.h),
 
                           CommonText(
@@ -142,16 +142,19 @@ class _MyPublishedDetailsPageState
 
                           SizedBox(height: 16.h),
 
-                          _TripSummaryCard(),
+                          _TripSummaryCard(
+                            trip: publisheState.tripDetails!.data.trip,
+                          ),
 
                           SizedBox(height: 12.h),
 
                           VehicleCard(
-                            brand: "",
-                            image: "",
-                            licensePlateNumber: "",
-                            vehicleModel: "",
-                            year: "",
+                            brand: vehicle?.brand ?? "",
+                            image: vehicle?.vehicleImages.first ?? "",
+                            licensePlateNumber:
+                                vehicle?.licensePlateNumber ?? "",
+                            vehicleModel: vehicle?.vehicleModel ?? "",
+                            year: vehicle?.year.toString() ?? "",
                           ),
                           SizedBox(height: 16.h),
 
@@ -213,134 +216,6 @@ class _MyPublishedDetailsPageState
   }
 }
 
-class _SheetHandle extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: 40.w,
-      height: 4.h,
-
-      decoration: BoxDecoration(
-        color: AppColors.grey,
-        borderRadius: BorderRadius.circular(10.r),
-      ),
-    );
-  }
-}
-
-class _TripSummaryCard extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.all(16.w),
-      decoration: BoxDecoration(
-        color: Color(0xff111827),
-        borderRadius: BorderRadius.circular(10.r),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Container(
-                padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 4.h),
-                decoration: BoxDecoration(
-                  color: Colors.green.shade100,
-                  borderRadius: BorderRadius.circular(20.r),
-                ),
-                child: CommonText(
-                  AppLocalizations.of(context)!.active_trip,
-                  size: 12,
-                  color: AppColors.primary,
-                ),
-              ),
-              const Spacer(),
-              CommonText(
-                '\$280',
-                size: 20,
-                fontWeight: FontWeight.bold,
-                color: Colors.green,
-              ),
-            ],
-          ),
-
-          Row(
-            children: [
-              Expanded(
-                child: CommonText(
-                  'Barcelona to Madrid',
-                  size: 14,
-                  fontWeight: FontWeight.w600,
-                  color: Colors.white,
-                ),
-              ),
-              CommonText(
-                AppLocalizations.of(context)!.earning,
-                color: AppColors.white,
-              ),
-            ],
-          ),
-
-          SizedBox(height: 16.h),
-
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              _InfoBox(
-                icon: Icons.person_2_outlined,
-                value: '1/4',
-                label: AppLocalizations.of(context)!.passengers,
-              ),
-              _InfoBox(
-                icon: Iconsax.box_1_outline,
-                value: '0',
-                label: AppLocalizations.of(context)!.packages,
-              ),
-              _InfoBox(
-                icon: Iconsax.send_2_outline,
-                value: '3.5h',
-                label: AppLocalizations.of(context)!.est_time,
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _InfoBox extends StatelessWidget {
-  final IconData icon;
-  final String value;
-  final String label;
-
-  const _InfoBox({
-    required this.icon,
-    required this.value,
-    required this.label,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: 90.w,
-      padding: EdgeInsets.all(10.w),
-      decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.08),
-        borderRadius: BorderRadius.circular(12.r),
-      ),
-      child: Column(
-        children: [
-          Icon(icon, color: Colors.white),
-          SizedBox(height: 6.h),
-          CommonText(value, color: Colors.white, fontWeight: FontWeight.bold),
-          CommonText(label, size: 10, color: Colors.white70),
-        ],
-      ),
-    );
-  }
-}
-
 class _PassengerCard extends ConsumerStatefulWidget {
   final BookingsOfPublishedTrip bookings;
   final String tripId;
@@ -394,9 +269,9 @@ class _PassengerCardState extends ConsumerState<_PassengerCard> {
               pendingView(context, ref),
             if (widget.bookings.status == BookingStatus.confirmed)
               pickupCode(context, ref),
-            if (widget.bookings.status == BookingStatus.inProgress)
-              onTheWay(context),
-            if (widget.bookings.status == BookingStatus.completed) finalCode(),
+            // if (widget.bookings.status == BookingStatus.inProgress)
+            //   onTheWay(ref),
+            if (widget.bookings.status == BookingStatus.inProgress) finalCode(),
             if (widget.bookings.status == BookingStatus.completed)
               compleate(context),
           ],
@@ -487,7 +362,7 @@ class _PassengerCardState extends ConsumerState<_PassengerCard> {
     );
   }
 
-  Widget pendingView(BuildContext context, WidgetRef ref) {
+  Widget pendingView(BuildContext context, WidgetRef ref, {required}) {
     return Column(
       children: [
         Row(
@@ -556,7 +431,7 @@ class _PassengerCardState extends ConsumerState<_PassengerCard> {
                           color: AppColors.textSecondary,
                         ),
                         CommonText(
-                          " 1",
+                          " ${index + 1}",
                           size: 14,
                           color: AppColors.textSecondary,
                         ),
@@ -714,17 +589,11 @@ class _PassengerCardState extends ConsumerState<_PassengerCard> {
   }
 
   Widget finalCode() {
-    final List<TextEditingController> _controllers = List.generate(
-      4,
-      (_) => TextEditingController(),
-    );
-    final List<FocusNode> _focusNodes = List.generate(4, (_) => FocusNode());
-
     void onChanged(String value, int index) {
       if (value.length == 1 && index < 3) {
-        _focusNodes[index + 1].requestFocus();
+        focusNodes[index + 1].requestFocus();
       } else if (value.isEmpty && index > 0) {
-        _focusNodes[index - 1].requestFocus();
+        focusNodes[index - 1].requestFocus();
       }
     }
 
@@ -744,15 +613,43 @@ class _PassengerCardState extends ConsumerState<_PassengerCard> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: List.generate(4, (index) {
                     return CommonOtpField(
-                      controller: _controllers[index],
-                      focusNode: _focusNodes[index],
+                      controller: controllers[index],
+                      focusNode: focusNodes[index],
                       onChanged: (value) => onChanged(value, index),
                     );
                   }),
                 ),
               ),
             ),
-            CommonButton("Verify", width: 90, height: 30, boarderRadious: 8),
+            CommonButton(
+              "Verify",
+              width: 90,
+              height: 30,
+              boarderRadious: 8,
+              onTap: () async {
+                final otp = controllers.map((e) => e.text).join();
+
+                if (otp.length != 4) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text("Please enter 4 digit code")),
+                  );
+                  return;
+                }
+
+                FocusScope.of(context).unfocus();
+
+                final notifier = ref.read(
+                  tripsBookingControllerProvider.notifier,
+                );
+                await notifier.verifyOtpToEndRide(
+                  bookingId: widget.bookings.id,
+                  otp: otp,
+                );
+                ref
+                    .read(tripsPublishControllerProvider.notifier)
+                    .publishedTripDetailsById(id: widget.tripId);
+              },
+            ),
           ],
         ),
       ],
@@ -776,7 +673,7 @@ class _PassengerCardState extends ConsumerState<_PassengerCard> {
     );
   }
 
-  Widget onTheWay(BuildContext context) {
+  Widget onTheWay(WidgetRef ref) {
     return Column(
       spacing: 6,
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -793,40 +690,15 @@ class _PassengerCardState extends ConsumerState<_PassengerCard> {
 
             textSize: 12,
             boarderRadious: 5,
-            onTap: null,
+            onTap: () {
+              ref
+                  .read(tripsPublishControllerProvider.notifier)
+                  .genarateOtp(id: widget.bookings.id);
+            },
             iconWidget: Padding(
               padding: const EdgeInsets.only(right: 8.0),
               child: Icon(Iconsax.send_2_outline, color: AppColors.white),
             ),
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-class _BottomButtons extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Expanded(
-          child: CommonButton(
-            AppLocalizations.of(context)!.cancel_trip,
-            color: Colors.transparent,
-            textColor: Colors.red,
-            boarder: Border.all(color: Colors.red, width: 2),
-            onTap: () {},
-            height: 35,
-          ),
-        ),
-        SizedBox(width: 12.w),
-        Expanded(
-          child: CommonButton(
-            AppLocalizations.of(context)!.start_trip,
-            color: Colors.green,
-            onTap: () {},
-            height: 35,
           ),
         ),
       ],

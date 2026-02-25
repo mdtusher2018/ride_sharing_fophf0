@@ -100,7 +100,7 @@ class _MyTipCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
                     CommonText(
-                      "4 9 2 1",
+                      booking.pickupOTP,
                       size: 16,
                       color: AppColors.primary,
                       isBold: true,
@@ -134,6 +134,10 @@ class _MyTipCard extends StatelessWidget {
 
       case BookingStatus.inProgress:
         color = const Color(0xff007BFF); // Blue
+        break;
+
+      case BookingStatus.arrived:
+        color = const Color.fromARGB(164, 108, 117, 125); // Grey
         break;
 
       case BookingStatus.completed:

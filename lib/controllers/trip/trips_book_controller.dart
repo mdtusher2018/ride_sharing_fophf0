@@ -183,4 +183,17 @@ class TrippBookController extends PaginationNotifier<PassengerBookingModel> {
       },
     );
   }
+
+  Future<void> verifyOtpToEndRide({
+    required String bookingId,
+    required String otp,
+  }) async {
+    await safeCall(
+      task: () async {
+        await apiService.patch(ApiEndpoints.verifyOtpToEndRide(bookingId), {
+          'otp': otp,
+        });
+      },
+    );
+  }
 }

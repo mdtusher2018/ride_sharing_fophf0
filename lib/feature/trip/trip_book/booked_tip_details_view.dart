@@ -8,6 +8,7 @@ import 'package:velozaje/core/providers.dart';
 import 'package:velozaje/core/utils/app_colors.dart';
 import 'package:velozaje/core/utils/enums_with_enum_extentions.dart';
 import 'package:velozaje/core/utils/helper.dart';
+import 'package:velozaje/feature/profile_and_account/driver_profile_view.dart';
 import 'package:velozaje/feature/widget/back_button.dart';
 import 'package:velozaje/feature/widget/vehicale_card.dart';
 import 'package:velozaje/models/response/trip/booking_details_response.dart';
@@ -15,7 +16,7 @@ import 'package:velozaje/res/common_button.dart';
 import 'package:velozaje/res/common_image.dart';
 import 'package:velozaje/res/common_text.dart';
 
-part '../parts/booking_tip_header_card.dart';
+part 'booked_tip_header_card.dart';
 
 class BookedTipDetailsView extends ConsumerStatefulWidget {
   final String id;

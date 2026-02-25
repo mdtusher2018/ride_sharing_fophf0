@@ -202,7 +202,7 @@ class TripCard extends StatelessWidget {
                     ),
                     _Divider(),
                     _TripStat(
-                      value: 'N/A',
+                      value: '${trip.requests}',
                       label: AppLocalizations.of(context)!.requests,
                       valueColor: AppColors.primary,
                     ),

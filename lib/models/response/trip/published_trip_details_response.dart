@@ -1,19 +1,19 @@
 import 'package:velozaje/core/utils/enums_with_enum_extentions.dart';
 import 'package:velozaje/models/location_model.dart';
 
-class PublishedTripDetailsResponse {
+class BookigsOfPublishedTripResponse {
   final bool success;
   final String message;
   final _PublishedTripData data;
 
-  PublishedTripDetailsResponse({
+  BookigsOfPublishedTripResponse({
     required this.success,
     required this.message,
     required this.data,
   });
 
-  factory PublishedTripDetailsResponse.fromJson(Map<String, dynamic> json) {
-    return PublishedTripDetailsResponse(
+  factory BookigsOfPublishedTripResponse.fromJson(Map<String, dynamic> json) {
+    return BookigsOfPublishedTripResponse(
       success: json['success'] ?? false,
       message: json['message'] ?? '',
       data: _PublishedTripData.fromJson(json['data'] ?? {}),

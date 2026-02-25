@@ -8,6 +8,7 @@ enum BookingStatus {
   pending,
   confirmed,
   inProgress,
+  arrived,
   completed,
   cancelled,
   unknown,

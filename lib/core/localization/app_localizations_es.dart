@@ -723,7 +723,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get drop_off_code => 'Código de entrega';
 
   @override
-  String get give_to_leo_messi => 'Entregar a Leo Messi';
+  String get give_to => 'Entregar a';
 
   @override
   String get final_code => 'Código final';

@@ -204,7 +204,7 @@ class _TripModel {
   final DateTime departureTime;
   final double pricePerSeat;
   final String status;
-  final String note;
+  final String description;
 
   _TripModel({
     required this.id,
@@ -216,7 +216,7 @@ class _TripModel {
     required this.departureTime,
     required this.pricePerSeat,
     required this.status,
-    required this.note,
+    required this.description,
   });
 
   factory _TripModel.fromJson(Map<String, dynamic> json) {
@@ -236,7 +236,7 @@ class _TripModel {
           DateTime.fromMillisecondsSinceEpoch(0),
       pricePerSeat: (json['pricePerSeat'] as num?)?.toDouble() ?? 0.0,
       status: json['status'] ?? '',
-      note: json['note'] ?? '',
+      description: json['description'] ?? '',
     );
   }
 }

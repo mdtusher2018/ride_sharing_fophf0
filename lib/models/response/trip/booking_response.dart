@@ -63,6 +63,7 @@ class PassengerBookingModel {
   final DateTime bookingDate;
   final DateTime createdAt;
   final DateTime updatedAt;
+  final String pickupOTP;
 
   PassengerBookingModel({
     this.packageDetails,
@@ -84,6 +85,7 @@ class PassengerBookingModel {
     required this.bookingDate,
     required this.createdAt,
     required this.updatedAt,
+    required this.pickupOTP,
   });
 
   factory PassengerBookingModel.fromJson(Map<String, dynamic> json) {
@@ -143,6 +145,7 @@ class PassengerBookingModel {
       updatedAt:
           DateTime.tryParse(json['updatedAt'] ?? '') ??
           DateTime.fromMillisecondsSinceEpoch(0),
+      pickupOTP: (json['pickupOTP'] ?? "Pending").toString(),
     );
   }
 }

@@ -1474,11 +1474,11 @@ abstract class AppLocalizations {
   /// **'Drop off Code'**
   String get drop_off_code;
 
-  /// No description provided for @give_to_leo_messi.
+  /// No description provided for @give_to.
   ///
   /// In en, this message translates to:
-  /// **'Give to Leo Messi'**
-  String get give_to_leo_messi;
+  /// **'Give to'**
+  String get give_to;
 
   /// No description provided for @final_code.
   ///

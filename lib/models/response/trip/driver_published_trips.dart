@@ -118,6 +118,7 @@ class DriverTripModel {
   final int totalSeats;
   final int availableSeats;
   final int bookedSeats;
+  final int requests;
   final String description;
   final bool automaticReservation;
   final bool packageDeliveryEnabled;
@@ -140,6 +141,7 @@ class DriverTripModel {
     required this.totalSeats,
     required this.availableSeats,
     required this.bookedSeats,
+    required this.requests,
     required this.description,
     required this.automaticReservation,
     required this.packageDeliveryEnabled,
@@ -183,6 +185,7 @@ class DriverTripModel {
       availableSeats: JsonHelper.intVal(json['availableSeats']),
 
       bookedSeats: JsonHelper.intVal(json['bookedSeats']),
+      requests: JsonHelper.intVal(json['requestedBookings']),
 
       description: JsonHelper.stringVal(json['description']),
 

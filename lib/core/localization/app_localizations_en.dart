@@ -718,7 +718,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get drop_off_code => 'Drop off Code';
 
   @override
-  String get give_to_leo_messi => 'Give to Leo Messi';
+  String get give_to => 'Give to';
 
   @override
   String get final_code => 'Final Code';

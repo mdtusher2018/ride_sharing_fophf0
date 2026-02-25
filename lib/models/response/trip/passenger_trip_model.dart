@@ -22,6 +22,7 @@ class PassengerTripModel {
   final String status;
   final DateTime? createdAt;
   final DateTime? updatedAt;
+  final List<dynamic> packages;
 
   PassengerTripModel({
     required this.id,
@@ -44,6 +45,7 @@ class PassengerTripModel {
     required this.status,
     required this.createdAt,
     required this.updatedAt,
+    required this.packages,
   });
 
   factory PassengerTripModel.fromJson(Map<String, dynamic> json) {
@@ -97,6 +99,7 @@ class PassengerTripModel {
       createdAt: JsonHelper.parseDate(json['createdAt']),
 
       updatedAt: JsonHelper.parseDate(json['updatedAt']),
+      packages: json['packages'] ?? [],
     );
   }
 }

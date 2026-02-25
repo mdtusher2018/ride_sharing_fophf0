@@ -5,20 +5,27 @@ import 'package:velozaje/core/services/api/i_api_service.dart';
 import 'package:velozaje/core/utils/api_end_points.dart';
 import 'package:velozaje/models/request/trip_publish_request.dart';
 import 'package:velozaje/models/response/trip/driver_published_trips.dart';
+import 'package:velozaje/models/response/trip/passenger_trip_details_response.dart';
 import 'package:velozaje/models/response/trip/published_trip_details_response.dart';
 
 class TripsPublishState {
-  final PublishedTripDetailsResponse? publishedTrip;
+  final BookigsOfPublishedTripResponse? bookingsOfPublishedTrip;
+  final PassengerTripDetailsResponse? tripDetails;
 
-  const TripsPublishState({this.publishedTrip});
+  const TripsPublishState({this.bookingsOfPublishedTrip, this.tripDetails});
 
   factory TripsPublishState.initial() {
     return const TripsPublishState();
   }
 
-  TripsPublishState copyWith({PublishedTripDetailsResponse? publishedTrip}) {
+  TripsPublishState copyWith({
+    BookigsOfPublishedTripResponse? bookingsOfPublishedTrip,
+    PassengerTripDetailsResponse? tripDetails,
+  }) {
     return TripsPublishState(
-      publishedTrip: publishedTrip ?? this.publishedTrip,
+      bookingsOfPublishedTrip:
+          bookingsOfPublishedTrip ?? this.bookingsOfPublishedTrip,
+      tripDetails: tripDetails ?? this.tripDetails,
     );
   }
 }
@@ -77,12 +84,42 @@ class TripsPublishController extends PaginationNotifier<DriverTripModel> {
             'totalSeats': publishedData.totalSeats!.toString(),
             'vehicle': publishedData.vehicleId!,
             'routePolyline': publishedData.routePolyLine!,
+            "description": publishedData.notes,
           },
           files: {
             'driverImage': [publishedData.driverImage!],
           },
         );
         return true;
+      },
+    );
+  }
+
+  Future<void> publishedTripDetailsById({
+    required String id,
+    PassengerTripDetailsResponse? tripDetails,
+  }) async {
+    await safeCall(
+      task: () async {
+        final res = await apiService.get(
+          ApiEndpoints.publishedTripDetailsById(id),
+        );
+        final tempPublishedTrip = BookigsOfPublishedTripResponse.fromJson(res);
+        final extra = state.extraState as TripsPublishState;
+        state = state.copyWith(
+          extraState: extra.copyWith(
+            bookingsOfPublishedTrip: tempPublishedTrip,
+            tripDetails: tripDetails,
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> genarateOtp({required String id}) async {
+    await safeCall(
+      task: () async {
+        await apiService.patch(ApiEndpoints.generateDropOffOtp(id), {});
       },
     );
   }
@@ -140,20 +177,5 @@ class TripsPublishController extends PaginationNotifier<DriverTripModel> {
         latLng.latitude <= 90 &&
         latLng.longitude >= -180 &&
         latLng.longitude <= 180;
-  }
-
-  Future<void> publishedTripDetailsById({required String id}) async {
-    await safeCall(
-      task: () async {
-        final res = await apiService.get(
-          ApiEndpoints.publishedTripDetailsById(id),
-        );
-        final tempPublishedTrip = PublishedTripDetailsResponse.fromJson(res);
-        final extra = state.extraState as TripsPublishState;
-        state = state.copyWith(
-          extraState: extra.copyWith(publishedTrip: tempPublishedTrip),
-        );
-      },
-    );
   }
 }

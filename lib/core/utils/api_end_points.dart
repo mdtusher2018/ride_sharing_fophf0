@@ -41,6 +41,7 @@ class ApiEndpoints {
   static String bookedTripDetailsById(String id) => "bookings/$id";
   static String publishedTripDetailsById(String id) => "bookings/trip/$id";
   static String verifyOtpToStartRide(String id) => "bookings/$id/verify-otp";
+  static String verifyOtpToEndRide(String id) => "bookings/$id/complete";
   static String generateDropOffOtp(String id) =>
       "bookings/$id/generate-dropoff-otp";
 
@@ -61,4 +62,8 @@ class ApiEndpoints {
   static const String giveReview = "reviews";
   static String getAllReviewById(String id) =>
       "reviews/driver/$id?populate=passenger";
+
+  //Reports
+  static const String reportSubjects = "report-subjects";
+  static const String submitAReport = "reports";
 }
