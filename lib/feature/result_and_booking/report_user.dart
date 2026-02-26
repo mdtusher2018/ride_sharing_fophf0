@@ -1,34 +1,39 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:velozaje/core/localization/app_localizations.dart';
+import 'package:velozaje/core/providers.dart';
 import 'package:velozaje/core/utils/app_colors.dart';
+import 'package:velozaje/core/utils/extention.dart';
 import 'package:velozaje/res/common_appbar.dart';
 import 'package:velozaje/res/common_button.dart';
 import 'package:velozaje/res/common_text.dart';
 import 'package:velozaje/res/common_text_field.dart';
 
-class ReportUserPage extends StatefulWidget {
-  const ReportUserPage({super.key});
+class ReportUserPage extends ConsumerStatefulWidget {
+  const ReportUserPage({super.key, required this.driverId});
+  final String driverId;
 
   @override
-  State<ReportUserPage> createState() => _ReportUserPageState();
+  ConsumerState<ReportUserPage> createState() => _ReportUserPageState();
 }
 
-class _ReportUserPageState extends State<ReportUserPage> {
+class _ReportUserPageState extends ConsumerState<ReportUserPage> {
   final TextEditingController detailsController = TextEditingController();
 
   int selectedIndex = -1;
+  String? selectedSubjectId;
 
-  final List<String> reasons = [
-    'Dangerous Driving',
-    'Vehicle didn’t match description',
-    'Wrong Drop-off',
-    'Rude or aggressive behavior',
-    'Package damaged or lost',
-  ];
+  @override
+  void initState() {
+    super.initState();
+    ref.read(reportControllerProvider.notifier).fetchReportSubjects();
+  }
 
   @override
   Widget build(BuildContext context) {
+    final controller = ref.read(reportControllerProvider.notifier);
+    final state = ref.watch(reportControllerProvider);
     return Scaffold(
       backgroundColor: AppColors.mainbg,
       appBar: commonAppBar(
@@ -37,126 +42,118 @@ class _ReportUserPageState extends State<ReportUserPage> {
       ),
       body: Padding(
         padding: EdgeInsets.symmetric(horizontal: 20.w),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            SizedBox(height: 16.h),
+        child: SingleChildScrollView(
+          physics: AlwaysScrollableScrollPhysics(),
 
-            /// Warning box
-            Container(
-              padding: EdgeInsets.all(12.r),
-              decoration: BoxDecoration(
-                color: const Color(0xFFFFDDDD),
-                borderRadius: BorderRadius.circular(10.r),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(height: 16.h),
+
+              /// Warning box
+              Container(
+                padding: EdgeInsets.all(12.r),
+                decoration: BoxDecoration(
+                  color: const Color(0xFFFFDDDD),
+                  borderRadius: BorderRadius.circular(10.r),
+                ),
+                child: CommonText(
+                  AppLocalizations.of(
+                    context,
+                  )!.please_select_a_reason_for_reporting_osbaldo_garcia_this_is_anonymous_and_helps_keep_our_community_safe,
+
+                  size: 12.sp,
+                  color: const Color(0xFF910F0F),
+                ),
               ),
-              child: CommonText(
-                AppLocalizations.of(
-                  context,
-                )!.please_select_a_reason_for_reporting_osbaldo_garcia_this_is_anonymous_and_helps_keep_our_community_safe,
 
-                size: 12.sp,
-                color: const Color(0xFF910F0F),
-              ),
-            ),
+              SizedBox(height: 20.h),
 
-            SizedBox(height: 20.h),
-
-            /// Reasons (dynamic)
-            ...List.generate(reasons.length, (index) {
-              return _ReportOption(
-                title: reasons[index],
-                isSelected: selectedIndex == index,
-                onTap: () {
-                  setState(() {
-                    selectedIndex = index;
-                  });
+              /// Reasons (dynamic)
+              ValueListenableBuilder(
+                valueListenable: controller.isLoading,
+                builder: (_, isLoading, _) {
+                  if (isLoading) {
+                    return Center(child: CircularProgressIndicator());
+                  }
+                  if (!isLoading && state.data.isEmpty) {
+                    return CommonText("Could not fetch any report reason");
+                  }
+                  final reasons = state.data;
+                  return Column(
+                    children: [
+                      ...List.generate(reasons.length, (index) {
+                        return _ReportOption(
+                          title: reasons[index].title,
+                          isSelected: selectedIndex == index,
+                          onTap: () {
+                            setState(() {
+                              selectedIndex = index;
+                              selectedSubjectId = reasons[index].id;
+                            });
+                          },
+                        );
+                      }),
+                    ],
+                  );
                 },
-              );
-            }),
+              ),
+              SizedBox(height: 24.h),
 
-            SizedBox(height: 24.h),
+              CommonText(
+                AppLocalizations.of(context)!.additional_details,
+                size: 14.sp,
+                fontWeight: FontWeight.w600,
+              ),
 
-            CommonText(
-              AppLocalizations.of(context)!.additional_details,
-              size: 14.sp,
-              fontWeight: FontWeight.w600,
-            ),
+              SizedBox(height: 10.h),
 
-            SizedBox(height: 10.h),
+              CommonTextField(
+                controller: detailsController,
+                hintText: AppLocalizations.of(
+                  context,
+                )!.please_describe_what_happened,
+                minLine: 4,
+                keyboardType: TextInputType.multiline,
+                boarderColor: Colors.transparent,
+              ),
+              SizedBox(height: 10.h),
 
-            CommonTextField(
-              controller: detailsController,
-              hintText: AppLocalizations.of(
-                context,
-              )!.please_describe_what_happened,
-              minLine: 4,
-              keyboardType: TextInputType.multiline,
-              boarderColor: Colors.transparent,
-            ),
+              /// Submit button
+              CommonButton(
+                AppLocalizations.of(context)!.submit_report,
+                color: Colors.red.shade600,
+                textColor: Colors.white,
+                isLoading: state.isLoading,
+                textalign: TextAlign.center,
+                height: 50,
+                onTap: (selectedSubjectId == null)
+                    ? () {
+                        context.showErrorSnackbar(
+                          title: "Validation Error",
+                          message: "Please select a report subject",
+                        );
+                      }
+                    : () async {
+                        await controller.submitAReport(
+                          reportedUserId: widget.driverId,
+                          reportSubjectId: selectedSubjectId!,
+                          additionalDetails: detailsController.text.trim(),
+                          onCompleate: () {
+                            selectedIndex = -1;
+                            selectedSubjectId = null;
+                            setState(() {});
+                          },
+                        );
+                        // _showReportSubmitDialog(context);
+                      },
+              ),
 
-            const Spacer(),
-
-            /// Submit button
-            CommonButton(
-              AppLocalizations.of(context)!.submit_report,
-              color: Colors.red.shade600,
-              textColor: Colors.white,
-              textalign: TextAlign.center,
-              height: 50,
-              onTap: (selectedIndex == -1)
-                  ? null
-                  : () {
-                      _showReportSubmitDialog(context);
-                    },
-            ),
-
-            SizedBox(height: 20.h),
-          ],
+              SizedBox(height: 20.h),
+            ],
+          ),
         ),
       ),
-    );
-  }
-
-  void _showReportSubmitDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (context) {
-        return Dialog(
-          backgroundColor: AppColors.white,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(20.r),
-          ),
-          child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 16.h),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                SizedBox(height: 16.h),
-
-                /// Title
-                CommonText(
-                  AppLocalizations.of(context)!.submit_report,
-                  size: 18,
-                  isBold: true,
-                ),
-
-                SizedBox(height: 8.h),
-
-          
-                CommonText(
-                  AppLocalizations.of(context)!.wait_for_other_users_approval,
-
-                  textAlign: TextAlign.center,
-                  size: 14,
-                ),
-
-                SizedBox(height: 10.h),
-              ],
-            ),
-          ),
-        );
-      },
     );
   }
 }

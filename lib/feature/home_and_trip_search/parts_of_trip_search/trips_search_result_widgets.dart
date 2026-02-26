@@ -38,27 +38,25 @@ class _SearchTripsResultCardState extends State<_SearchTripsResultCard> {
           SizedBox(height: 12.h),
           Divider(),
           SizedBox(height: 10.h),
-          if (showPackageOptions) _packageSelector(),
-          if (!showPackageOptions) _footer(),
-          if (showPackageOptions)
-            CommonButton(
-              AppLocalizations.of(context)!.view_details,
-              height: 24,
-              textSize: 14,
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) {
-                      return PassengerTripDetailsPage(
-                        tripId: widget.trip.id,
-                        bookingTripSearched: widget.bookingTripSearched,
-                      );
-                    },
-                  ),
-                );
-              },
-            ),
+
+          CommonButton(
+            AppLocalizations.of(context)!.view_details,
+            height: 24,
+            textSize: 14,
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) {
+                    return PassengerTripDetailsPage(
+                      tripId: widget.trip.id,
+                      bookingTripSearched: widget.bookingTripSearched,
+                    );
+                  },
+                ),
+              );
+            },
+          ),
         ],
       ),
     );
@@ -202,73 +200,6 @@ class _SearchTripsResultCardState extends State<_SearchTripsResultCard> {
         SizedBox(height: 2),
         CommonText(value, size: 13, isBold: true),
       ],
-    );
-  }
-
-  Widget _packageSelector() {
-    return Padding(
-      padding: EdgeInsets.only(bottom: 12.h),
-      child: Row(
-        children: [
-          _sizeCard(AppLocalizations.of(context)!.small, "\$60"),
-          SizedBox(width: 10.w),
-          _sizeCard(AppLocalizations.of(context)!.medium, "\$00"),
-          SizedBox(width: 10.w),
-          _sizeCard(AppLocalizations.of(context)!.large, "\$00"),
-        ],
-      ),
-    );
-  }
-
-  Widget _sizeCard(String title, String price) {
-    return Expanded(
-      child: Container(
-        padding: EdgeInsets.all(4.w),
-        child: Center(
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Icon(Iconsax.box_1_outline),
-              SizedBox(width: 6.h),
-              CommonText(price, size: 14, isBold: true),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  /// Footer
-  Widget _footer() {
-    return SizedBox(
-      height: 40,
-      child: Row(
-        children: [
-          Container(
-            padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 4.h),
-            decoration: BoxDecoration(
-              color: AppColors.grey.withOpacity(.2),
-              borderRadius: BorderRadius.circular(20),
-            ),
-            child: CommonText(
-              widget.trip.vehicle?.vehicleModel ?? "",
-              size: 10,
-            ),
-          ),
-          const Spacer(),
-          CommonButton(
-            AppLocalizations.of(context)!.view_details,
-            onTap: () {
-              setState(() {
-                showPackageOptions = !showPackageOptions;
-              });
-            },
-            height: 30,
-            width: 120,
-            textSize: 14,
-          ),
-        ],
-      ),
     );
   }
 }

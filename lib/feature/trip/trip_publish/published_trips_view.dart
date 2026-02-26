@@ -30,32 +30,49 @@ class _MyPublishedTripsPageState extends ConsumerState<PublishedTripsPage> {
   @override
   Widget build(BuildContext context) {
     final state = ref.watch(tripsPublishControllerProvider);
+    final controller = ref.read(tripsPublishControllerProvider.notifier);
 
-    if (state.items.isEmpty) {
-      return const Center(child: CircularProgressIndicator());
-    }
+    return ValueListenableBuilder(
+      valueListenable: controller.isLoading,
 
-    return RefreshIndicator(
-      onRefresh: () async {
-        ref.read(tripsPublishControllerProvider.notifier).refresh();
+      builder: (_, isLoading, _) {
+        if (isLoading) {
+          return const Center(child: CircularProgressIndicator());
+        }
+        if (!isLoading && state.items.isEmpty) {
+          return EmptyStateWidget(
+            icon: Icons.public_off,
+            title: "No Published Trips",
+            description: "Start publishing trips and share your journey.",
+            buttonText: "Refresh",
+            onButtonPressed: () {
+              ref.read(tripsPublishControllerProvider.notifier).refresh();
+            },
+          );
+        }
+        return RefreshIndicator(
+          onRefresh: () async {
+            ref.read(tripsPublishControllerProvider.notifier).refresh();
+          },
+          child: ListView.builder(
+            controller: _scrollController,
+            padding: EdgeInsets.all(16.w),
+            itemCount: state.items.length + (state.hasMore ? 1 : 0),
+            itemBuilder: (context, index) {
+              if (index >= state.items.length) {
+                return const Padding(
+                  padding: EdgeInsets.all(16),
+                  child: Center(child: CircularProgressIndicator()),
+                );
+              }
+
+              final trip = state.items[index];
+
+              return TripCard(trip: trip);
+            },
+          ),
+        );
       },
-      child: ListView.builder(
-        controller: _scrollController,
-        padding: EdgeInsets.all(16.w),
-        itemCount: state.items.length + (state.hasMore ? 1 : 0),
-        itemBuilder: (context, index) {
-          if (index >= state.items.length) {
-            return const Padding(
-              padding: EdgeInsets.all(16),
-              child: Center(child: CircularProgressIndicator()),
-            );
-          }
-
-          final trip = state.items[index];
-
-          return TripCard(trip: trip);
-        },
-      ),
     );
   }
 }

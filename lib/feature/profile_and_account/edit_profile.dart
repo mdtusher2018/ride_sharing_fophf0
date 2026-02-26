@@ -4,23 +4,25 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:velozaje/core/localization/app_localizations.dart';
-import 'package:velozaje/feature/vehicale/view/register_vehicale_view.dart';
+import 'package:velozaje/core/utils/extention.dart';
 import 'package:velozaje/core/utils/app_colors.dart';
 import 'package:velozaje/controllers/profile_controller.dart';
+import 'package:velozaje/models/user_model.dart';
 import 'package:velozaje/res/common_button.dart';
 import 'package:velozaje/res/common_image.dart';
 import 'package:velozaje/res/common_text_field_with_title.dart';
 import 'package:velozaje/res/common_text.dart';
 import 'package:velozaje/res/location_search_textfield.dart';
 
-class ConfirmDetailsPage extends ConsumerStatefulWidget {
-  const ConfirmDetailsPage({super.key});
+class EditProfilePage extends ConsumerStatefulWidget {
+  const EditProfilePage({super.key, required this.userData});
+  final UserModel userData;
 
   @override
-  ConsumerState<ConfirmDetailsPage> createState() => _ConfirmDetailsPageState();
+  ConsumerState<EditProfilePage> createState() => _ConfirmDetailsPageState();
 }
 
-class _ConfirmDetailsPageState extends ConsumerState<ConfirmDetailsPage> {
+class _ConfirmDetailsPageState extends ConsumerState<EditProfilePage> {
   final TextEditingController phoneController = TextEditingController();
   final TextEditingController addressController = TextEditingController();
   final TextEditingController dobController = TextEditingController();
@@ -58,6 +60,19 @@ class _ConfirmDetailsPageState extends ConsumerState<ConfirmDetailsPage> {
   }
 
   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    phoneController.text = widget.userData.phoneNumber;
+    addressController.text = widget.userData.address;
+    dob = widget.userData.dateOfBirth;
+    if (dob != null) {
+      dobController.text =
+          '${dob!.day.toString().padLeft(2, '0')}/${dob!.month.toString().padLeft(2, '0')}/${dob!.year}';
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.white,
@@ -66,10 +81,7 @@ class _ConfirmDetailsPageState extends ConsumerState<ConfirmDetailsPage> {
         elevation: 0,
         surfaceTintColor: Colors.transparent,
         centerTitle: true,
-        title: CommonText(
-          AppLocalizations.of(context)!.confirm_your_details,
-          size: 21,
-        ),
+        title: CommonText(AppLocalizations.of(context)!.profile, size: 21),
       ),
       body: SingleChildScrollView(
         padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 16.h),
@@ -179,35 +191,25 @@ class _ConfirmDetailsPageState extends ConsumerState<ConfirmDetailsPage> {
 
             SizedBox(height: 40.h),
 
-            ValueListenableBuilder(
-              valueListenable: ref
-                  .read(profileControllerProvider.notifier)
-                  .isLoading,
-              builder: (_, value, _) {
-                return CommonButton(
-                  AppLocalizations.of(context)!.confirm_data,
-                  isLoading: value,
-                  onTap: () async {
-                    final response = await ref
-                        .read(profileControllerProvider.notifier)
-                        .updateProfile(
-                          address: addressController.text,
-                          dateOfBirth: dob.toString(),
-                          phone: phoneController.text,
-                          image: _avatarImage,
-                        );
-                    if (response ?? false) {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) {
-                            return RegisterVehiclePage();
-                          },
-                        ),
-                      );
-                    }
-                  },
-                );
+            CommonButton(
+              AppLocalizations.of(context)!.save,
+              onTap: () async {
+                final response = await ref
+                    .read(profileControllerProvider.notifier)
+                    .updateProfile(
+                      address: addressController.text,
+                      dateOfBirth: dob.toString(),
+                      phone: phoneController.text,
+                      image: _avatarImage,
+                    );
+                if (response ?? false) {
+                  Navigator.pop(context);
+                  context.showCommonSnackbar(
+                    title: "Sucess",
+                    backgroundColor: Colors.green,
+                    message: "Profile update Sucessfully",
+                  );
+                }
               },
             ),
           ],

@@ -563,7 +563,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get year_3 => '3 year';
 
   @override
-  String get about_oswaldo => 'About Oswaldo';
+  String get about => 'About';
 
   @override
   String get punctuality_you_could_smoke_i_make_stops_to_go_to_the_bathroom =>

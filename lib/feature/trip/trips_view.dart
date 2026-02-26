@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:velozaje/core/localization/app_localizations.dart';
+import 'package:velozaje/feature/widget/no_data.dart';
 import 'package:velozaje/res/common_text.dart';
 import 'package:velozaje/core/utils/app_colors.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -15,8 +16,8 @@ import 'package:velozaje/feature/trip/trip_book/booked_tip_details_view.dart';
 import 'package:velozaje/models/response/trip/booking_response.dart';
 import 'package:velozaje/res/common_image.dart';
 
-part 'parts/booked_tips_view.dart';
-part 'parts/published_trips_view.dart';
+part 'trip_book/booked_tips_view.dart';
+part 'trip_publish/published_trips_view.dart';
 
 enum _TipsTab { booked, published }
 

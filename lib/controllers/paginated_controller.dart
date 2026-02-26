@@ -52,9 +52,10 @@ abstract class PaginationNotifier<T> extends BaseNotifier<PaginationState<T>> {
     required int page,
     required int limit,
   });
-
+  Function(int, String)? _handleErrorExplecitly;
   @mustCallSuper
-  Future<void> refresh() async {
+  Future<void> refresh({Function(int, String)? handleErrorExplecitly}) async {
+    _handleErrorExplecitly = handleErrorExplecitly;
     await safeCall(
       task: () async {
         final (items, meta) = await fetchPage(page: 1, limit: state.meta.limit);
@@ -65,6 +66,7 @@ abstract class PaginationNotifier<T> extends BaseNotifier<PaginationState<T>> {
           hasMore: meta.page < meta.totalPage,
         );
       },
+      handleErrorExplicitly: _handleErrorExplecitly,
     );
   }
 
@@ -82,6 +84,7 @@ abstract class PaginationNotifier<T> extends BaseNotifier<PaginationState<T>> {
         return fetchPage(page: nextPage, limit: state.meta.limit);
       },
       showLoading: false,
+      handleErrorExplicitly: _handleErrorExplecitly,
     );
 
     if (result == null) {

@@ -1,3 +1,5 @@
+import 'package:velozaje/core/utils/api_data_praser_helper.dart';
+
 class Vehicle {
   final String id;
   final String user;
@@ -11,8 +13,6 @@ class Vehicle {
   final String status;
   final DateTime submittedAt;
   final DateTime createdAt;
-  final DateTime updatedAt;
-  final int version;
 
   Vehicle({
     required this.id,
@@ -27,26 +27,36 @@ class Vehicle {
     required this.status,
     required this.submittedAt,
     required this.createdAt,
-    required this.updatedAt,
-    required this.version,
   });
 
-  factory Vehicle.fromJson(Map<String, dynamic> json) {
+  factory Vehicle.fromJson(Map<String, dynamic>? json) {
+    if (json == null) {
+      throw ArgumentError('Vehicle JSON cannot be null');
+    }
+
     return Vehicle(
-      id: json['_id'],
-      user: json['user'],
-      vehicleType: json['vehicleType'],
-      registration: json['registration'],
-      year: json['year'],
-      brand: json['brand'],
-      vehicleModel: json['vehicleModel'],
-      licensePlateNumber: json['licensePlateNumber'],
-      vehicleImages: List<String>.from(json['vehicleImages']),
-      status: json['status'],
-      submittedAt: DateTime.parse(json['submittedAt']),
-      createdAt: DateTime.parse(json['createdAt']),
-      updatedAt: DateTime.parse(json['updatedAt']),
-      version: json['__v'],
+      id: JsonHelper.stringVal(json['_id']),
+      user: JsonHelper.stringVal(json['user']),
+      vehicleType: JsonHelper.stringVal(json['vehicleType']),
+      registration: JsonHelper.stringVal(json['registration']),
+      year: JsonHelper.intVal(json['year']),
+      brand: JsonHelper.stringVal(json['brand']),
+      vehicleModel: JsonHelper.stringVal(json['vehicleModel']),
+      licensePlateNumber: JsonHelper.stringVal(json['licensePlateNumber']),
+      vehicleImages: _parseImages(json['vehicleImages']),
+      status: JsonHelper.stringVal(json['status']),
+      submittedAt: JsonHelper.parseDate(json['submittedAt']) ?? DateTime.now(),
+      createdAt: JsonHelper.parseDate(json['createdAt']) ?? DateTime.now(),
     );
+  }
+
+  static List<String> _parseImages(dynamic value) {
+    if (value is List) {
+      return value
+          .map((e) => JsonHelper.stringVal(e))
+          .where((e) => e.isNotEmpty)
+          .toList();
+    }
+    return [];
   }
 }

@@ -5,7 +5,7 @@ import 'package:velozaje/core/services/localstorage/storage_key.dart';
 import 'package:velozaje/core/utils/api_end_points.dart';
 import 'package:velozaje/core/utils/enums_with_enum_extentions.dart';
 import 'package:velozaje/core/utils/extention.dart';
-import 'package:velozaje/core/utils/global_keys.dart';
+import 'package:velozaje/core/utils/constants.dart';
 import 'package:velozaje/feature/auth/view/confirm_details_view.dart';
 import 'package:velozaje/models/response/auth_response/forget_password_response.dart';
 import 'package:velozaje/feature/auth/view/otp_verification_view.dart';

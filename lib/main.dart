@@ -3,8 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:velozaje/core/localization/app_localizations.dart';
-import 'package:velozaje/core/utils/global_keys.dart';
+import 'package:velozaje/core/utils/constants.dart';
 import 'package:velozaje/feature/splash_onboarding/splash_screen.dart';
 import 'package:velozaje/feature/take_image_view.dart';
 
@@ -12,6 +13,8 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   TakePhotoPage.cameras = await availableCameras();
 
+  Stripe.publishableKey = publishableKey;
+  await Stripe.instance.applySettings();
   runApp(ProviderScope(child: const MyApp()));
 }
 

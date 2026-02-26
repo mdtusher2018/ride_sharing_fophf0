@@ -54,9 +54,10 @@ class ApiEndpoints {
   static String conversationMarkAsRead(String id) =>
       "messages/booking/$id/read";
 
-  //Wallet
+  //Wallet And Payment
   static const String driverTransactions = "transactions/driver";
   static const String driverTransactionsSummary = "transactions/driver/summary";
+  static const String payCommission = "commission-payments/initiate";
 
   //Review
   static const String giveReview = "reviews";

@@ -566,7 +566,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get year_3 => '3 años';
 
   @override
-  String get about_oswaldo => 'Sobre Oswaldo';
+  String get about => 'Sobre';
 
   @override
   String get punctuality_you_could_smoke_i_make_stops_to_go_to_the_bathroom =>

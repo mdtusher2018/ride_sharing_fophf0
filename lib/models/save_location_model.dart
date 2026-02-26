@@ -1,7 +1,8 @@
-import 'package:google_places_flutter/model/place_details.dart';
+import 'package:velozaje/core/utils/api_data_praser_helper.dart';
+import 'package:velozaje/models/location_model.dart';
 
 class SavedLocation {
-  final Location coordinates;
+  final LocationModel coordinates;
   final String id;
   final String user;
   final String placeName;
@@ -21,16 +22,20 @@ class SavedLocation {
     required this.updatedAt,
   });
 
-  factory SavedLocation.fromJson(Map<String, dynamic> json) {
+  factory SavedLocation.fromJson(Map<String, dynamic>? json) {
+    if (json == null) {
+      throw ArgumentError('SavedLocation JSON cannot be null');
+    }
+
     return SavedLocation(
-      coordinates: Location.fromJson(json['coordinates']),
-      id: json['_id'],
-      user: json['user'],
-      placeName: json['placeName'],
-      address: json['address'],
-      category: json['category'],
-      createdAt: DateTime.parse(json['createdAt']),
-      updatedAt: DateTime.parse(json['updatedAt']),
+      coordinates: LocationModel.fromJson(json['coordinates'] ?? {}),
+      id: JsonHelper.stringVal(json['_id']),
+      user: JsonHelper.stringVal(json['user']),
+      placeName: JsonHelper.stringVal(json['placeName']),
+      address: JsonHelper.stringVal(json['address']),
+      category: JsonHelper.stringVal(json['category']),
+      createdAt: JsonHelper.parseDate(json['createdAt']) ?? DateTime.now(),
+      updatedAt: JsonHelper.parseDate(json['updatedAt']) ?? DateTime.now(),
     );
   }
 }

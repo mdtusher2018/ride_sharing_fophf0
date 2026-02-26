@@ -36,7 +36,15 @@ class _MyTipsPageState extends ConsumerState<BookedTipsPage> {
         }
 
         if (pagination.items.isEmpty) {
-          return CommonText("You have no bookings");
+          return EmptyStateWidget(
+            icon: Icons.calendar_month_outlined,
+            title: "No Bookings Yet",
+            description: "Your bookings will appear here once you make one.",
+            buttonText: "Refresh",
+            onButtonPressed: () {
+              notifier.refresh();
+            },
+          );
         }
 
         return RefreshIndicator(

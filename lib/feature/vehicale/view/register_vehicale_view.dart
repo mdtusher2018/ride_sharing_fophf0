@@ -66,6 +66,18 @@ class _RegisterVehiclePageState extends ConsumerState<RegisterVehiclePage> {
           size: 21,
           isBold: true,
         ),
+        actions: [
+          InkWell(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => ReferalPage()),
+              );
+            },
+            child: CommonText(AppLocalizations.of(context)!.skip),
+          ),
+          SizedBox(width: 16),
+        ],
       ),
       body: SingleChildScrollView(
         padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 16.h),

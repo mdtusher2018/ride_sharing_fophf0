@@ -1,4 +1,6 @@
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:velozaje/core/utils/extention.dart';
+import 'package:velozaje/core/utils/constants.dart';
 import 'package:velozaje/models/pagenation_meta_model.dart';
 import 'package:velozaje/controllers/paginated_controller.dart';
 import 'package:velozaje/core/services/api/i_api_service.dart';
@@ -35,6 +37,21 @@ class TripsPublishController extends PaginationNotifier<DriverTripModel> {
 
   TripsPublishController(this.apiService)
     : super(extraState: TripsPublishState());
+
+  @override
+  Future<void> refresh({Function(int, String)? handleErrorExplecitly}) {
+    return super.refresh(
+      handleErrorExplecitly: (statusCode, message) {
+        if (statusCode == 403) {
+          state = state.copyWith(items: []);
+          isLoading.value = false;
+        } else {
+          final context = navigatorKey.currentContext;
+          context?.showErrorSnackbar(title: "Error", message: message);
+        }
+      },
+    );
+  }
 
   @override
   Future<(List<DriverTripModel>, PaginationMetaModel)> fetchPage({

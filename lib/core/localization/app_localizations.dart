@@ -1182,11 +1182,11 @@ abstract class AppLocalizations {
   /// **'3 year'**
   String get year_3;
 
-  /// No description provided for @about_oswaldo.
+  /// No description provided for @about.
   ///
   /// In en, this message translates to:
-  /// **'About Oswaldo'**
-  String get about_oswaldo;
+  /// **'About'**
+  String get about;
 
   /// No description provided for @punctuality_you_could_smoke_i_make_stops_to_go_to_the_bathroom.
   ///

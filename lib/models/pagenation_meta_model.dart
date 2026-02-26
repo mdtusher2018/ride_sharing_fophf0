@@ -32,14 +32,4 @@ class PaginationMetaModel {
       totalPage: 0,
     );
   }
-
-  /// 🔹 Optional: Convert back to JSON
-  Map<String, dynamic> toJson() {
-    return {
-      'page': page,
-      'limit': limit,
-      'total': total,
-      'totalPage': totalPage,
-    };
-  }
 }

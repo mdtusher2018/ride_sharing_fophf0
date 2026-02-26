@@ -5,6 +5,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:velozaje/core/localization/app_localizations.dart';
 import 'package:velozaje/core/providers.dart';
 import 'package:velozaje/feature/home_and_trip_search/widgets/saved_place_card.dart';
+import 'package:velozaje/feature/widget/no_data.dart';
 import 'package:velozaje/res/common_appbar.dart';
 import 'package:velozaje/core/utils/app_colors.dart';
 import 'package:velozaje/res/common_button.dart';
@@ -55,7 +56,17 @@ class _SavedPlacePageState extends ConsumerState<SavedPlacePage> {
               return value
                   ? const Center(child: CircularProgressIndicator())
                   : state.savedPlaces.isEmpty
-                  ? _EmptySavedPlaces()
+                  ? EmptyStateWidget(
+                      icon: Icons.location_off,
+                      title: "No Saved Locations",
+                      description: "You haven't saved any locations yet.",
+                      buttonText: "Refresh Locations",
+                      onButtonPressed: () async {
+                        ref
+                            .read(savedLocationProvider.notifier)
+                            .getSavedLocations();
+                      },
+                    )
                   : ListView.separated(
                       physics: const AlwaysScrollableScrollPhysics(),
                       separatorBuilder: (_, __) => SizedBox(height: 16.h),
@@ -164,40 +175,6 @@ class _SavedPlacePageState extends ConsumerState<SavedPlacePage> {
           ],
         );
       },
-    );
-  }
-}
-
-class _EmptySavedPlaces extends ConsumerWidget {
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return Center(
-      child: Column(
-        children: [
-          SizedBox(height: 80.h),
-          Icon(
-            Icons.bookmark_border,
-            size: 72.sp,
-            color: AppColors.grey.withOpacity(0.5),
-          ),
-          SizedBox(height: 8.h),
-          Text(
-            "No saved Location",
-            textAlign: TextAlign.center,
-            style: Theme.of(context).textTheme.titleMedium,
-          ),
-          SizedBox(height: 10.h),
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: 60.w),
-            child: CommonButton(
-              "Refresh",
-              onTap: ref.read(savedLocationProvider.notifier).getSavedLocations,
-              height: 40,
-              textSize: 16,
-            ),
-          ),
-        ],
-      ),
     );
   }
 }

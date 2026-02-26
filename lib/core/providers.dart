@@ -1,11 +1,12 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
 import 'package:velozaje/controllers/conversation_controller.dart';
+import 'package:velozaje/controllers/report_controller.dart';
 import 'package:velozaje/controllers/review_controller.dart';
 import 'package:velozaje/controllers/trip/trips_publish_controller.dart';
 import 'package:velozaje/controllers/paginated_controller.dart';
 import 'package:velozaje/controllers/trip/trips_book_controller.dart';
-import 'package:velozaje/controllers/wallet_controller.dart';
+import 'package:velozaje/controllers/wallet_and_payment_controller.dart';
 import 'package:velozaje/core/services/localstorage/i_local_storage_service.dart';
 import 'package:velozaje/controllers/auth_controller.dart';
 import 'package:velozaje/controllers/saved_location_controller.dart';
@@ -114,11 +115,12 @@ final notificationsControllerProvider =
     });
 
 final walletControllerProvider =
-    StateNotifierProvider<WalletController, PaginationState<EarningModel>>((
-      ref,
-    ) {
+    StateNotifierProvider<
+      WalletAndPaymentController,
+      PaginationState<EarningModel>
+    >((ref) {
       final apiService = ref.read(apiServiceProvider);
-      return WalletController(apiService: apiService);
+      return WalletAndPaymentController(apiService: apiService);
     });
 
 final conversationControllerProvider =
@@ -134,4 +136,9 @@ final reviewControllerProvider =
     ) {
       final apiService = ref.read(apiServiceProvider);
       return ReviewController(apiService: apiService);
+    });
+final reportControllerProvider =
+    StateNotifierProvider<ReportController, ReportState>((ref) {
+      final apiService = ref.read(apiServiceProvider);
+      return ReportController(apiService);
     });

@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/legacy.dart';
+import 'package:velozaje/core/services/api/api_exception.dart';
 import 'package:velozaje/core/utils/extention.dart';
-import 'package:velozaje/core/utils/global_keys.dart';
+import 'package:velozaje/core/utils/constants.dart';
 import 'package:velozaje/core/utils/app_colors.dart';
 
 abstract class BaseNotifier<T> extends StateNotifier<T> {
@@ -18,6 +19,7 @@ abstract class BaseNotifier<T> extends StateNotifier<T> {
     bool showSuccessSnack = false,
     void Function()? onStart,
     void Function()? onComplete,
+    Function(int, String)? handleErrorExplicitly,
     bool showLoading = true,
   }) async {
     try {
@@ -42,7 +44,10 @@ abstract class BaseNotifier<T> extends StateNotifier<T> {
     } catch (e, stack) {
       debugPrint("❌ Exception: $e\n$stack");
       errorMessage.value = e.toString();
-
+      if (handleErrorExplicitly != null && e is ApiException) {
+        handleErrorExplicitly(e.statusCode, e.message);
+        return null;
+      }
       if (showErrorSnack) {
         final context = navigatorKey.currentContext;
         if (context != null) {
@@ -53,6 +58,7 @@ abstract class BaseNotifier<T> extends StateNotifier<T> {
           );
         }
       }
+
       return null;
     } finally {
       isLoading.value = false;

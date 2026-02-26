@@ -48,7 +48,7 @@ class _DriverProfileViewState extends ConsumerState<DriverProfileView> {
               context,
               MaterialPageRoute(
                 builder: (context) {
-                  return ReportUserPage();
+                  return ReportUserPage(driverId: widget.id);
                 },
               ),
             );
@@ -69,19 +69,24 @@ class _DriverProfileViewState extends ConsumerState<DriverProfileView> {
           if (!isLoading && state.driver == null) {
             return CommonText("Could not fetch driver details");
           }
-          return SingleChildScrollView(
-            physics: AlwaysScrollableScrollPhysics(),
-            padding: const EdgeInsets.all(16),
-            child: Column(
-              children: [
-                _ProfileHeader(driver: state.driver!),
-                SizedBox(height: 16),
-                _StatsRow(),
-                SizedBox(height: 16),
-                _AboutSection(driver: state.driver!),
-                SizedBox(height: 16),
-                _ReviewsSection(widget.id),
-              ],
+          return RefreshIndicator(
+            onRefresh: () async {
+              controller.getProfileById(id: widget.id);
+            },
+            child: SingleChildScrollView(
+              physics: AlwaysScrollableScrollPhysics(),
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                children: [
+                  _ProfileHeader(driver: state.driver!),
+                  SizedBox(height: 16),
+                  _StatsRow(driver: state.driver!),
+                  SizedBox(height: 16),
+                  _AboutSection(driver: state.driver!),
+                  SizedBox(height: 16),
+                  _ReviewsSection(widget.id),
+                ],
+              ),
             ),
           );
         },
@@ -140,7 +145,8 @@ class _ProfileHeader extends StatelessWidget {
 /// Stats Row
 /// --------------------
 class _StatsRow extends StatelessWidget {
-  const _StatsRow();
+  const _StatsRow({required this.driver});
+  final UserModel driver;
 
   @override
   Widget build(BuildContext context) {
@@ -148,13 +154,16 @@ class _StatsRow extends StatelessWidget {
       children: [
         _StatCard(
           title: AppLocalizations.of(context)!.rating,
-          value: "4.9",
+          value: driver.ratting.toStringAsFixed(1),
           icon: Icons.star,
         ),
-        _StatCard(title: AppLocalizations.of(context)!.trips, value: "142"),
+        _StatCard(
+          title: AppLocalizations.of(context)!.trips,
+          value: driver.travelCount.toString(),
+        ),
         _StatCard(
           title: AppLocalizations.of(context)!.experience,
-          value: "3 year",
+          value: "${driver.experience.toStringAsFixed(1)} year",
         ),
       ],
     );
@@ -213,31 +222,37 @@ class _AboutSection extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           CommonText(
-            AppLocalizations.of(context)!.about_oswaldo,
+            AppLocalizations.of(context)!.about,
             fontWeight: FontWeight.w600,
           ),
           SizedBox(height: 8),
-          CommonText(
-            driver.about,
-            color: AppColors.grey,
-          ),
+          CommonText(driver.about, color: AppColors.grey),
           SizedBox(height: 16),
           CommonText(
             AppLocalizations.of(context)!.verifications,
             fontWeight: FontWeight.w600,
           ),
           SizedBox(height: 8),
-          _VerificationItem(AppLocalizations.of(context)!.verified_id, true),
+          _VerificationItem(
+            AppLocalizations.of(context)!.verified_id,
+            driver.driverVerified,
+          ),
           _VerificationItem(
             AppLocalizations.of(context)!.confirmed_email,
-            true,
+            driver.driverVerified,
           ),
           _VerificationItem(
             AppLocalizations.of(context)!.car_license_plate_number,
-            true,
+            driver.driverVerified,
           ),
-          _VerificationItem(AppLocalizations.of(context)!.photo, true),
-          _VerificationItem(AppLocalizations.of(context)!.vehicle, false),
+          _VerificationItem(
+            AppLocalizations.of(context)!.photo,
+            driver.driverVerified,
+          ),
+          _VerificationItem(
+            AppLocalizations.of(context)!.vehicle,
+            driver.driverVerified,
+          ),
         ],
       ),
     );

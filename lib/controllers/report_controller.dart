@@ -1,3 +1,4 @@
+import 'package:flutter/scheduler.dart';
 import 'package:velozaje/core/base_notifier.dart';
 import 'package:velozaje/core/services/api/i_api_service.dart';
 import 'package:velozaje/core/utils/api_end_points.dart';
@@ -10,8 +11,16 @@ class ReportState {
 
   ReportState({required this.data, this.isLoading = false, this.error});
 
-  ReportState copyWith({List<ReportSubject>? data}) {
-    return ReportState(data: data ?? this.data);
+  ReportState copyWith({
+    List<ReportSubject>? data,
+    bool? isLoading,
+    String? error,
+  }) {
+    return ReportState(
+      data: data ?? this.data,
+      isLoading: isLoading ?? this.isLoading,
+      error: error ?? this.error,
+    );
   }
 }
 
@@ -37,6 +46,7 @@ class ReportController extends BaseNotifier<ReportState> {
     required String reportedUserId,
     required String reportSubjectId,
     String? additionalDetails,
+    required VoidCallback onCompleate,
   }) async {
     await safeCall(
       task: () async {
@@ -52,7 +62,15 @@ class ReportController extends BaseNotifier<ReportState> {
           throw Exception(message);
         }
       },
+      onStart: () {
+        state = state.copyWith(isLoading: true);
+      },
+      onComplete: () {
+        onCompleate();
+        state = state.copyWith(isLoading: false);
+      },
       showSuccessSnack: true,
+      showLoading: false,
       successMessage: "Report Submited Sucessfully",
     );
   }

@@ -8,7 +8,6 @@ import 'package:velozaje/feature/result_and_booking/widget/filter_widget.dart';
 import 'package:velozaje/models/request/trip_search_request.dart';
 import 'package:velozaje/models/response/trip/passenger_trip_model.dart';
 import 'package:velozaje/res/common_appbar.dart';
-import 'package:icons_plus/icons_plus.dart';
 import 'package:velozaje/core/utils/helper.dart';
 import 'package:velozaje/feature/home_and_trip_search/trip_details.dart';
 import 'package:velozaje/res/common_button.dart';

@@ -7,6 +7,7 @@ import 'package:velozaje/core/providers.dart';
 import 'package:velozaje/core/utils/extention.dart';
 import 'package:velozaje/feature/chat/chat_view.dart';
 import 'package:velozaje/core/utils/app_colors.dart';
+import 'package:velozaje/feature/widget/no_data.dart';
 import 'package:velozaje/models/conversation_model.dart';
 import 'package:velozaje/res/common_text.dart';
 import 'package:velozaje/res/common_image.dart';
@@ -82,15 +83,27 @@ class _AllConversationViewState extends ConsumerState<AllConversationView> {
                         .read(conversationControllerProvider.notifier)
                         .getAllConversations();
                   },
-                  child: ListView.builder(
-                    itemCount: state.allConversations.length,
+                  child: (state.allConversations.isEmpty)
+                      ? EmptyStateWidget(
+                          icon: Icons.chat,
+                          title: "No Conversations",
+                          description: "Your messages will show up here.",
+                          buttonText: "Refresh",
+                          onButtonPressed: () {
+                            ref
+                                .read(conversationControllerProvider.notifier)
+                                .getAllConversations();
+                          },
+                        )
+                      : ListView.builder(
+                          itemCount: state.allConversations.length,
 
-                    itemBuilder: (context, index) {
-                      return _ChatTile(
-                        conversation: state.allConversations[index],
-                      );
-                    },
-                  ),
+                          itemBuilder: (context, index) {
+                            return _ChatTile(
+                              conversation: state.allConversations[index],
+                            );
+                          },
+                        ),
                 );
               },
             ),

@@ -17,11 +17,11 @@ class ConversationModel {
 
   factory ConversationModel.fromJson(Map<String, dynamic> json) {
     return ConversationModel(
-      id: json['_id'],
-      lastMessage: _Message.fromJson(json['lastMessage']),
-      otherUser: _User.fromJson(json['otherUser']),
-      unreadCount: json['unreadCount'],
-      bookingId: json['bookingId'],
+      id: JsonHelper.stringVal(json['_id']),
+      lastMessage: _Message.fromJson(json['lastMessage'] ?? {}),
+      otherUser: _User.fromJson(json['otherUser'] ?? {}),
+      unreadCount: JsonHelper.intVal(json['unreadCount']),
+      bookingId: JsonHelper.stringVal(json['bookingId']),
     );
   }
 }
@@ -41,10 +41,12 @@ class _Message {
 
   factory _Message.fromJson(Map<String, dynamic> json) {
     return _Message(
-      content: json['content'],
-      createdAt: DateTime.parse(json['createdAt']),
-      isRead: json['isRead'],
-      sender: json['sender'],
+      content: JsonHelper.stringVal(json['content']),
+      createdAt:
+          JsonHelper.parseDate(DateTime.parse(json['createdAt'])) ??
+          DateTime.now(),
+      isRead: JsonHelper.boolVal(json['isRead']),
+      sender: JsonHelper.stringVal(json['sender']),
     );
   }
 }
@@ -65,8 +67,8 @@ class _User {
 
   factory _User.fromJson(Map<String, dynamic> json) {
     return _User(
-      id: json['_id'],
-      name: json['name'],
+      id: JsonHelper.stringVal(json['_id']),
+      name: JsonHelper.stringVal(json['name']),
       image: JsonHelper.stringVal(json['image']),
       roles: List<String>.from(json['roles']),
     );

@@ -2,16 +2,18 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:velozaje/controllers/wallet_controller.dart';
+import 'package:velozaje/controllers/wallet_and_payment_controller.dart';
 import 'package:velozaje/core/localization/app_localizations.dart';
 import 'package:velozaje/core/providers.dart';
 import 'package:velozaje/core/utils/helper.dart';
 import 'package:velozaje/models/response/wallet_response.dart';
 import 'package:velozaje/res/common_appbar.dart';
+import 'package:velozaje/res/common_button.dart';
 import 'package:velozaje/res/common_image.dart';
 
 import 'package:velozaje/res/common_text.dart';
 import 'package:velozaje/core/utils/app_colors.dart';
+part 'payment_dialog_part_of_wallat_view.dart';
 
 class WalletPage extends ConsumerStatefulWidget {
   const WalletPage({super.key});
@@ -56,7 +58,13 @@ class _WalletPageState extends ConsumerState<WalletPage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             WalletBalanceCard(controller: controller),
-
+            SizedBox(height: 12),
+            CommonButton(
+              "Pay Commission",
+              onTap: () {
+                showPayCommissionDialog(controller, context);
+              },
+            ),
             SizedBox(height: 24),
 
             Stack(
@@ -111,7 +119,7 @@ class _WalletPageState extends ConsumerState<WalletPage> {
 /// --------------------
 
 class WalletBalanceCard extends StatelessWidget {
-  final WalletController controller;
+  final WalletAndPaymentController controller;
 
   const WalletBalanceCard({super.key, required this.controller});
 

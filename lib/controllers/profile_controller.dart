@@ -53,7 +53,10 @@ class ProfileController extends BaseNotifier<ProfileState> {
   Future<void> getProfile() async {
     safeCall(
       task: () async {
-        final response = await apiService.get(ApiEndpoints.profile);
+        final response = await apiService.get(
+          ApiEndpoints.profile,
+          queryParameters: {'includeVehicle': 'true'},
+        );
 
         if (response['success'] ?? false) {
           final user = UserProfileResponse.fromJson(response);

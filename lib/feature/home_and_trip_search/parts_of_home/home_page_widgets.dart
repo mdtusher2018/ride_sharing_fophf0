@@ -69,10 +69,13 @@ Widget topBar(BuildContext context, WidgetRef ref) {
       ),
       child: Row(
         children: [
-          CircleAvatar(
-            radius: 22.r,
-            backgroundColor: Colors.white,
-            child: Icon(Icons.person, color: AppColors.primary),
+          InkWell(
+            onTap: () {},
+            child: CircleAvatar(
+              radius: 22.r,
+              backgroundColor: Colors.white,
+              child: Icon(Icons.person, color: AppColors.primary),
+            ),
           ),
           SizedBox(width: 12.w),
           Column(

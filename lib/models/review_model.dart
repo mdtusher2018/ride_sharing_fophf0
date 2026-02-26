@@ -25,18 +25,29 @@ class ReviewModel {
     required this.updatedAt,
   });
 
-  factory ReviewModel.fromJson(Map<String, dynamic> json) {
+  factory ReviewModel.fromJson(Map<String, dynamic>? json) {
+    if (json == null) {
+      throw ArgumentError('ReviewModel JSON cannot be null');
+    }
+
     return ReviewModel(
-      id: json['_id'] ?? '',
-      booking: json['booking'] ?? '',
-      trip: json['trip'] ?? '',
-      driver: json['driver'] ?? '',
-      passengerImage: json['passengerImage'] ?? '',
-      passengerName: JsonHelper.stringVal(json['passenger']?['fullName']),
-      rating: json['rating'] ?? 0,
-      review: json['review'] ?? '',
-      createdAt: DateTime.tryParse(json['createdAt'] ?? '') ?? DateTime.now(),
-      updatedAt: DateTime.tryParse(json['updatedAt'] ?? '') ?? DateTime.now(),
+      id: JsonHelper.stringVal(json['_id']),
+      booking: JsonHelper.stringVal(json['booking']),
+      trip: JsonHelper.stringVal(json['trip']),
+      driver: JsonHelper.stringVal(json['driver']),
+      passengerImage: JsonHelper.stringVal(json['passengerImage']),
+      passengerName: _parsePassengerName(json['passenger']),
+      rating: JsonHelper.intVal(json['rating']),
+      review: JsonHelper.stringVal(json['review']),
+      createdAt: JsonHelper.parseDate(json['createdAt']) ?? DateTime.now(),
+      updatedAt: JsonHelper.parseDate(json['updatedAt']) ?? DateTime.now(),
     );
+  }
+
+  static String _parsePassengerName(dynamic passenger) {
+    if (passenger is Map<String, dynamic>) {
+      return JsonHelper.stringVal(passenger['fullName']);
+    }
+    return '';
   }
 }

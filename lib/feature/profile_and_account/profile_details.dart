@@ -1,50 +1,119 @@
+// ignore_for_file: must_be_immutable
+
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:velozaje/controllers/profile_controller.dart';
 import 'package:velozaje/core/localization/app_localizations.dart';
 import 'package:velozaje/core/utils/app_colors.dart';
+import 'package:velozaje/core/utils/helper.dart';
+import 'package:velozaje/feature/profile_and_account/edit_profile.dart';
+import 'package:velozaje/feature/vehicale/view/register_vehicale_view.dart';
 import 'package:velozaje/feature/widget/vehicale_card.dart';
+import 'package:velozaje/models/user_model.dart';
 import 'package:velozaje/res/common_appbar.dart';
+import 'package:velozaje/res/common_image.dart';
 import 'package:velozaje/res/common_text.dart';
 
-enum MaterialType { diamond, rock, clay }
-
-class ProfileDetailsPage extends StatelessWidget {
+class ProfileDetailsPage extends ConsumerStatefulWidget {
   const ProfileDetailsPage({super.key});
 
   @override
+  ConsumerState<ProfileDetailsPage> createState() => _ProfileDetailsPageState();
+}
+
+class _ProfileDetailsPageState extends ConsumerState<ProfileDetailsPage> {
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      ref.read(profileControllerProvider.notifier).getProfile();
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final state = ref.watch(profileControllerProvider);
+    final controller = ref.read(profileControllerProvider.notifier);
+
     return Scaffold(
       backgroundColor: AppColors.mainbg,
       appBar: commonAppBar(
         context,
         title: AppLocalizations.of(context)!.driver_profile,
-        actionWidget: Padding(
-          padding: EdgeInsets.only(right: 16),
-          child: Image.asset("assest/image/mingcute_edit-line.png", width: 30),
+        actionWidget: InkWell(
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => EditProfilePage(userData: state.user!),
+              ),
+            );
+          },
+          child: Padding(
+            padding: EdgeInsets.only(right: 16),
+            child: Image.asset(
+              "assest/image/mingcute_edit-line.png",
+              width: 30,
+            ),
+          ),
         ),
       ),
+      floatingActionButton: (state.user!.vehicale == null)
+          ? FloatingActionButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => RegisterVehiclePage(),
+                  ),
+                );
+              },
+              child: Icon(Icons.add),
+            )
+          : null,
 
-      body: SingleChildScrollView(
-        physics: AlwaysScrollableScrollPhysics(),
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          spacing: 10.h,
-          children: [
-            _HeaderCard(),
-            VehicleCard(
-              image: "",
-              brand: "",
-              vehicleModel: "",
-              year: "",
-              licensePlateNumber: "",
+      body: ValueListenableBuilder(
+        valueListenable: controller.isLoading,
+
+        builder: (_, isLoading, _) {
+          if (isLoading) {
+            return Center(child: CircularProgressIndicator());
+          }
+          if (!isLoading && state.user == null) {
+            return CommonText("Could not fetch user details");
+          }
+          return RefreshIndicator(
+            onRefresh: () async {
+              controller.getProfile();
+            },
+            child: SingleChildScrollView(
+              physics: AlwaysScrollableScrollPhysics(),
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                spacing: 10.h,
+                children: [
+                  _HeaderCard(state.user!),
+                  if (state.user!.vehicale != null)
+                    VehicleCard(
+                      image: state.user!.vehicale?.vehicleImages.first ?? "",
+                      brand: state.user!.vehicale?.brand ?? "",
+                      vehicleModel: state.user!.vehicale?.vehicleModel ?? "",
+                      year: state.user!.vehicale?.year.toString() ?? "",
+                      licensePlateNumber:
+                          state.user!.vehicale?.licensePlateNumber ?? "",
+                    ),
+
+                  _AboutSection(state.user!),
+
+                  SummaryCard(state.user!),
+                  SizedBox(height: 16.h),
+                ],
+              ),
             ),
-
-            _AboutSection(),
-
-            SummaryCard(),
-            SizedBox(height: 16.h),
-          ],
-        ),
+          );
+        },
       ),
     );
   }
@@ -54,7 +123,8 @@ class ProfileDetailsPage extends StatelessWidget {
 /// About & Verifications
 /// --------------------
 class _AboutSection extends StatelessWidget {
-  const _AboutSection();
+  const _AboutSection(this.user);
+  final UserModel user;
 
   @override
   Widget build(BuildContext context) {
@@ -69,17 +139,26 @@ class _AboutSection extends StatelessWidget {
             fontWeight: FontWeight.w600,
           ),
           SizedBox(height: 8),
-          _VerificationItem(AppLocalizations.of(context)!.verified_id, true),
+          _VerificationItem(
+            AppLocalizations.of(context)!.verified_id,
+            user.driverVerified,
+          ),
           _VerificationItem(
             AppLocalizations.of(context)!.confirmed_email,
-            true,
+            user.driverVerified,
           ),
           _VerificationItem(
             AppLocalizations.of(context)!.car_license_plate_number,
-            true,
+            user.driverVerified,
           ),
-          _VerificationItem(AppLocalizations.of(context)!.photo, true),
-          _VerificationItem(AppLocalizations.of(context)!.vehicle, false),
+          _VerificationItem(
+            AppLocalizations.of(context)!.photo,
+            user.driverVerified,
+          ),
+          _VerificationItem(
+            AppLocalizations.of(context)!.vehicle,
+            user.driverVerified,
+          ),
         ],
       ),
     );
@@ -127,16 +206,14 @@ BoxDecoration _cardDecoration() {
   );
 }
 
-class _HeaderCard extends StatefulWidget {
-  const _HeaderCard();
+class _HeaderCard extends StatelessWidget {
+  final UserModel user;
+  _HeaderCard(this.user);
 
-  @override
-  State<_HeaderCard> createState() => _HeaderCardState();
-}
-
-class _HeaderCardState extends State<_HeaderCard> {
   bool showPackageOptions = false;
+
   int selectedIndex = 0;
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -154,7 +231,64 @@ class _HeaderCardState extends State<_HeaderCard> {
       ),
       child: Column(
         children: [
-          _header(),
+          Row(
+            children: [
+              Column(
+                children: [
+                  Stack(
+                    children: [
+                      Padding(
+                        padding: EdgeInsetsGeometry.only(right: 10, bottom: 10),
+                        child: ClipRRect(
+                          borderRadius: BorderRadiusGeometry.circular(8),
+                          child: CommonImage(
+                            path: getFullImagePath(user.image),
+                            width: 50,
+                            height: 50,
+                          ),
+                        ),
+                      ),
+
+                      Positioned(
+                        bottom: 0,
+                        right: 0,
+                        child: Icon(
+                          Icons.verified,
+                          color: AppColors.primary,
+                          shadows: [Shadow(color: Colors.white)],
+                        ),
+                      ),
+                    ],
+                  ),
+
+                  _buildMaterialRow('rock'),
+                ],
+              ),
+
+              SizedBox(width: 10.w),
+              Expanded(
+                child: Column(
+                  spacing: 2,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    CommonText(user.fullName, size: 16, isBold: true),
+                    Row(
+                      children: [
+                        Icon(Icons.star, size: 20, color: Colors.orange),
+                        SizedBox(width: 4),
+                        CommonText(user.ratting.toStringAsFixed(1), size: 12),
+                      ],
+                    ),
+                    CommonText(
+                      "${user.experience.toInt()} years",
+                      size: 12,
+                      color: AppColors.textSecondary,
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
 
           SizedBox(height: 10.h),
           Align(
@@ -168,75 +302,11 @@ class _HeaderCardState extends State<_HeaderCard> {
           SizedBox(height: 8),
           Align(
             alignment: Alignment.centerLeft,
-            child: CommonText(
-              AppLocalizations.of(
-                context,
-              )!.lorem_ipsum_is_simply_dummy_text_of_the_printing_and_typesetting_industry_lorem_ipsum_has_been_the_industry_s_standard_dummy_text_ever_since_the_1500s,
-              color: AppColors.textSecondary,
-            ),
+            child: CommonText(user.about, color: AppColors.textSecondary),
           ),
           SizedBox(height: 10),
         ],
       ),
-    );
-  }
-
-  Widget _header() {
-    return Row(
-      children: [
-        Column(
-          children: [
-            Stack(
-              children: [
-                Container(
-                  width: 60,
-                  margin: EdgeInsets.only(bottom: 8, right: 10),
-                  height: 60,
-                  decoration: BoxDecoration(
-                    color: AppColors.white,
-                    image: DecorationImage(
-                      image: NetworkImage(
-                        "https://randomuser.me/api/portraits/men/32.jpg",
-                      ),
-                    ),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                ),
-                Positioned(
-                  bottom: 0,
-                  right: 0,
-                  child: Icon(
-                    Icons.verified,
-                    color: AppColors.primary,
-                    shadows: [Shadow(color: Colors.white)],
-                  ),
-                ),
-              ],
-            ),
-
-            _buildMaterialRow('rock'),
-          ],
-        ),
-
-        SizedBox(width: 10.w),
-        Expanded(
-          child: Column(
-            spacing: 2,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              CommonText("Lionel Messi", size: 16, isBold: true),
-              Row(
-                children: [
-                  Icon(Icons.star, size: 20, color: Colors.orange),
-                  SizedBox(width: 4),
-                  CommonText("4.9", size: 12),
-                ],
-              ),
-              CommonText("28 years", size: 12, color: AppColors.textSecondary),
-            ],
-          ),
-        ),
-      ],
     );
   }
 
@@ -267,7 +337,8 @@ class _HeaderCardState extends State<_HeaderCard> {
 }
 
 class SummaryCard extends StatelessWidget {
-  const SummaryCard({super.key});
+  const SummaryCard(this.user, {super.key});
+  final UserModel user;
 
   @override
   Widget build(BuildContext context) {

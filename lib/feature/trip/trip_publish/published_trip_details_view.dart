@@ -1,8 +1,10 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:icons_plus/icons_plus.dart';
 import 'package:velozaje/controllers/trip/trips_book_controller.dart';
 import 'package:velozaje/controllers/trip/trips_publish_controller.dart';
@@ -10,7 +12,8 @@ import 'package:velozaje/core/localization/app_localizations.dart';
 import 'package:velozaje/core/providers.dart';
 import 'package:velozaje/core/utils/enums_with_enum_extentions.dart';
 import 'package:velozaje/core/utils/helper.dart';
-import 'package:velozaje/feature/widget/back_button.dart';
+import 'package:velozaje/core/utils/map_helper.dart';
+import 'package:velozaje/feature/widget/map_widget.dart';
 import 'package:velozaje/feature/widget/vehicale_card.dart';
 import 'package:velozaje/models/response/trip/passenger_trip_model.dart';
 import 'package:velozaje/models/response/trip/published_trip_details_response.dart';
@@ -41,6 +44,9 @@ class _MyPublishedDetailsPageState
     loadInitialData();
   }
 
+  GoogleMapController? _mapController;
+  Set<Polyline>? polylines;
+
   void loadInitialData() async {
     final tripDetails = await ref
         .read(passengerTripsControllerProvider.notifier)
@@ -68,7 +74,74 @@ class _MyPublishedDetailsPageState
             .toList(),
       );
     }
-    log("==============>>>>>>>>>>>>> init called");
+  }
+
+  Future<void> _drawRoutesIfReady(PassengerTripModel trip) async {
+    if (_mapController == null) return;
+
+    final encodedString = trip.routePolyline;
+    // r'''anvwFhqobMwE{Co@Ui@DQZKD_B_A{B{AUz@y@bC_Qti@kCfIo@zBoIzWwAvEdPnKvAbArAx@fMhIJ\fCfBHR?\c@vAMN_@@wAeCi@o@_@Wk@Ia@Bm@Xi@f@o@dA}DhIwAjEa@fBk@rD_@rA}Uju@_Zh_Aa@bBUbBGxA@rANxA\vAf@nAx@hArBjBdCdBf@XNAvCnAvB~Al@Hx@Mh@Y^]Xc@VaAFgAEw@O{@]s@e@c@q@_@gCeAoEkA_Do@qC_@{@?u@Jy@X}@f@w@jA}@bC{HhU}FpR{A~D_GfOgDxJcBfGuC|KyB`JcEzOOF[bAm@rAm@`AaAfAuEvE}AhAkCxAqCbAoXdGgEvAcChAwCfBoA|@}BpBqAnAgBvBiBfCeb@np@qv@dkAYD{AhAsAb@i@H}ELa@O{BCoC@iBK}AY{A_@cEuA{EsBq@_@Q[GYB]jAiCz@a@~@EvCrAdHpCNLz@^VRR^Hf@CnAWpKBtBUf@[\qAA}@Q}@c@m@m@iDcFa@YQGsCbG]dA''';
+
+    final decodedPoints = PolylinePoints.decodePolyline(encodedString);
+
+    Set<Polyline> routePolyline;
+
+    final result = await MapHelper.drawRoutes(
+      origin: LatLng(
+        trip.pickupLocation.coordinates.latitude,
+        trip.pickupLocation.coordinates.longitude,
+      ),
+      color: AppColors.primary,
+      destination: LatLng(
+        trip.dropoffLocation.coordinates.latitude,
+        trip.dropoffLocation.coordinates.longitude,
+      ),
+    );
+
+    if (result.polylines.isEmpty || result.routes.isEmpty) return;
+
+    routePolyline = result.polylines;
+
+    int selectedIndex = -1;
+
+    for (int i = 0; i < result.routes.length; i++) {
+      log("Encoded String1 :${result.routes[i].polylineEncoded}\n");
+      log("Encoded String2 : $encodedString\n\n\n");
+      if (result.routes[i].polylineEncoded == encodedString) {
+        log("==============>>>>>> matched");
+        selectedIndex = i;
+      }
+    }
+
+    if (selectedIndex == -1) {
+      routePolyline = {
+        Polyline(
+          polylineId: const PolylineId('route'),
+          color: Colors.blue,
+          width: 4,
+          points: decodedPoints.map((e) {
+            return LatLng(e.latitude, e.longitude);
+          }).toList(),
+        ),
+      };
+    }
+    final updatedPolylines = <Polyline>{};
+    int i = 0;
+
+    for (final poly in routePolyline) {
+      updatedPolylines.add(
+        poly.copyWith(
+          colorParam: i == selectedIndex ? Colors.blue : Colors.transparent,
+          widthParam: i == selectedIndex ? 7 : 4,
+          zIndexParam: i == selectedIndex ? 2 : 1,
+        ),
+      );
+      i++;
+    }
+
+    setState(() => polylines = updatedPolylines);
+
+    MapHelper.fitBounds(result.polylines.first.points, _mapController!);
   }
 
   @override
@@ -80,20 +153,50 @@ class _MyPublishedDetailsPageState
             as TripsPublishState?;
 
     return Scaffold(
-      body: Stack(
+      body: Column(
         children: [
-          Container(
-            color: Colors.grey,
-            width: MediaQuery.sizeOf(context).width,
-            height: MediaQuery.sizeOf(context).height,
-            child: CommonImage(
-              path: "https://i.sstatic.net/HILmr.png",
-              sourceType: ImageSourceType.network,
-              fit: BoxFit.cover,
+          /// --------------------
+          /// Map Placeholder
+          /// --------------------
+          SizedBox(
+            height: MediaQuery.sizeOf(context).height * 0.3,
+            child: ValueListenableBuilder(
+              valueListenable: ref
+                  .watch(tripsPublishControllerProvider.notifier)
+                  .isLoading,
+              builder: (_, isLoading, _) {
+                if (isLoading ||
+                    widget.id != publisheState?.tripDetails?.data.trip.id) {
+                  return Center(child: CircularProgressIndicator());
+                } else if (publisheState == null ||
+                    publisheState.bookingsOfPublishedTrip == null ||
+                    publisheState.tripDetails == null) {
+                  return const Center(
+                    child: CommonText("Could not fetch details"),
+                  );
+                }
+                final trip = publisheState.tripDetails!.data.trip;
+                return ReusableMapWidget(
+                  context: context,
+                  destinationLocation: LatLng(
+                    trip.dropoffLocation.coordinates.latitude,
+                    trip.dropoffLocation.coordinates.longitude,
+                  ),
+                  pickupLocation: LatLng(
+                    trip.pickupLocation.coordinates.latitude,
+                    trip.pickupLocation.coordinates.longitude,
+                  ),
+                  onMapCreated: (controller) {
+                    _mapController = controller;
+
+                    _drawRoutesIfReady(trip);
+                  },
+                  polylines: polylines,
+                );
+              },
             ),
           ),
 
-          Positioned(top: 40.h, left: 24.w, child: CommonBackButton()),
           Positioned(
             bottom: 0,
             right: 0,
