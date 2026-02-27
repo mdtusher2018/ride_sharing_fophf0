@@ -39,8 +39,8 @@ class ReviewModel {
       passengerName: _parsePassengerName(json['passenger']),
       rating: JsonHelper.intVal(json['rating']),
       review: JsonHelper.stringVal(json['review']),
-      createdAt: JsonHelper.parseDate(json['createdAt']) ?? DateTime.now(),
-      updatedAt: JsonHelper.parseDate(json['updatedAt']) ?? DateTime.now(),
+      createdAt: JsonHelper.parseDate(json['createdAt']),
+      updatedAt: JsonHelper.parseDate(json['updatedAt']),
     );
   }
 

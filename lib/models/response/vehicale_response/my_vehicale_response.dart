@@ -13,9 +13,11 @@ class MyVehicleResponse {
 
   factory MyVehicleResponse.fromJson(Map<String, dynamic> json) {
     return MyVehicleResponse(
-      success: json['success'],
-      message: json['message'],
-      data: Vehicle.fromJson(json['data']),
+      success: json['success'] ?? false,
+      message: json['message'] ?? '',
+      data: json['data'] != null
+          ? Vehicle.fromJson(json['data'])
+          : Vehicle.empty(),
     );
   }
 }

@@ -15,9 +15,11 @@ class PassengerTripsResponse {
 
   factory PassengerTripsResponse.fromJson(Map<String, dynamic> json) {
     return PassengerTripsResponse(
-      success: json['success'],
-      message: json['message'],
-      data: _TripsWrapper.fromJson(json['data']),
+      success: json['success'] ?? false,
+      message: json['message'] ?? '',
+      data: json['data'] is Map<String, dynamic>
+          ? _TripsWrapper.fromJson(json['data'])
+          : _TripsWrapper.empty(),
     );
   }
 }
@@ -35,10 +37,16 @@ class _TripsWrapper {
 
   factory _TripsWrapper.fromJson(Map<String, dynamic> json) {
     return _TripsWrapper(
-      success: json['success'],
-      message: json['message'],
-      data: _TripsData.fromJson(json['data']),
+      success: json['success'] ?? false,
+      message: json['message'] ?? '',
+      data: json['data'] is Map<String, dynamic>
+          ? _TripsData.fromJson(json['data'])
+          : _TripsData.empty(),
     );
+  }
+
+  factory _TripsWrapper.empty() {
+    return _TripsWrapper(success: false, message: '', data: _TripsData.empty());
   }
 
   List<PassengerTripModel> get trips => data.trips;
@@ -54,10 +62,19 @@ class _TripsData {
 
   factory _TripsData.fromJson(Map<String, dynamic> json) {
     return _TripsData(
-      trips: (json['trips'] as List)
-          .map((e) => PassengerTripModel.fromJson(e))
+      trips: (json['trips'] as List<dynamic>? ?? [])
+          .map(
+            (e) => e is Map<String, dynamic>
+                ? PassengerTripModel.fromJson(e)
+                : PassengerTripModel.empty(),
+          )
           .toList(),
-      pagination: PaginationMetaModel.fromJson(json['pagination']),
+      pagination: json['pagination'] is Map<String, dynamic>
+          ? PaginationMetaModel.fromJson(json['pagination'])
+          : PaginationMetaModel.empty(),
     );
   }
+
+  factory _TripsData.empty() =>
+      _TripsData(trips: [], pagination: PaginationMetaModel.empty());
 }

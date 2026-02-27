@@ -1,22 +1,25 @@
+// bookings_of_published_trip_response.dart
 import 'package:velozaje/core/utils/enums_with_enum_extentions.dart';
 import 'package:velozaje/models/location_model.dart';
 
-class BookigsOfPublishedTripResponse {
+class BookingsOfPublishedTripResponse {
   final bool success;
   final String message;
   final _PublishedTripData data;
 
-  BookigsOfPublishedTripResponse({
+  BookingsOfPublishedTripResponse({
     required this.success,
     required this.message,
     required this.data,
   });
 
-  factory BookigsOfPublishedTripResponse.fromJson(Map<String, dynamic> json) {
-    return BookigsOfPublishedTripResponse(
+  factory BookingsOfPublishedTripResponse.fromJson(Map<String, dynamic> json) {
+    return BookingsOfPublishedTripResponse(
       success: json['success'] ?? false,
       message: json['message'] ?? '',
-      data: _PublishedTripData.fromJson(json['data'] ?? {}),
+      data: json['data'] is Map<String, dynamic>
+          ? _PublishedTripData.fromJson(json['data'])
+          : _PublishedTripData.empty(),
     );
   }
 }
@@ -28,13 +31,13 @@ class _PublishedTripData {
 
   factory _PublishedTripData.fromJson(Map<String, dynamic> json) {
     return _PublishedTripData(
-      bookings:
-          (json['bookings'] as List<dynamic>?)
-              ?.map((e) => BookingsOfPublishedTrip.fromJson(e))
-              .toList() ??
-          [],
+      bookings: (json['bookings'] as List<dynamic>? ?? [])
+          .map((e) => BookingsOfPublishedTrip.fromJson(e))
+          .toList(),
     );
   }
+
+  factory _PublishedTripData.empty() => _PublishedTripData(bookings: []);
 }
 
 class BookingsOfPublishedTrip {
@@ -52,11 +55,9 @@ class BookingsOfPublishedTrip {
   final DateTime bookingDate;
   final DateTime createdAt;
   final DateTime updatedAt;
-
   final LocationWithAddressModel pickupLocation;
   final LocationWithAddressModel dropoffLocation;
   final TripPassenger passenger;
-
   final List<_PackageDetails> packages;
 
   BookingsOfPublishedTrip({
@@ -77,7 +78,6 @@ class BookingsOfPublishedTrip {
     required this.pickupLocation,
     required this.dropoffLocation,
     required this.passenger,
-
     required this.packages,
   });
 
@@ -90,7 +90,7 @@ class BookingsOfPublishedTrip {
       passengerImage: json['passengerImage'] ?? '',
       seatsBooked: json['seatsBooked'] ?? 0,
       totalPrice: json['totalPrice'] ?? 0,
-      status: ((json['status'] ?? "").toString()).toBookingStatus(),
+      status: ((json['status'] ?? '').toString()).toBookingStatus(),
       paymentStatus: json['paymentStatus'] ?? '',
       otpVerified: json['otpVerified'] ?? false,
       dropoffOtpVerified: json['dropoffOtpVerified'] ?? false,
@@ -105,12 +105,9 @@ class BookingsOfPublishedTrip {
         json['dropoffLocation'] ?? {},
       ),
       passenger: TripPassenger.fromJson(json['passenger'] ?? {}),
-
-      packages:
-          (json['packages'] as List<dynamic>?)
-              ?.map((e) => _PackageDetails.fromJson(e))
-              .toList() ??
-          [],
+      packages: (json['packages'] as List<dynamic>? ?? [])
+          .map((e) => _PackageDetails.fromJson(e))
+          .toList(),
     );
   }
 }
@@ -182,4 +179,6 @@ class _PackageDimensions {
       height: (json['height'] as num?)?.toInt() ?? 0,
     );
   }
+
+  int get volume => length * width * height;
 }

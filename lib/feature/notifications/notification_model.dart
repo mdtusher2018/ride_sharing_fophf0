@@ -1,3 +1,4 @@
+import 'package:velozaje/core/utils/api_data_praser_helper.dart';
 import 'package:velozaje/models/pagenation_meta_model.dart';
 
 class NotificationsResponse {
@@ -11,10 +12,18 @@ class NotificationsResponse {
     required this.data,
   });
 
-  factory NotificationsResponse.fromJson(Map<String, dynamic> json) {
+  factory NotificationsResponse.fromJson(Map<String, dynamic>? json) {
+    if (json == null) {
+      return NotificationsResponse(
+        success: false,
+        message: '',
+        data: NotificationsData.empty(),
+      );
+    }
+
     return NotificationsResponse(
-      success: json['success'],
-      message: json['message'],
+      success: JsonHelper.boolVal(json['success']),
+      message: JsonHelper.stringVal(json['message']),
       data: NotificationsData.fromJson(json['data']),
     );
   }
@@ -26,14 +35,22 @@ class NotificationsData {
 
   NotificationsData({required this.notifications, required this.pagination});
 
-  factory NotificationsData.fromJson(Map<String, dynamic> json) {
+  factory NotificationsData.fromJson(Map<String, dynamic>? json) {
+    if (json == null) return NotificationsData.empty();
+
     return NotificationsData(
-      notifications: (json['notifications'] as List)
-          .map((e) => NotificationItem.fromJson(e))
-          .toList(),
+      notifications: JsonHelper.safeList(
+        json['notifications'],
+        (e) => NotificationItem.fromJson(e),
+      ),
       pagination: PaginationMetaModel.fromJson(json['pagination']),
     );
   }
+
+  factory NotificationsData.empty() => NotificationsData(
+    notifications: [],
+    pagination: PaginationMetaModel.fromJson({}),
+  );
 }
 
 class NotificationItem {
@@ -45,8 +62,8 @@ class NotificationItem {
   final bool isRead;
   final RelatedEntity relatedEntity;
   final NotificationMetadata metadata;
-  final DateTime createdAt;
-  final DateTime updatedAt;
+  final DateTime? createdAt;
+  final DateTime? updatedAt;
 
   NotificationItem({
     required this.id,
@@ -61,20 +78,36 @@ class NotificationItem {
     required this.updatedAt,
   });
 
-  factory NotificationItem.fromJson(Map<String, dynamic> json) {
+  factory NotificationItem.fromJson(Map<String, dynamic>? json) {
+    if (json == null) return NotificationItem.empty();
+
     return NotificationItem(
-      id: json['_id'],
-      user: json['user'],
-      title: json['title'],
-      message: json['message'],
-      type: json['type'],
-      isRead: json['isRead'],
+      id: JsonHelper.stringVal(json['_id']),
+      user: JsonHelper.stringVal(json['user']),
+      title: JsonHelper.stringVal(json['title']),
+      message: JsonHelper.stringVal(json['message']),
+      type: JsonHelper.stringVal(json['type']),
+      isRead: JsonHelper.boolVal(json['isRead']),
       relatedEntity: RelatedEntity.fromJson(json['relatedEntity']),
       metadata: NotificationMetadata.fromJson(json['metadata']),
-      createdAt: DateTime.parse(json['createdAt']),
-      updatedAt: DateTime.parse(json['updatedAt']),
+      createdAt: JsonHelper.parseDate(json['createdAt']),
+      updatedAt: JsonHelper.parseDate(json['updatedAt']),
     );
   }
+
+  factory NotificationItem.empty() => NotificationItem(
+    id: '',
+    user: '',
+    title: '',
+    message: '',
+    type: '',
+    isRead: false,
+    relatedEntity: RelatedEntity.empty(),
+    metadata: NotificationMetadata.empty(),
+    createdAt: null,
+    updatedAt: null,
+  );
+
   NotificationItem copyWith({
     String? id,
     String? user,
@@ -108,12 +141,16 @@ class RelatedEntity {
 
   RelatedEntity({required this.entityType, required this.entityId});
 
-  factory RelatedEntity.fromJson(Map<String, dynamic> json) {
+  factory RelatedEntity.fromJson(Map<String, dynamic>? json) {
+    if (json == null) return RelatedEntity.empty();
+
     return RelatedEntity(
-      entityType: json['entityType'],
-      entityId: json['entityId'],
+      entityType: JsonHelper.stringVal(json['entityType']),
+      entityId: JsonHelper.stringVal(json['entityId']),
     );
   }
+
+  factory RelatedEntity.empty() => RelatedEntity(entityType: '', entityId: '');
 }
 
 class NotificationMetadata {
@@ -129,12 +166,18 @@ class NotificationMetadata {
     this.earnings,
   });
 
-  factory NotificationMetadata.fromJson(Map<String, dynamic> json) {
+  factory NotificationMetadata.fromJson(Map<String, dynamic>? json) {
+    if (json == null) return NotificationMetadata.empty();
+
     return NotificationMetadata(
-      rating: json['rating'],
-      reviewId: json['reviewId'],
-      tripId: json['tripId'],
-      earnings: json['earnings'],
+      rating: JsonHelper.stringVal(json['rating']),
+      reviewId: JsonHelper.stringVal(json['reviewId']),
+      tripId: JsonHelper.stringVal(json['tripId']),
+      earnings: json['earnings'] != null
+          ? JsonHelper.intVal(json['earnings'])
+          : null,
     );
   }
+
+  factory NotificationMetadata.empty() => NotificationMetadata();
 }

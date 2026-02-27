@@ -1,9 +1,10 @@
+import 'package:velozaje/core/utils/api_data_praser_helper.dart';
 import 'package:velozaje/models/pagenation_meta_model.dart';
 
 class MessagesForASpacificResponse {
   final bool success;
   final String message;
-  final Data data;
+  final MessagesData data;
 
   MessagesForASpacificResponse({
     required this.success,
@@ -11,31 +12,45 @@ class MessagesForASpacificResponse {
     required this.data,
   });
 
-  // Factory constructor to create a new instance from JSON
-  factory MessagesForASpacificResponse.fromJson(Map<String, dynamic> json) {
+  factory MessagesForASpacificResponse.fromJson(Map<String, dynamic>? json) {
+    if (json == null) {
+      return MessagesForASpacificResponse.empty();
+    }
+
     return MessagesForASpacificResponse(
-      success: json['success'],
-      message: json['message'],
-      data: Data.fromJson(json['data']),
+      success: JsonHelper.boolVal(json['success']),
+      message: JsonHelper.stringVal(json['message']),
+      data: MessagesData.fromJson(json['data']),
     );
   }
+
+  factory MessagesForASpacificResponse.empty() => MessagesForASpacificResponse(
+    success: false,
+    message: '',
+    data: MessagesData.empty(),
+  );
 }
 
-class Data {
+class MessagesData {
   final List<Message> messages;
   final PaginationMetaModel pagination;
 
-  Data({required this.messages, required this.pagination});
+  MessagesData({required this.messages, required this.pagination});
 
-  // Factory constructor to create a new instance from JSON
-  factory Data.fromJson(Map<String, dynamic> json) {
-    return Data(
-      messages: (json['messages'] as List)
-          .map((messageJson) => Message.fromJson(messageJson))
-          .toList(),
+  factory MessagesData.fromJson(Map<String, dynamic>? json) {
+    if (json == null) return MessagesData.empty();
+
+    return MessagesData(
+      messages: JsonHelper.safeList(
+        json['messages'],
+        (e) => Message.fromJson(e),
+      ),
       pagination: PaginationMetaModel.fromJson(json['pagination']),
     );
   }
+
+  factory MessagesData.empty() =>
+      MessagesData(messages: [], pagination: PaginationMetaModel.fromJson({}));
 }
 
 class Message {
@@ -59,19 +74,31 @@ class Message {
     required this.updatedAt,
   });
 
-  // Factory constructor to create a new instance from JSON
-  factory Message.fromJson(Map<String, dynamic> json) {
+  factory Message.fromJson(Map<String, dynamic>? json) {
+    if (json == null) return Message.empty();
+
     return Message(
-      id: json['_id'],
+      id: JsonHelper.stringVal(json['_id']),
       receiver: Sender.fromJson(json['receiver']),
       sender: Sender.fromJson(json['sender']),
-      booking: json['booking'],
-      content: json['content'],
-      isRead: json['isRead'],
-      createdAt: DateTime.parse(json['createdAt']),
-      updatedAt: DateTime.parse(json['updatedAt']),
+      booking: JsonHelper.stringVal(json['booking']),
+      content: JsonHelper.stringVal(json['content']),
+      isRead: JsonHelper.boolVal(json['isRead']),
+      createdAt: JsonHelper.parseDate(json['createdAt']),
+      updatedAt: JsonHelper.parseDate(json['updatedAt']),
     );
   }
+
+  factory Message.empty() => Message(
+    id: '',
+    receiver: Sender.empty(),
+    sender: Sender.empty(),
+    booking: '',
+    content: '',
+    isRead: false,
+    createdAt: DateTime.now(),
+    updatedAt: DateTime.now(),
+  );
 }
 
 class Sender {
@@ -79,8 +106,11 @@ class Sender {
 
   Sender({required this.id});
 
-  // Factory constructor to create a new instance from JSON
-  factory Sender.fromJson(Map<String, dynamic> json) {
-    return Sender(id: json['_id']);
+  factory Sender.fromJson(Map<String, dynamic>? json) {
+    if (json == null) return Sender.empty();
+
+    return Sender(id: JsonHelper.stringVal(json['_id']));
   }
+
+  factory Sender.empty() => Sender(id: '');
 }

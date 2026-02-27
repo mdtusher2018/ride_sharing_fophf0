@@ -11,7 +11,7 @@ import 'package:velozaje/models/response/trip/passenger_trip_details_response.da
 import 'package:velozaje/models/response/trip/published_trip_details_response.dart';
 
 class TripsPublishState {
-  final BookigsOfPublishedTripResponse? bookingsOfPublishedTrip;
+  final BookingsOfPublishedTripResponse? bookingsOfPublishedTrip;
   final PassengerTripDetailsResponse? tripDetails;
 
   const TripsPublishState({this.bookingsOfPublishedTrip, this.tripDetails});
@@ -21,7 +21,7 @@ class TripsPublishState {
   }
 
   TripsPublishState copyWith({
-    BookigsOfPublishedTripResponse? bookingsOfPublishedTrip,
+    BookingsOfPublishedTripResponse? bookingsOfPublishedTrip,
     PassengerTripDetailsResponse? tripDetails,
   }) {
     return TripsPublishState(
@@ -121,7 +121,7 @@ class TripsPublishController extends PaginationNotifier<DriverTripModel> {
         final res = await apiService.get(
           ApiEndpoints.publishedTripDetailsById(id),
         );
-        final tempPublishedTrip = BookigsOfPublishedTripResponse.fromJson(res);
+        final tempPublishedTrip = BookingsOfPublishedTripResponse.fromJson(res);
         final extra = state.extraState as TripsPublishState;
         state = state.copyWith(
           extraState: extra.copyWith(

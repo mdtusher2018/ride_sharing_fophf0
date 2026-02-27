@@ -1,7 +1,9 @@
+import 'package:velozaje/core/utils/api_data_praser_helper.dart';
+
 class ForgetPasswordResponse {
-  bool success;
-  String message;
-  String token;
+  final bool success;
+  final String message;
+  final String token;
 
   ForgetPasswordResponse({
     required this.success,
@@ -9,11 +11,22 @@ class ForgetPasswordResponse {
     required this.token,
   });
 
-  factory ForgetPasswordResponse.fromJson(Map<String, dynamic> json) {
+  factory ForgetPasswordResponse.fromJson(Map<String, dynamic>? json) {
+    if (json == null) {
+      return ForgetPasswordResponse.empty();
+    }
+
+    final data = json['data'];
+
     return ForgetPasswordResponse(
-      success: json['success'] ?? false,
-      message: json['message'] ?? "",
-      token: json['data']?['token'] ?? "",
+      success: JsonHelper.boolVal(json['success']),
+      message: JsonHelper.stringVal(json['message']),
+      token: JsonHelper.stringVal(
+        data is Map<String, dynamic> ? data['token'] : null,
+      ),
     );
   }
+
+  factory ForgetPasswordResponse.empty() =>
+      ForgetPasswordResponse(success: false, message: '', token: '');
 }

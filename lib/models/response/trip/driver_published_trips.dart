@@ -78,16 +78,10 @@ class _TripsData {
 
   factory _TripsData.fromJson(Map<String, dynamic> json) {
     return _TripsData(
-      trips: json['trips'] is List
-          ? (json['trips'] as List)
-                .map(
-                  (e) => e is Map<String, dynamic>
-                      ? DriverTripModel.fromJson(e)
-                      : null,
-                )
-                .whereType<DriverTripModel>()
-                .toList()
-          : [],
+      trips: JsonHelper.safeList(
+        json['trips'],
+        (e) => DriverTripModel.fromJson(e),
+      ),
       pagination: json['pagination'] is Map<String, dynamic>
           ? PaginationMetaModel.fromJson(json['pagination'])
           : PaginationMetaModel.empty(),

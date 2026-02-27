@@ -227,7 +227,7 @@ class _MyTipCard extends StatelessWidget {
                   Icon(Icons.star, size: 20, color: Colors.orange),
                   SizedBox(width: 4),
                   CommonText(
-                    (booking.driver.rating ?? 0).toStringAsFixed(1),
+                    (booking.driver.rating).toStringAsFixed(1),
                     size: 12,
                   ),
                 ],

@@ -45,8 +45,25 @@ class Vehicle {
       licensePlateNumber: JsonHelper.stringVal(json['licensePlateNumber']),
       vehicleImages: _parseImages(json['vehicleImages']),
       status: JsonHelper.stringVal(json['status']),
-      submittedAt: JsonHelper.parseDate(json['submittedAt']) ?? DateTime.now(),
-      createdAt: JsonHelper.parseDate(json['createdAt']) ?? DateTime.now(),
+      submittedAt: JsonHelper.parseDate(json['submittedAt']),
+      createdAt: JsonHelper.parseDate(json['createdAt']),
+    );
+  }
+
+  factory Vehicle.empty() {
+    return Vehicle(
+      id: '',
+      user: '',
+      vehicleType: '',
+      registration: '',
+      year: 0,
+      brand: '',
+      vehicleModel: '',
+      licensePlateNumber: '',
+      vehicleImages: [],
+      status: '',
+      submittedAt: DateTime.fromMillisecondsSinceEpoch(0),
+      createdAt: DateTime.fromMillisecondsSinceEpoch(0),
     );
   }
 

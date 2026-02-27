@@ -1,3 +1,4 @@
+import 'package:velozaje/core/utils/api_data_praser_helper.dart';
 import 'package:velozaje/models/response/chat/messages_for_a_spacific_conversation_response.dart';
 
 class SendMessageResponse {
@@ -11,11 +12,22 @@ class SendMessageResponse {
     required this.data,
   });
 
-  factory SendMessageResponse.fromJson(Map<String, dynamic> json) {
+  factory SendMessageResponse.fromJson(Map<String, dynamic>? json) {
+    if (json == null) {
+      return SendMessageResponse.empty();
+    }
+
+    final dataJson = json['data'];
+
     return SendMessageResponse(
-      success: json['success'],
-      message: json['message'],
-      data: Message.fromJson(json['data']),
+      success: JsonHelper.boolVal(json['success']),
+      message: JsonHelper.stringVal(json['message']),
+      data: dataJson is Map<String, dynamic>
+          ? Message.fromJson(dataJson)
+          : Message.empty(),
     );
   }
+
+  factory SendMessageResponse.empty() =>
+      SendMessageResponse(success: false, message: '', data: Message.empty());
 }

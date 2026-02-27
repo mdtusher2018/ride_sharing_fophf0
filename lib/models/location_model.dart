@@ -20,6 +20,8 @@ class LocationModel {
       latitude: coords.length > 1 ? JsonHelper.doubleVal(coords[1]) : 0.0,
     );
   }
+  factory LocationModel.empty() =>
+      LocationModel(type: '', longitude: 0.0, latitude: 0.0);
 }
 
 class LocationWithAddressModel {
@@ -34,4 +36,6 @@ class LocationWithAddressModel {
       address: JsonHelper.stringVal(json['address']),
     );
   }
+  factory LocationWithAddressModel.empty() =>
+      LocationWithAddressModel(coordinates: LocationModel.empty(), address: '');
 }

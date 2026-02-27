@@ -12,11 +12,23 @@ class UserProfileResponse {
     this.data,
   });
 
-  factory UserProfileResponse.fromJson(Map<String, dynamic> json) {
+  factory UserProfileResponse.fromJson(Map<String, dynamic>? json) {
+    if (json == null) {
+      return UserProfileResponse.empty();
+    }
+
+    final dataJson = json['data'];
+    final userData = (dataJson is Map<String, dynamic>)
+        ? UserModel.fromJson(dataJson)
+        : null;
+
     return UserProfileResponse(
       success: JsonHelper.boolVal(json['success']),
       message: JsonHelper.stringVal(json['message']),
-      data: json['data'] != null ? UserModel.fromJson(json['data']) : null,
+      data: userData,
     );
   }
+
+  factory UserProfileResponse.empty() =>
+      UserProfileResponse(success: false, message: '', data: null);
 }

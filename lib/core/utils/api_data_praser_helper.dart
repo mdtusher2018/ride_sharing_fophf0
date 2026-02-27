@@ -23,10 +23,20 @@ class JsonHelper {
   }
 
   /// 🔒 Safe Date parser
-  static DateTime? parseDate(dynamic value) {
+  static DateTime parseDate(dynamic value) {
     if (value is String && value.isNotEmpty) {
-      return DateTime.tryParse(value);
+      return DateTime.tryParse(value) ?? DateTime.now();
     }
-    return null;
+    return DateTime.now();
+  }
+
+  static List<T> safeList<T>(
+    dynamic value,
+    T Function(Map<String, dynamic>) fromJson,
+  ) {
+    if (value is List) {
+      return value.whereType<Map<String, dynamic>>().map(fromJson).toList();
+    }
+    return [];
   }
 }

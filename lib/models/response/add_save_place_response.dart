@@ -1,3 +1,4 @@
+import 'package:velozaje/core/utils/api_data_praser_helper.dart';
 import 'package:velozaje/models/save_location_model.dart';
 
 class AddSavedLocationResponse {
@@ -13,8 +14,8 @@ class AddSavedLocationResponse {
 
   factory AddSavedLocationResponse.fromJson(Map<String, dynamic> json) {
     return AddSavedLocationResponse(
-      success: json['success'],
-      message: json['message'],
+      success: JsonHelper.boolVal(json['success']),
+      message: JsonHelper.stringVal(json['message']),
       data: SavedLocation.fromJson(json['data']['savedPlace']),
     );
   }

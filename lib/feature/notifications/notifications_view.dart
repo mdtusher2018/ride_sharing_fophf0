@@ -103,7 +103,7 @@ class _NotificationViewState extends ConsumerState<NotificationView> {
                           title: item.title,
                           subtitle: item.message,
                           isReaded: item.isRead,
-                          dateTime: item.createdAt,
+                          dateTime: item.createdAt ?? DateTime.now(),
                           onTap: () {
                             ref
                                 .watch(notificationsControllerProvider.notifier)
@@ -199,7 +199,7 @@ class _NotificationViewState extends ConsumerState<NotificationView> {
       } else if (_isYesterday(date)) {
         key = 'Yesterday';
       } else {
-        key = DateFormat('MMM dd, yyyy').format(date);
+        key = DateFormat('MMM dd, yyyy').format(date ?? DateTime.now());
       }
 
       grouped.putIfAbsent(key, () => []);

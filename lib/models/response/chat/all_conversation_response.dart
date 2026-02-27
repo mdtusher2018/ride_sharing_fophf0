@@ -1,3 +1,4 @@
+import 'package:velozaje/core/utils/api_data_praser_helper.dart';
 import 'package:velozaje/models/conversation_model.dart';
 
 class AllConversationResponse {
@@ -11,16 +12,21 @@ class AllConversationResponse {
     required this.data,
   });
 
-  factory AllConversationResponse.fromJson(Map<String, dynamic> json) {
+  factory AllConversationResponse.fromJson(Map<String, dynamic>? json) {
+    if (json == null) {
+      return AllConversationResponse.empty();
+    }
+
     return AllConversationResponse(
-      success: json['success'],
-      message: json['message'],
-      data: List<ConversationModel>.from(
-        ((json['data'] as List?) ?? []).map(
-          (x) => ConversationModel.fromJson(x),
-        ),
+      success: JsonHelper.boolVal(json['success']),
+      message: JsonHelper.stringVal(json['message']),
+      data: JsonHelper.safeList(
+        json['data'],
+        (e) => ConversationModel.fromJson(e),
       ),
     );
   }
-}
 
+  factory AllConversationResponse.empty() =>
+      AllConversationResponse(success: false, message: '', data: []);
+}

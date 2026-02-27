@@ -34,7 +34,7 @@ class PassengerTripModel {
     required this.distance,
     required this.estimatedDuration,
     required this.driverImage,
-    required this.departureTime,
+    this.departureTime,
     required this.pricePerSeat,
     required this.totalSeats,
     required this.availableSeats,
@@ -43,70 +43,78 @@ class PassengerTripModel {
     required this.automaticReservation,
     required this.packageDeliveryEnabled,
     required this.status,
-    required this.createdAt,
-    required this.updatedAt,
+    this.createdAt,
+    this.updatedAt,
     required this.packages,
   });
 
   factory PassengerTripModel.fromJson(Map<String, dynamic> json) {
     return PassengerTripModel(
       id: JsonHelper.stringVal(json['_id']),
-
       pickupLocation: LocationWithAddressModel.fromJson(
         json['pickupLocation'] ?? {},
       ),
-
       dropoffLocation: LocationWithAddressModel.fromJson(
         json['dropoffLocation'] ?? {},
       ),
-
       driver: json['driver'] is Map<String, dynamic>
           ? _Driver.fromJson(json['driver'])
           : null,
-
       vehicle: json['vehicle'] is Map<String, dynamic>
           ? _Vehicle.fromJson(json['vehicle'])
           : null,
-
       routePolyline: JsonHelper.stringVal(json['routePolyline']),
-
       distance: JsonHelper.doubleVal(json['distance']),
-
       estimatedDuration: JsonHelper.doubleVal(json['estimatedDuration']),
-
       driverImage: JsonHelper.stringVal(json['driverImage']),
-
       departureTime: JsonHelper.parseDate(json['departureTime']),
-
       pricePerSeat: JsonHelper.doubleVal(json['pricePerSeat']),
-
       totalSeats: JsonHelper.intVal(json['totalSeats']),
-
       availableSeats: JsonHelper.intVal(json['availableSeats']),
-
       bookedSeats: JsonHelper.intVal(json['bookedSeats']),
-
       description: JsonHelper.stringVal(json['description']),
-
       automaticReservation: JsonHelper.boolVal(json['automaticReservation']),
-
       packageDeliveryEnabled: JsonHelper.boolVal(
         json['packageDeliveryEnabled'],
       ),
-
       status: JsonHelper.stringVal(json['status']),
-
       createdAt: JsonHelper.parseDate(json['createdAt']),
-
       updatedAt: JsonHelper.parseDate(json['updatedAt']),
-      packages: json['packages'] ?? [],
+      packages: json['packages'] is List ? json['packages'] : [],
     );
   }
-}
 
-//
-// 🔹 PRIVATE DRIVER MODEL
-//
+  /// 🔹 Empty instance for safe defaults
+  factory PassengerTripModel.empty() => PassengerTripModel(
+    id: '',
+    pickupLocation: LocationWithAddressModel(
+      coordinates: LocationModel(type: '', longitude: 0, latitude: 0),
+      address: '',
+    ),
+    dropoffLocation: LocationWithAddressModel(
+      coordinates: LocationModel(type: '', longitude: 0, latitude: 0),
+      address: '',
+    ),
+    driver: null,
+    vehicle: null,
+    routePolyline: '',
+    distance: 0.0,
+    estimatedDuration: 0.0,
+    driverImage: '',
+    departureTime: null,
+    pricePerSeat: 0.0,
+    totalSeats: 0,
+    availableSeats: 0,
+    bookedSeats: 0,
+    description: '',
+    automaticReservation: false,
+    packageDeliveryEnabled: false,
+    status: '',
+    createdAt: null,
+    updatedAt: null,
+    packages: [],
+  );
+}
 
 class _Driver {
   final String id;
@@ -139,10 +147,6 @@ class _Driver {
     );
   }
 }
-
-//
-// 🔹 PRIVATE VEHICLE MODEL
-//
 
 class _Vehicle {
   final String id;

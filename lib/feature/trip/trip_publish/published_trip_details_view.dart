@@ -13,6 +13,7 @@ import 'package:velozaje/core/providers.dart';
 import 'package:velozaje/core/utils/enums_with_enum_extentions.dart';
 import 'package:velozaje/core/utils/helper.dart';
 import 'package:velozaje/core/utils/map_helper.dart';
+import 'package:velozaje/feature/widget/back_button.dart';
 import 'package:velozaje/feature/widget/map_widget.dart';
 import 'package:velozaje/feature/widget/vehicale_card.dart';
 import 'package:velozaje/models/response/trip/passenger_trip_model.dart';
@@ -153,18 +154,70 @@ class _MyPublishedDetailsPageState
             as TripsPublishState?;
 
     return Scaffold(
+      backgroundColor: AppColors.mainbg,
       body: Column(
         children: [
           /// --------------------
           /// Map Placeholder
           /// --------------------
-          SizedBox(
-            height: MediaQuery.sizeOf(context).height * 0.3,
+          Stack(
+            children: [
+              SizedBox(
+                height: MediaQuery.sizeOf(context).height * 0.3,
+                child: ValueListenableBuilder(
+                  valueListenable: ref
+                      .watch(tripsPublishControllerProvider.notifier)
+                      .isLoading,
+                  builder: (_, isLoading, _) {
+                    if (isLoading ||
+                        widget.id != publisheState?.tripDetails?.data.trip.id) {
+                      return Center(child: CircularProgressIndicator());
+                    } else if (publisheState == null ||
+                        publisheState.bookingsOfPublishedTrip == null ||
+                        publisheState.tripDetails == null) {
+                      return const Center(
+                        child: CommonText("Could not fetch details"),
+                      );
+                    }
+                    final trip = publisheState.tripDetails!.data.trip;
+                    return ReusableMapWidget(
+                      context: context,
+                      destinationLocation: LatLng(
+                        trip.dropoffLocation.coordinates.latitude,
+                        trip.dropoffLocation.coordinates.longitude,
+                      ),
+                      pickupLocation: LatLng(
+                        trip.pickupLocation.coordinates.latitude,
+                        trip.pickupLocation.coordinates.longitude,
+                      ),
+                      onMapCreated: (controller) {
+                        _mapController = controller;
+
+                        _drawRoutesIfReady(trip);
+                      },
+                      polylines: polylines,
+                    );
+                  },
+                ),
+              ),
+              Positioned(top: 48.h, left: 24.w, child: CommonBackButton()),
+            ],
+          ),
+
+          Container(
+            padding: EdgeInsets.all(16.w),
+            constraints: BoxConstraints(
+              maxHeight: MediaQuery.sizeOf(context).height * 0.7,
+            ),
+            decoration: BoxDecoration(
+              color: AppColors.mainbg,
+              borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)),
+            ),
             child: ValueListenableBuilder(
               valueListenable: ref
                   .watch(tripsPublishControllerProvider.notifier)
                   .isLoading,
-              builder: (_, isLoading, _) {
+              builder: (context, isLoading, child) {
                 if (isLoading ||
                     widget.id != publisheState?.tripDetails?.data.trip.id) {
                   return Center(child: CircularProgressIndicator());
@@ -175,142 +228,88 @@ class _MyPublishedDetailsPageState
                     child: CommonText("Could not fetch details"),
                   );
                 }
-                final trip = publisheState.tripDetails!.data.trip;
-                return ReusableMapWidget(
-                  context: context,
-                  destinationLocation: LatLng(
-                    trip.dropoffLocation.coordinates.latitude,
-                    trip.dropoffLocation.coordinates.longitude,
-                  ),
-                  pickupLocation: LatLng(
-                    trip.pickupLocation.coordinates.latitude,
-                    trip.pickupLocation.coordinates.longitude,
-                  ),
-                  onMapCreated: (controller) {
-                    _mapController = controller;
-
-                    _drawRoutesIfReady(trip);
+                final vehicle = publisheState.tripDetails!.data.trip.vehicle;
+                return RefreshIndicator(
+                  onRefresh: () async {
+                    loadInitialData();
                   },
-                  polylines: polylines,
+                  child: SingleChildScrollView(
+                    physics: AlwaysScrollableScrollPhysics(),
+                    child: Column(
+                      children: [
+                        SheetHandle(),
+                        SizedBox(height: 12.h),
+
+                        CommonText(
+                          AppLocalizations.of(context)!.trip_details,
+                          size: 16,
+                          fontWeight: FontWeight.w600,
+                        ),
+
+                        SizedBox(height: 16.h),
+
+                        _TripSummaryCard(
+                          trip: publisheState.tripDetails!.data.trip,
+                        ),
+
+                        SizedBox(height: 12.h),
+
+                        VehicleCard(
+                          brand: vehicle?.brand ?? "",
+                          image: vehicle?.vehicleImages.first ?? "",
+                          licensePlateNumber: vehicle?.licensePlateNumber ?? "",
+                          vehicleModel: vehicle?.vehicleModel ?? "",
+                          year: vehicle?.year.toString() ?? "",
+                        ),
+                        SizedBox(height: 16.h),
+
+                        Align(
+                          alignment: AlignmentGeometry.centerLeft,
+                          child: CommonText(
+                            AppLocalizations.of(context)!.confirmed_passengers,
+                            size: 14,
+                            isBold: true,
+                          ),
+                        ),
+
+                        ...(bookingState.extraState as TripsBookingState)
+                            .confirmedBookings
+                            .map((e) {
+                              return _PassengerCard(
+                                key: ValueKey(e.id),
+                                bookings: e,
+                                tripId: widget.id,
+                              );
+                            }),
+                        SizedBox(height: 12.h),
+
+                        Align(
+                          alignment: AlignmentGeometry.centerLeft,
+                          child: CommonText(
+                            AppLocalizations.of(context)!.pending_requests_2,
+                            size: 14,
+                            isBold: true,
+                          ),
+                        ),
+                        ...(bookingState.extraState as TripsBookingState)
+                            .pendingBookings
+                            .map((e) {
+                              return _PassengerCard(
+                                key: ValueKey(e.id),
+                                bookings: e,
+                                tripId: widget.id,
+                              );
+                            }),
+
+                        SizedBox(height: 20.h),
+
+                        _BottomButtons(),
+                        SizedBox(height: 20.h),
+                      ],
+                    ),
+                  ),
                 );
               },
-            ),
-          ),
-
-          Positioned(
-            bottom: 0,
-            right: 0,
-            left: 0,
-            child: Container(
-              padding: EdgeInsets.all(16.w),
-              constraints: BoxConstraints(
-                maxHeight: MediaQuery.sizeOf(context).height * 0.7,
-              ),
-              decoration: BoxDecoration(
-                color: AppColors.mainbg,
-                borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)),
-              ),
-              child: ValueListenableBuilder(
-                valueListenable: ref
-                    .watch(tripsPublishControllerProvider.notifier)
-                    .isLoading,
-                builder: (context, isLoading, child) {
-                  if (isLoading ||
-                      widget.id != publisheState?.tripDetails?.data.trip.id) {
-                    return Center(child: CircularProgressIndicator());
-                  } else if (publisheState == null ||
-                      publisheState.bookingsOfPublishedTrip == null ||
-                      publisheState.tripDetails == null) {
-                    return const Center(
-                      child: CommonText("Could not fetch details"),
-                    );
-                  }
-                  final vehicle = publisheState.tripDetails!.data.trip.vehicle;
-                  return RefreshIndicator(
-                    onRefresh: () async {
-                      loadInitialData();
-                    },
-                    child: SingleChildScrollView(
-                      physics: AlwaysScrollableScrollPhysics(),
-                      child: Column(
-                        children: [
-                          SheetHandle(),
-                          SizedBox(height: 12.h),
-
-                          CommonText(
-                            AppLocalizations.of(context)!.trip_details,
-                            size: 16,
-                            fontWeight: FontWeight.w600,
-                          ),
-
-                          SizedBox(height: 16.h),
-
-                          _TripSummaryCard(
-                            trip: publisheState.tripDetails!.data.trip,
-                          ),
-
-                          SizedBox(height: 12.h),
-
-                          VehicleCard(
-                            brand: vehicle?.brand ?? "",
-                            image: vehicle?.vehicleImages.first ?? "",
-                            licensePlateNumber:
-                                vehicle?.licensePlateNumber ?? "",
-                            vehicleModel: vehicle?.vehicleModel ?? "",
-                            year: vehicle?.year.toString() ?? "",
-                          ),
-                          SizedBox(height: 16.h),
-
-                          Align(
-                            alignment: AlignmentGeometry.centerLeft,
-                            child: CommonText(
-                              AppLocalizations.of(
-                                context,
-                              )!.confirmed_passengers,
-                              size: 14,
-                              isBold: true,
-                            ),
-                          ),
-
-                          ...(bookingState.extraState as TripsBookingState)
-                              .confirmedBookings
-                              .map((e) {
-                                return _PassengerCard(
-                                  key: ValueKey(e.id),
-                                  bookings: e,
-                                  tripId: widget.id,
-                                );
-                              }),
-                          SizedBox(height: 12.h),
-
-                          Align(
-                            alignment: AlignmentGeometry.centerLeft,
-                            child: CommonText(
-                              AppLocalizations.of(context)!.pending_requests_2,
-                              size: 14,
-                              isBold: true,
-                            ),
-                          ),
-                          ...(bookingState.extraState as TripsBookingState)
-                              .pendingBookings
-                              .map((e) {
-                                return _PassengerCard(
-                                  key: ValueKey(e.id),
-                                  bookings: e,
-                                  tripId: widget.id,
-                                );
-                              }),
-
-                          SizedBox(height: 20.h),
-
-                          _BottomButtons(),
-                          SizedBox(height: 20.h),
-                        ],
-                      ),
-                    ),
-                  );
-                },
-              ),
             ),
           ),
         ],

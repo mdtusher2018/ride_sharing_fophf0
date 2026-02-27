@@ -1,3 +1,5 @@
+import 'package:velozaje/core/utils/api_data_praser_helper.dart';
+
 class ReportSubjectsResponse {
   final bool success;
   final String message;
@@ -11,13 +13,12 @@ class ReportSubjectsResponse {
 
   factory ReportSubjectsResponse.fromJson(Map<String, dynamic> json) {
     return ReportSubjectsResponse(
-      success: json['success'] ?? false,
-      message: json['message'] ?? '',
-      data:
-          (json['data'] as List<dynamic>?)
-              ?.map((e) => ReportSubject.fromJson(e))
-              .toList() ??
-          [],
+      success: JsonHelper.boolVal(json['success']),
+      message: JsonHelper.stringVal(json['message']),
+      data: JsonHelper.safeList(
+        json['notifications'],
+        (e) => ReportSubject.fromJson(e),
+      ),
     );
   }
 }
@@ -40,11 +41,11 @@ class ReportSubject {
 
   factory ReportSubject.fromJson(Map<String, dynamic> json) {
     return ReportSubject(
-      id: json['_id'] ?? '',
-      title: json['title'] ?? '',
-      isActive: json['isActive'] ?? false,
-      createdAt: DateTime.parse(json['createdAt']),
-      updatedAt: DateTime.parse(json['updatedAt']),
+      id: JsonHelper.stringVal(json['_id']),
+      title: JsonHelper.stringVal(json['title']),
+      isActive: JsonHelper.boolVal(json['isActive']),
+      createdAt: JsonHelper.parseDate(json['createdAt']),
+      updatedAt: JsonHelper.parseDate(json['updatedAt']),
     );
   }
 }

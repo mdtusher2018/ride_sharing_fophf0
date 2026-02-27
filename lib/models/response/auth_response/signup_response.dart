@@ -1,7 +1,9 @@
+import 'package:velozaje/core/utils/api_data_praser_helper.dart';
+
 class SignUpResponse {
-  bool success;
-  String message;
-  String token;
+  final bool success;
+  final String message;
+  final String token;
 
   SignUpResponse({
     required this.success,
@@ -9,11 +11,22 @@ class SignUpResponse {
     required this.token,
   });
 
-  factory SignUpResponse.fromJson(Map<String, dynamic> json) {
+  factory SignUpResponse.fromJson(Map<String, dynamic>? json) {
+    if (json == null) {
+      return SignUpResponse.empty();
+    }
+
+    final data = json['data'];
+
     return SignUpResponse(
-      success: json['success'] ?? false,
-      message: json['message'] ?? "",
-      token: json['data']?['token'] ?? "",
+      success: JsonHelper.boolVal(json['success']),
+      message: JsonHelper.stringVal(json['message']),
+      token: JsonHelper.stringVal(
+        data is Map<String, dynamic> ? data['token'] : null,
+      ),
     );
   }
+
+  factory SignUpResponse.empty() =>
+      SignUpResponse(success: false, message: '', token: '');
 }

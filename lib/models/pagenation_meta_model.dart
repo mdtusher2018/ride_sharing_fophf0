@@ -14,7 +14,11 @@ class PaginationMetaModel {
   });
 
   /// 🔹 Normal JSON constructor (safe)
-  factory PaginationMetaModel.fromJson(Map<String, dynamic> json) {
+  factory PaginationMetaModel.fromJson(Map<String, dynamic>? json) {
+    if (json == null) {
+      return PaginationMetaModel.empty();
+    }
+
     return PaginationMetaModel(
       page: JsonHelper.intVal(json['page'], fallback: 1),
       limit: JsonHelper.intVal(json['limit'], fallback: 10),

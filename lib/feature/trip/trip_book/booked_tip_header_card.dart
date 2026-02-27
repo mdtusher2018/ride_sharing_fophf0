@@ -285,7 +285,7 @@ class TipHeaderCard extends StatelessWidget {
                   Icon(Icons.star, size: 20, color: Colors.orange),
                   SizedBox(width: 4),
                   CommonText(
-                    bookingDetails.driver.ratting.toStringAsFixed(1),
+                    bookingDetails.driver.rating.toStringAsFixed(1),
                     size: 12,
                   ),
                 ],

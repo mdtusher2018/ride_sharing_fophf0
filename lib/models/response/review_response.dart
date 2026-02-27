@@ -1,3 +1,4 @@
+import 'package:velozaje/core/utils/api_data_praser_helper.dart';
 import 'package:velozaje/models/pagenation_meta_model.dart';
 import 'package:velozaje/models/review_model.dart';
 
@@ -14,8 +15,8 @@ class DriverReviewsResponse {
 
   factory DriverReviewsResponse.fromJson(Map<String, dynamic> json) {
     return DriverReviewsResponse(
-      success: json['success'] ?? false,
-      message: json['message'] ?? '',
+      success: JsonHelper.boolVal(json['success']),
+      message: JsonHelper.stringVal(json['message']),
       data: DriverReviewsData.fromJson(json['data'] ?? {}),
     );
   }

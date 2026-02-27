@@ -34,8 +34,8 @@ class SavedLocation {
       placeName: JsonHelper.stringVal(json['placeName']),
       address: JsonHelper.stringVal(json['address']),
       category: JsonHelper.stringVal(json['category']),
-      createdAt: JsonHelper.parseDate(json['createdAt']) ?? DateTime.now(),
-      updatedAt: JsonHelper.parseDate(json['updatedAt']) ?? DateTime.now(),
+      createdAt: JsonHelper.parseDate(json['createdAt']),
+      updatedAt: JsonHelper.parseDate(json['updatedAt']),
     );
   }
 }

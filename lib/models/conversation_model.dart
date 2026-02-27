@@ -42,9 +42,7 @@ class _Message {
   factory _Message.fromJson(Map<String, dynamic> json) {
     return _Message(
       content: JsonHelper.stringVal(json['content']),
-      createdAt:
-          JsonHelper.parseDate(DateTime.parse(json['createdAt'])) ??
-          DateTime.now(),
+      createdAt: JsonHelper.parseDate(DateTime.parse(json['createdAt'])),
       isRead: JsonHelper.boolVal(json['isRead']),
       sender: JsonHelper.stringVal(json['sender']),
     );
