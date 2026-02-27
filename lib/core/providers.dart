@@ -11,6 +11,10 @@ import 'package:velozaje/core/services/localstorage/i_local_storage_service.dart
 import 'package:velozaje/controllers/auth_controller.dart';
 import 'package:velozaje/controllers/saved_location_controller.dart';
 import 'package:velozaje/controllers/trip/trips_search_controller.dart';
+import 'package:velozaje/core/services/localstorage/storage_key.dart';
+import 'package:velozaje/core/services/socket/socket_config.dart';
+import 'package:velozaje/core/services/socket/socket_service.dart';
+import 'package:velozaje/core/utils/api_end_points.dart';
 import 'package:velozaje/models/response/chat/messages_for_a_spacific_conversation_response.dart';
 import 'package:velozaje/models/response/trip/booking_response.dart';
 import 'package:velozaje/models/response/trip/driver_published_trips.dart';
@@ -43,6 +47,14 @@ final Provider<IApiService> apiServiceProvider = Provider<IApiService>((ref) {
   final client = ref.read(apiClientProvider);
   final storage = ref.read(localStorageProvider);
   return ApiService(client, storage);
+});
+
+final socketServiceProvider = FutureProvider<SocketService>((ref) async {
+  final socketService = SocketService();
+  final storage = ref.read(localStorageProvider);
+  final token = await storage.getString(StorageKey.accessToken) ?? "";
+  socketService.init(SocketConfig(url: ApiEndpoints.baseUrl, token: token));
+  return socketService;
 });
 
 /////////////////

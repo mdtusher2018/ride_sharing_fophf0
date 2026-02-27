@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:velozaje/controllers/profile_controller.dart';
+import 'package:velozaje/core/providers.dart';
 import 'package:velozaje/core/utils/extention.dart';
 import 'package:velozaje/feature/chat/all_conversation_view.dart';
 import 'package:velozaje/feature/home_and_trip_search/home_view.dart';
@@ -27,9 +28,11 @@ class _RootPageState extends ConsumerState<RootPage> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPersistentFrameCallback((timeStamp) {
+    WidgetsBinding.instance.addPersistentFrameCallback((timeStamp) async {
       if (ref.read(profileControllerProvider).user == null) {
         ref.read(profileControllerProvider.notifier).getProfile();
+        final socket = await ref.read(socketServiceProvider.future);
+        socket.connect();
       }
     });
   }
