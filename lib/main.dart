@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:velozaje/core/localization/app_localizations.dart';
+import 'package:velozaje/core/services/localstorage/local_storage_service.dart';
 import 'package:velozaje/core/utils/constants.dart';
 import 'package:velozaje/feature/splash_onboarding/splash_screen.dart';
 import 'package:velozaje/feature/take_image_view.dart';
@@ -12,6 +13,7 @@ import 'package:velozaje/feature/take_image_view.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   TakePhotoPage.cameras = await availableCameras();
+  await LocalStorageService.init();
 
   Stripe.publishableKey = publishableKey;
   await Stripe.instance.applySettings();
@@ -30,11 +32,10 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  // Locale _locale = Locale('es', 'ES'); // Default to English
   Locale _locale = Locale('en', 'US');
   void updateLocale(Locale locale) {
     setState(() {
-      _locale = locale; // Update the locale
+      _locale = locale;
     });
   }
 
@@ -60,42 +61,6 @@ class _MyAppState extends State<MyApp> {
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         ),
         home: const SplashScreen(),
-        // ConfirmBookingPage(
-        //   trip: PassengerTripModel(
-        //     id: "id",
-        //     pickupLocation: LocationWithAddressModel(
-        //       coordinates: LocationModel(
-        //         type: "Point",
-        //         longitude: 90.4998615,
-        //         latitude: 23.6237484,
-        //       ),
-        //       address: "Narayanganj, Bangladesh",
-        //     ),
-        //     dropoffLocation: LocationWithAddressModel(
-        //       coordinates: LocationModel(
-        //         type: "Point",
-        //         longitude: 90.4152376,
-        //         latitude: 23.804093,
-        //       ),
-        //       address: "Dhaka, Bangladesh",
-        //     ),
-        //     routePolyline: "routePolyline",
-        //     distance: 5,
-        //     estimatedDuration: 0,
-        //     driverImage: "",
-        //     departureTime: DateTime.now(),
-        //     pricePerSeat: 12,
-        //     totalSeats: 5,
-        //     availableSeats: 5,
-        //     bookedSeats: 5,
-        //     description: "description",
-        //     automaticReservation: false,
-        //     packageDeliveryEnabled: false,
-        //     status: "status",
-        //     createdAt: DateTime.now(),
-        //     updatedAt: DateTime.now(),
-        //   ),
-        // ),
       ),
     );
   }

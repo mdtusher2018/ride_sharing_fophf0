@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/legacy.dart';
 import 'package:velozaje/controllers/conversation_controller.dart';
 import 'package:velozaje/controllers/report_controller.dart';
 import 'package:velozaje/controllers/review_controller.dart';
+import 'package:velozaje/controllers/static_content_controller.dart';
 import 'package:velozaje/controllers/trip/trips_publish_controller.dart';
 import 'package:velozaje/controllers/paginated_controller.dart';
 import 'package:velozaje/controllers/trip/trips_book_controller.dart';
@@ -35,7 +36,6 @@ import 'services/api/i_api_service.dart';
 
 final Provider<ILocalStorageService> localStorageProvider =
     Provider<ILocalStorageService>((ref) {
-      LocalStorageService.init();
       return LocalStorageService();
     });
 
@@ -154,3 +154,9 @@ final reportControllerProvider =
       final apiService = ref.read(apiServiceProvider);
       return ReportController(apiService);
     });
+
+final staticContentControllerProvider =
+    StateNotifierProvider<StaticContentController, StaticContentState>(
+      (ref) =>
+          StaticContentController(apiService: ref.watch(apiServiceProvider)),
+    );

@@ -10,7 +10,8 @@ import 'package:share_plus/share_plus.dart';
 import 'package:velozaje/res/common_text.dart';
 
 class ReferralsPage extends StatelessWidget {
-  const ReferralsPage({super.key});
+  const ReferralsPage({super.key, required this.referrals});
+  final String referrals;
 
   @override
   Widget build(BuildContext context) {
@@ -92,7 +93,7 @@ class ReferralsPage extends StatelessWidget {
                   children: [
                     CommonText(AppLocalizations.of(context)!.your_code),
                     CommonText(
-                      '4 5 b 7',
+                      referrals.isEmpty ? "N/A" : referrals,
                       size: 24.sp, // Scalable font size
                       color: AppColors.primary,
                       isBold: true,
@@ -118,8 +119,12 @@ class ReferralsPage extends StatelessWidget {
   }
 
   void _shareReferralCode() {
-    final String referralCode = '4 5 b 7'; // Your referral code here
-    Share.share('Use my referral code: $referralCode to get discounts!');
+    SharePlus.instance.share(
+      ShareParams(
+        text:
+            'Use my referral code: ${referrals.isEmpty ? "N/A" : referrals} to get discounts!',
+      ),
+    );
   }
 
   Widget _stepLine() {

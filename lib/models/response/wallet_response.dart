@@ -1,6 +1,4 @@
-// ignore_for_file: library_private_types_in_public_api
-
-import 'package:velozaje/models/location_model.dart';
+import 'package:velozaje/core/utils/api_data_praser_helper.dart';
 import 'package:velozaje/models/pagenation_meta_model.dart';
 
 class DriverEarningsSummary {
@@ -40,36 +38,14 @@ class DriverEarningsSummary {
 }
 
 class DriverEarningsResponse {
-  final bool success;
-  final String message;
-  final _EarningsData data;
-
-  DriverEarningsResponse({
-    required this.success,
-    required this.message,
-    required this.data,
-  });
-
-  factory DriverEarningsResponse.fromJson(Map<String, dynamic> json) {
-    return DriverEarningsResponse(
-      success: json['success'],
-      message: json['message'],
-      data: _EarningsData.fromJson(json['data']),
-    );
-  }
-
-  _EarningsData get earningsData => data; // expose data if needed
-}
-
-class _EarningsData {
   final List<EarningModel> earnings;
   final PaginationMetaModel pagination;
 
-  _EarningsData({required this.earnings, required this.pagination});
+  DriverEarningsResponse({required this.earnings, required this.pagination});
 
-  factory _EarningsData.fromJson(Map<String, dynamic> json) {
-    return _EarningsData(
-      earnings: (json['earnings'] as List)
+  factory DriverEarningsResponse.fromJson(Map<String, dynamic> json) {
+    return DriverEarningsResponse(
+      earnings: (json['data']['earnings'] as List)
           .map((e) => EarningModel.fromJson(e))
           .toList(),
       pagination: PaginationMetaModel.fromJson(json['pagination']),
@@ -77,137 +53,44 @@ class _EarningsData {
   }
 }
 
-// Public model
 class EarningModel {
-  final String id;
-  final _Booking booking;
-  final _Trip trip;
-  final String driver;
-  final _Passenger passenger;
-  final double tripFare;
-  final double commissionRate;
-  final double commission;
+  final String bookingId;
+  final String tripId;
+  final double totalPrice;
   final double driverEarnings;
-  final int seatsBooked;
-  final String distance;
-  final String duration;
-  final String passengerPaymentMethod;
-  final String passengerPaymentStatus;
-  final String commissionPaymentStatus;
+  final double commission;
+  final String paymentStatus;
+  final String pickupLocation;
+  final String dropoffLocation;
   final DateTime completedAt;
-  final DateTime createdAt;
-  final DateTime updatedAt;
-  final DateTime? commissionPaidAt;
 
   EarningModel({
-    required this.id,
-    required this.booking,
-    required this.trip,
-    required this.driver,
-    required this.passenger,
-    required this.tripFare,
-    required this.commissionRate,
-    required this.commission,
+    required this.bookingId,
+    required this.tripId,
+    required this.totalPrice,
     required this.driverEarnings,
-    required this.seatsBooked,
-    required this.distance,
-    required this.duration,
-    required this.passengerPaymentMethod,
-    required this.passengerPaymentStatus,
-    required this.commissionPaymentStatus,
+    required this.commission,
+    required this.paymentStatus,
+    required this.pickupLocation,
+    required this.dropoffLocation,
     required this.completedAt,
-    required this.createdAt,
-    required this.updatedAt,
-    this.commissionPaidAt,
   });
 
   factory EarningModel.fromJson(Map<String, dynamic> json) {
     return EarningModel(
-      id: json['_id'],
-      booking: _Booking.fromJson(json['booking']),
-      trip: _Trip.fromJson(json['trip']),
-      driver: json['driver'],
-      passenger: _Passenger.fromJson(json['passenger']),
-      tripFare: (json['tripFare'] as num).toDouble(),
-      commissionRate: (json['commissionRate'] as num).toDouble(),
-      commission: (json['commission'] as num).toDouble(),
-      driverEarnings: (json['driverEarnings'] as num).toDouble(),
-      seatsBooked: json['seatsBooked'],
-      distance: json['distance'],
-      duration: json['duration'],
-      passengerPaymentMethod: json['passengerPaymentMethod'],
-      passengerPaymentStatus: json['passengerPaymentStatus'],
-      commissionPaymentStatus: json['commissionPaymentStatus'],
-      completedAt: DateTime.parse(json['completedAt']),
-      createdAt: DateTime.parse(json['createdAt']),
-      updatedAt: DateTime.parse(json['updatedAt']),
-      commissionPaidAt: json['commissionPaidAt'] != null
-          ? DateTime.parse(json['commissionPaidAt'])
-          : null,
-    );
-  }
-
-  // Optional: getters to access private nested models if needed
-  _Booking get bookingData => booking;
-  _Trip get tripData => trip;
-  _Passenger get passengerData => passenger;
-}
-
-// Private nested models
-class _Booking {
-  final String id;
-  final String status;
-  final String paymentStatus;
-
-  _Booking({
-    required this.id,
-    required this.status,
-    required this.paymentStatus,
-  });
-
-  factory _Booking.fromJson(Map<String, dynamic> json) {
-    return _Booking(
-      id: json['_id'],
-      status: json['status'],
-      paymentStatus: json['paymentStatus'],
-    );
-  }
-}
-
-class _Trip {
-  final String id;
-  final LocationWithAddressModel pickupLocation;
-  final LocationWithAddressModel dropoffLocation;
-
-  _Trip({
-    required this.id,
-    required this.pickupLocation,
-    required this.dropoffLocation,
-  });
-
-  factory _Trip.fromJson(Map<String, dynamic> json) {
-    return _Trip(
-      id: json['_id'],
-      pickupLocation: LocationWithAddressModel.fromJson(json['pickupLocation']),
-      dropoffLocation: LocationWithAddressModel.fromJson(
-        json['dropoffLocation'],
+      bookingId: JsonHelper.stringVal(json['booking']['_id']),
+      tripId: JsonHelper.stringVal(json['trip']),
+      totalPrice: JsonHelper.doubleVal(json['booking']['totalPrice']),
+      driverEarnings: JsonHelper.doubleVal(json['driverEarnings']),
+      commission: JsonHelper.doubleVal(json['commission']),
+      paymentStatus: JsonHelper.stringVal(json['booking']['paymentStatus']),
+      pickupLocation: JsonHelper.stringVal(
+        json['booking']['pickupLocation']['address'],
       ),
-    );
-  }
-}
-
-class _Passenger {
-  final String id;
-  final String fullName;
-  final String email;
-
-  _Passenger({required this.id, required this.fullName, required this.email});
-
-  factory _Passenger.fromJson(Map<String, dynamic> json) {
-    return _Passenger(
-      id: json['_id'],
-      fullName: json['fullName'],
-      email: json['email'],
+      dropoffLocation: JsonHelper.stringVal(
+        json['booking']['dropoffLocation']['address'],
+      ),
+      completedAt: JsonHelper.parseDate(json['completedAt']),
     );
   }
 }

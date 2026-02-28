@@ -9,6 +9,8 @@ class ApiEndpoints {
   static const String verifyOTP = "auth/verify-otp";
   static const String forgetPassword = "auth/token";
   static const String resetPassword = "auth/reset-password";
+  static const String changePassword = "auth/change-password";
+  static const String deleteAccount = "auth/delete-account";
 
   //profile
   static const String profile = "users/profile";
@@ -55,7 +57,8 @@ class ApiEndpoints {
       "messages/booking/$id/read";
 
   //Wallet And Payment
-  static const String driverTransactions = "transactions/driver";
+  static const String driverTransactions =
+      "transactions/driver?populateBooking=true";
   static const String driverTransactionsSummary = "transactions/driver/summary";
   static const String payCommission = "commission-payments/initiate";
 
@@ -67,4 +70,8 @@ class ApiEndpoints {
   //Reports
   static const String reportSubjects = "report-subjects";
   static const String submitAReport = "reports";
+
+  //static-content
+  static const String getTermsAndCondition = "terms-and-conditions";
+  static const String getContact = "getContact";
 }

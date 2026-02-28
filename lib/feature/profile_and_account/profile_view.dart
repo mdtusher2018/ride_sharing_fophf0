@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:velozaje/core/localization/app_localizations.dart';
+import 'package:velozaje/core/providers.dart';
 import 'package:velozaje/core/utils/defult_values.dart';
 import 'package:velozaje/feature/profile_and_account/change_password_view.dart';
 
@@ -11,6 +12,7 @@ import 'package:velozaje/feature/profile_and_account/profile_details.dart';
 import 'package:velozaje/feature/profile_and_account/referal_view.dart';
 import 'package:velozaje/feature/profile_and_account/terms_and_conditions_view.dart';
 import 'package:velozaje/feature/profile_and_account/wallet_view.dart';
+import 'package:velozaje/feature/widget/common_confirmnation_dialog.dart';
 import 'package:velozaje/main.dart';
 import 'package:velozaje/core/utils/app_colors.dart';
 import 'package:velozaje/res/common_image.dart';
@@ -180,7 +182,9 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
                         context,
                         MaterialPageRoute(
                           builder: (context) {
-                            return ReferralsPage();
+                            return ReferralsPage(
+                              referrals: state.user?.referralCode ?? "N/A",
+                            );
                           },
                         ),
                       );
@@ -282,14 +286,44 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
                   _tile(
                     AppLocalizations.of(context)!.log_out,
                     "assest/icon/logout.png",
-                    ontap: () {},
+                    ontap: () {
+                      commonConfirmationDialog(
+                        context: context,
+                        title: "Are you sure you want to log out?",
+                        message:
+                            "Logging out will end your current session. Do you want to continue?",
+                        cancelButtonText: "Cancel",
+                        actionButtonText: "Log Out",
+                        onCancel: () {
+                          Navigator.pop(context);
+                        },
+                        onAction: () {
+                          ref.read(authControllerProvider).logout();
+                        },
+                      );
+                    },
                   ),
                   _divider(),
                   _tile(
                     AppLocalizations.of(context)!.delete_account,
                     "assest/icon/delete.png",
                     isRed: true,
-                    ontap: () {},
+                    ontap: () {
+                      commonConfirmationDialog(
+                        context: context,
+                        title: "Are you sure you want to delete your account?",
+                        message:
+                            "Deleting your account will permanently remove all your data. This action cannot be undone.",
+                        cancelButtonText: "Cancel",
+                        actionButtonText: "Delete Account",
+                        onCancel: () {
+                          Navigator.pop(context);
+                        },
+                        onAction: () {
+                          ref.read(authControllerProvider).deleteAccount();
+                        },
+                      );
+                    },
                   ),
                 ],
               ),

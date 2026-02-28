@@ -41,10 +41,7 @@ class WalletAndPaymentController extends PaginationNotifier<EarningModel> {
 
     final driverEarningModel = DriverEarningsResponse.fromJson(response);
 
-    return (
-      driverEarningModel.data.earnings,
-      driverEarningModel.data.pagination,
-    );
+    return (driverEarningModel.earnings, driverEarningModel.pagination);
   }
 
   Future<void> payCommission({

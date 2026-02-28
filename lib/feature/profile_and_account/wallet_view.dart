@@ -279,7 +279,7 @@ class ActivityTile extends StatelessWidget {
         child: icon,
       ),
       title: CommonText(
-        "Trip • ${lastTwoWords(earning.trip.pickupLocation.address)} to ${lastTwoWords(earning.trip.dropoffLocation.address)}",
+        "Trip • ${lastTwoWords(earning.pickupLocation)} to ${lastTwoWords(earning.dropoffLocation)}",
         fontWeight: FontWeight.w500,
         maxline: 2,
         size: 13,

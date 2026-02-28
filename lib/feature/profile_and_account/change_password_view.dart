@@ -1,19 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:velozaje/core/localization/app_localizations.dart';
+import 'package:velozaje/core/providers.dart';
 import 'package:velozaje/res/common_appbar.dart';
 import 'package:velozaje/res/common_button.dart';
 import 'package:velozaje/res/common_text_field_with_title.dart';
 import 'package:velozaje/core/utils/app_colors.dart';
 
-class ChangePasswordPage extends StatefulWidget {
+class ChangePasswordPage extends ConsumerStatefulWidget {
   const ChangePasswordPage({super.key});
 
   @override
-  State<ChangePasswordPage> createState() => _ChangePasswordPageState();
+  ConsumerState<ChangePasswordPage> createState() => _ChangePasswordPageState();
 }
 
-class _ChangePasswordPageState extends State<ChangePasswordPage> {
+class _ChangePasswordPageState extends ConsumerState<ChangePasswordPage> {
   // Controllers for text fields
   final TextEditingController currentPasswordController =
       TextEditingController();
@@ -26,14 +28,15 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
   bool isNewPasswordVisible = true;
   bool isConfirmPasswordVisible = true;
 
-  // Form validation keys
-  final _formKey = GlobalKey<FormState>();
-
   // Function to handle password update logic
   void _updatePassword() {
-    if (_formKey.currentState!.validate()) {
-      Navigator.pop(context); // Go back after updating password
-    }
+    ref
+        .read(authControllerProvider)
+        .changePassword(
+          oldPassword: currentPasswordController.text,
+          newPassword: newPasswordController.text,
+          confirmPassword: confirmPasswordController.text,
+        );
   }
 
   @override
@@ -98,10 +101,16 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
             SizedBox(height: 30.h),
 
             // Update Button
-            CommonButton(
-              AppLocalizations.of(context)!.update,
-              onTap:
-                  _updatePassword, // Call _updatePassword method on button tap
+            ValueListenableBuilder(
+              valueListenable: ref.watch(authControllerProvider).isLoading,
+              builder: (_, isLoading, _) {
+                return CommonButton(
+                  AppLocalizations.of(context)!.update,
+                  isLoading: isLoading,
+                  onTap:
+                      _updatePassword, // Call _updatePassword method on button tap
+                );
+              },
             ),
           ],
         ),

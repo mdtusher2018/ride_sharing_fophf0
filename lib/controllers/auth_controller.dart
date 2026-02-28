@@ -24,6 +24,49 @@ class AuthController extends BaseNotifier {
   AuthController({required this.apiService, required this.localStorageService})
     : super(false);
 
+  Future<void> deleteAccount() async {
+    safeCall(
+      task: () async {
+        final response = await apiService.delete(ApiEndpoints.deleteAccount);
+        if (response['success'] ?? false) {
+          await localStorageService.clearAll();
+          navigatorKey.currentContext?.navigateTo(SignInPage());
+        } else {
+          throw Exception(response['message'] ?? 'Failed to reset password');
+        }
+      },
+      successMessage: "Account deleted sucessfully",
+      showSuccessSnack: true,
+    );
+  }
+
+  Future<void> changePassword({
+    required String oldPassword,
+    required String newPassword,
+    required String confirmPassword,
+  }) async {
+    safeCall(
+      task: () async {
+        final response = await apiService.post(ApiEndpoints.changePassword, {
+          "oldPassword": oldPassword,
+          "newPassword": newPassword,
+          "confirmNewPassword": confirmPassword,
+        });
+        if (response['success'] ?? false) {
+          await localStorageService.clearAll();
+          navigatorKey.currentContext?.navigateTo(
+            SignInPage(),
+            clearStack: true,
+          );
+        } else {
+          throw Exception(response['message'] ?? 'Failed to reset password');
+        }
+      },
+      successMessage: "You can now login with your new password",
+      showSuccessSnack: true,
+    );
+  }
+
   Future<void> sendOtp({
     required String email,
     required OTPVerificationPurpose purpose,
@@ -176,6 +219,16 @@ class AuthController extends BaseNotifier {
           throw Exception(response['message'] ?? 'Failed to send OTP failed');
         }
       },
+    );
+  }
+
+  Future<void> logout() async {
+    safeCall(
+      task: () async {
+        await localStorageService.clearAll();
+        navigatorKey.currentContext?.navigateTo(SignInPage(), clearStack: true);
+      },
+      showSuccessSnack: false,
     );
   }
 }
