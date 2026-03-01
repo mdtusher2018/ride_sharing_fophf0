@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:velozaje/core/localization/app_localizations.dart';
@@ -41,47 +42,22 @@ class _ContactPageState extends ConsumerState<ContactPage> {
           if (isLoading) {
             return Center(child: CircularProgressIndicator());
           }
-          if (!isLoading &&
-              state.email.isEmpty &&
-              state.facebook.isEmpty &&
-              state.facebook.isEmpty &&
-              state.phone.isEmpty) {
+          if (!isLoading && state.contactPlatfroms.isEmpty) {
             return Center(child: CommonText("No Contact info found"));
           }
-          return Padding(
-            padding: EdgeInsets.all(16.w),
-            child: Column(
-              children: [
-                if (state.email.isNotEmpty)
-                  _contactCard(
-                    title: "Email Us",
-                    iconPath: "assets/image/gmail.png",
-                    contactLink: "mailto:${state.email}", // Email link
-                  ),
-                SizedBox(height: 12.h),
-                if (state.facebook.isNotEmpty)
-                  _contactCard(
-                    title: "Facebook",
-                    iconPath: "assets/image/facebook.png",
-                    contactLink:
-                        "https://facebook.com/${state.facebook}", // Facebook link
-                  ),
-                SizedBox(height: 12.h),
-                if (state.instagram.isNotEmpty)
-                  _contactCard(
-                    title: "Instagram",
-                    iconPath: "assets/image/instagram.png",
-                    contactLink:
-                        "https://instagram.com/${state.instagram}", // Instagram link
-                  ),
-                SizedBox(height: 12.h),
-                if (state.phone.isNotEmpty)
-                  _contactCard(
-                    title: "+880 4545 8788",
-                    iconPath: "assets/image/call.png",
-                    contactLink: "tel:${state.phone}", // Phone link
-                  ),
-              ],
+          return RefreshIndicator(
+            onRefresh: () async {
+              controller.getContact();
+            },
+
+            child: ListView.builder(
+              padding: EdgeInsets.all(16),
+              itemCount: state.contactPlatfroms.length,
+              itemBuilder: (context, index) => _contactCard(
+                title: state.contactPlatfroms[index].name,
+                iconPath: state.contactPlatfroms[index].thumbnail,
+                contactLink: state.contactPlatfroms[index].link,
+              ),
             ),
           );
         },
@@ -101,13 +77,25 @@ class _ContactPageState extends ConsumerState<ContactPage> {
       child: InkWell(
         borderRadius: BorderRadius.circular(4.r),
         onTap: () async {
-          // Open the respective app or service
-          if (await canLaunch(contactLink)) {
-            await launch(contactLink);
+          String finalLink = contactLink;
+
+          if (_isPhoneNumber(contactLink)) {
+            finalLink = 'tel:$contactLink';
+          } else if (_isEmail(contactLink)) {
+            finalLink = 'mailto:$contactLink';
+          }
+
+          if (await canLaunch(finalLink)) {
+            await launch(finalLink);
           } else {
-            // Handle the error if the link cannot be opened
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(content: Text('Could not open the contact method.')),
+            );
+
+            await Clipboard.setData(ClipboardData(text: finalLink));
+
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text('Link copied to clipboard!')),
             );
           }
         },
@@ -119,7 +107,8 @@ class _ContactPageState extends ConsumerState<ContactPage> {
                 path: iconPath,
                 width: 24.w,
                 height: 24.w,
-                sourceType: ImageSourceType.asset,
+                fit: BoxFit.cover,
+                sourceType: ImageSourceType.network,
               ),
               SizedBox(width: 16.w),
               Expanded(
@@ -130,5 +119,15 @@ class _ContactPageState extends ConsumerState<ContactPage> {
         ),
       ),
     );
+  }
+
+  bool _isPhoneNumber(String link) {
+    return RegExp(r'^\+?[0-9]+$').hasMatch(link);
+  }
+
+  bool _isEmail(String link) {
+    return RegExp(
+      r'^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$',
+    ).hasMatch(link);
   }
 }

@@ -73,5 +73,5 @@ class ApiEndpoints {
 
   //static-content
   static const String getTermsAndCondition = "terms-and-conditions";
-  static const String getContact = "getContact";
+  static const String getContact = "platforms";
 }

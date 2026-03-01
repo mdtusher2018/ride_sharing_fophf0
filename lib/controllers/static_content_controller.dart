@@ -1,37 +1,26 @@
 import 'package:velozaje/core/base_notifier.dart';
 import 'package:velozaje/core/services/api/i_api_service.dart';
 import 'package:velozaje/core/utils/api_end_points.dart';
+import 'package:velozaje/models/response/get_contact_response.dart';
 
 class StaticContentState {
   final String termsAndCondition;
-  final String email;
-  final String facebook;
-  final String instagram; // Fix the typo 'INSTREAGRAM' to 'instagram'
-  final String phone;
+  final List<ContactPlatform> contactPlatfroms;
 
   // Default constructor for setting the state with actual values
   StaticContentState({
     this.termsAndCondition = "",
-    this.email = "",
-    this.facebook = "",
-    this.instagram = "",
-    this.phone = "",
+    this.contactPlatfroms = const [],
   });
 
   // Adding copyWith method to allow updates to the state
   StaticContentState copyWith({
     String? termsAndCondition,
-    String? email,
-    String? facebook,
-    String? instagram,
-    String? phone,
+    List<ContactPlatform>? contactPlatfroms,
   }) {
     return StaticContentState(
       termsAndCondition: termsAndCondition ?? this.termsAndCondition,
-      email: email ?? this.email,
-      facebook: facebook ?? this.facebook,
-      instagram: instagram ?? this.instagram,
-      phone: phone ?? this.phone,
+      contactPlatfroms: contactPlatfroms ?? this.contactPlatfroms,
     );
   }
 }
@@ -67,14 +56,9 @@ class StaticContentController extends BaseNotifier<StaticContentState> {
     safeCall(
       task: () async {
         final response = await apiService.get(ApiEndpoints.getContact);
-        if (response['success'] ?? false) {
-          final contactData = response['data'] ?? {};
-          state = state.copyWith(
-            email: contactData['email'] ?? '',
-            facebook: contactData['facebook'] ?? '',
-            instagram: contactData['instagram'] ?? '',
-            phone: contactData['phone'] ?? '',
-          );
+        final result = GetContactResponse.fromJson(response);
+        if (result.success) {
+          state = state.copyWith(contactPlatfroms: result.data.platforms);
         } else {
           throw Exception(
             response['message'] ?? 'Failed to fetch contact information',
