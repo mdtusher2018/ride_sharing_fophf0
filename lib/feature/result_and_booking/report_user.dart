@@ -62,7 +62,7 @@ class _ReportUserPageState extends ConsumerState<ReportUserPage> {
                     context,
                   )!.please_select_a_reason_for_reporting_osbaldo_garcia_this_is_anonymous_and_helps_keep_our_community_safe,
 
-                  size: 12.sp,
+                  size: 12,
                   color: const Color(0xFF910F0F),
                 ),
               ),
@@ -102,7 +102,7 @@ class _ReportUserPageState extends ConsumerState<ReportUserPage> {
 
               CommonText(
                 AppLocalizations.of(context)!.additional_details,
-                size: 14.sp,
+                size: 14,
                 fontWeight: FontWeight.w600,
               ),
 
@@ -196,7 +196,7 @@ class _ReportOption extends StatelessWidget {
           children: [
             CommonText(
               title,
-              size: 14.sp,
+              size: 14,
               color: isSelected ? Colors.red : AppColors.textSecondary,
               fontWeight: FontWeight.w500,
             ),

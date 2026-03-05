@@ -62,7 +62,7 @@ void showFilterBottomSheet(BuildContext context) {
                     Center(
                       child: CommonText(
                         AppLocalizations.of(context)!.filters,
-                        size: 18.sp,
+                        size: 18,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
@@ -71,7 +71,7 @@ void showFilterBottomSheet(BuildContext context) {
                     // Vehicle Type
                     CommonText(
                       AppLocalizations.of(context)!.select_vehicle_type,
-                      size: 14.sp,
+                      size: 14,
                       fontWeight: FontWeight.w500,
                     ),
                     SizedBox(height: 8.h),
@@ -117,7 +117,7 @@ void showFilterBottomSheet(BuildContext context) {
 
                     CommonText(
                       AppLocalizations.of(context)!.level,
-                      size: 14.sp,
+                      size: 14,
                       fontWeight: FontWeight.w500,
                     ),
                     SizedBox(height: 8.h),
@@ -165,7 +165,7 @@ void showFilterBottomSheet(BuildContext context) {
                     // Stars
                     CommonText(
                       AppLocalizations.of(context)!.stars,
-                      size: 14.sp,
+                      size: 14,
                       fontWeight: FontWeight.w500,
                     ),
                     SizedBox(height: 8.h),
@@ -202,7 +202,7 @@ void showFilterBottomSheet(BuildContext context) {
                       children: [
                         CommonText(
                           AppLocalizations.of(context)!.verified_profile,
-                          size: 14.sp,
+                          size: 14,
                         ),
                         Spacer(),
                         Radio<FeatureOption>(
@@ -222,7 +222,7 @@ void showFilterBottomSheet(BuildContext context) {
                       children: [
                         CommonText(
                           AppLocalizations.of(context)!.automatic_reservation,
-                          size: 14.sp,
+                          size: 14,
                         ),
                         Spacer(),
                         Radio<FeatureOption>(

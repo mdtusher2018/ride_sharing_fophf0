@@ -169,11 +169,7 @@ class _ConfirmDetailsPageState extends ConsumerState<ConfirmDetailsPage> {
               onTap: _pickDOB,
               prefixIconWidget: Padding(
                 padding: EdgeInsets.all(12.r),
-                child: Icon(
-                  Icons.calendar_month,
-                  color: Colors.grey,
-                  size: 20.sp,
-                ),
+                child: Icon(Icons.calendar_month, color: Colors.grey, size: 20),
               ),
             ),
 

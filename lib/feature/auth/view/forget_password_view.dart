@@ -53,7 +53,7 @@ class _ForgetPasswordPageState extends State<ForgetPasswordPage> {
                         Center(
                           child: CommonText(
                             AppLocalizations.of(context)!.reset_your_password,
-                            size: 18.sp,
+                            size: 18,
                             fontWeight: FontWeight.w600,
                             color: AppColors.primary,
                           ),

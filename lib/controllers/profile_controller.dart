@@ -51,7 +51,7 @@ class ProfileController extends BaseNotifier<ProfileState> {
   }) : super(ProfileState());
 
   Future<void> getProfile() async {
-    safeCall(
+    await safeCall(
       task: () async {
         final response = await apiService.get(
           ApiEndpoints.profile,

@@ -85,7 +85,7 @@ class _OtpVerificationPageState extends ConsumerState<OtpVerificationPage>
                         Center(
                           child: CommonText(
                             AppLocalizations.of(context)!.verification_code,
-                            size: 18.sp,
+                            size: 18,
                             fontWeight: FontWeight.w600,
                             color: AppColors.primary,
                           ),

@@ -34,7 +34,7 @@ Widget savedPlaceCard({
             children: [
               CommonText(
                 savedLocationModel.placeName,
-                size: 14.sp,
+                size: 14,
                 fontWeight: FontWeight.w500,
               ),
               CommonText(savedLocationModel.address, size: 12.sp),

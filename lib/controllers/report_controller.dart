@@ -6,19 +6,27 @@ import 'package:velozaje/models/response/report_subject_response.dart';
 
 class ReportState {
   final List<ReportSubject> data;
+  final bool canIReport;
   final bool isLoading;
   final String? error;
 
-  ReportState({required this.data, this.isLoading = false, this.error});
+  ReportState({
+    required this.data,
+    this.isLoading = false,
+    this.error,
+    this.canIReport = false,
+  });
 
   ReportState copyWith({
     List<ReportSubject>? data,
     bool? isLoading,
     String? error,
+    bool? canIReport,
   }) {
     return ReportState(
       data: data ?? this.data,
       isLoading: isLoading ?? this.isLoading,
+      canIReport: this.canIReport,
       error: error ?? this.error,
     );
   }
@@ -38,6 +46,19 @@ class ReportController extends BaseNotifier<ReportState> {
         final model = ReportSubjectsResponse.fromJson(response);
 
         state = state.copyWith(data: model.data);
+      },
+    );
+  }
+
+  Future<void> canIReport({required String tripId}) async {
+    safeCall(
+      task: () async {
+        final response = await _apiService.get(
+          ApiEndpoints.reportOfSpacificDriverByTrip(tripId),
+        );
+        bool caniReport = response['success'] ?? false;
+
+        state = state.copyWith(canIReport: caniReport);
       },
     );
   }

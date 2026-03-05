@@ -1,17 +1,18 @@
 import 'dart:async';
+import 'dart:developer';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
-import 'package:velozaje/core/services/socket/socket_config.dart';
+import 'package:velozaje/core/services/localstorage/i_local_storage_service.dart';
+import 'package:velozaje/core/services/localstorage/storage_key.dart';
 import 'package:velozaje/core/services/socket/socket_events.dart';
+import 'package:velozaje/core/utils/api_end_points.dart';
 import 'package:velozaje/core/utils/constants.dart';
 import 'package:velozaje/core/utils/extention.dart';
 
 class SocketService {
-  SocketService._internal();
-  static final SocketService _instance = SocketService._internal();
-  factory SocketService() => _instance;
-
+  SocketService(this._localStorageService);
   IO.Socket? _socket;
-  SocketConfig? _config;
+
+  final ILocalStorageService _localStorageService;
 
   final _connectionController = StreamController<bool>.broadcast();
   Stream<bool> get connectionStream => _connectionController.stream;
@@ -22,24 +23,19 @@ class SocketService {
   final Set<String> _activeListeners = {};
   Set<String> get activeListeners => _activeListeners;
 
-  // ------------------ INIT ------------------
-  void init(SocketConfig config) {
-    _config = config;
-  }
-
   // ------------------ CONNECT ------------------
-  void connect() {
+  Future<void> connect() async {
     if (_socket != null && _socket!.connected) return;
-    if (_config == null) {
+    final token = await _localStorageService.getString(StorageKey.accessToken);
+    if (token == null) {
       throw Exception('SocketConfig not initialized');
     }
 
     _socket = IO.io(
-      _config!.url,
+      ApiEndpoints.socketUrl,
       IO.OptionBuilder()
           .setTransports(['websocket'])
           .enableAutoConnect()
-          .setAuth({'token': _config!.token})
           .setReconnectionAttempts(10)
           .setReconnectionDelay(2000)
           .build(),
@@ -47,6 +43,7 @@ class SocketService {
 
     _registerCoreListeners();
     _socket!.connect();
+    log("================socket connected===========");
   }
 
   // ------------------ CORE LISTENERS ------------------
@@ -71,29 +68,16 @@ class SocketService {
   }
 
   // ------------------ EMIT ------------------
-  Future<dynamic> emit(String event, dynamic data) async {
-    if (!isConnected) {
-      return;
-    }
-
+  void emit(String event, dynamic data) async {
     try {
-      _socket!.emitWithAck(
-        event,
-        data,
-        ack: (response) {
-          if (response?['success'] == false) {
-            throw Exception(response['message'] ?? "Unknown error");
-          }
-
-          return response;
-        },
-      );
+      _socket!.emit(event, data);
+      log("Socet Emit: $event with $data=============");
     } catch (e) {
-      if (e is Map<String, dynamic>) {
-        throw Exception(e['message'] ?? "Unknown Error Occoured");
-      } else {
-        throw Exception("Unknown Error Occoured");
-      }
+      log("Socet EmitFaild: $event with $data=============");
+      navigatorKey.currentContext?.showErrorSnackbar(
+        title: "Error",
+        message: e.toString(),
+      );
     }
   }
 
@@ -101,6 +85,7 @@ class SocketService {
   void on(String event, Function(dynamic data) callback) {
     _activeListeners.add(event);
 
+    log('Listening to event: $event========>>>>>>>>>');
     _socket?.on(event, callback);
   }
 

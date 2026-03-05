@@ -140,7 +140,7 @@ class _OnboardingItem extends StatelessWidget {
               Center(
                 child: CommonText(
                   data.title,
-                  size: 20.sp,
+                  size: 20,
                   fontWeight: FontWeight.bold,
                   color: AppColors.white,
                   textAlign: TextAlign.center,
@@ -149,7 +149,7 @@ class _OnboardingItem extends StatelessWidget {
               SizedBox(height: 12.h),
               CommonText(
                 data.subtitle,
-                size: 14.sp,
+                size: 14,
                 color: AppColors.white,
                 textAlign: TextAlign.center,
               ),

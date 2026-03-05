@@ -60,7 +60,7 @@ class _SignInPageState extends ConsumerState<SignInPage> {
                         Center(
                           child: CommonText(
                             AppLocalizations.of(context)!.welcome_back,
-                            size: 18.sp,
+                            size: 18,
                             fontWeight: FontWeight.w600,
                             color: AppColors.primary,
                           ),
@@ -160,7 +160,7 @@ class _SignInPageState extends ConsumerState<SignInPage> {
                                   )!.you_don_t_have_an_account,
                                   style: TextStyle(
                                     color: AppColors.textPrimary,
-                                    fontSize: 14.sp,
+                                    fontSize: 14,
                                   ),
                                 ),
                                 TextSpan(text: "  "),
@@ -179,7 +179,7 @@ class _SignInPageState extends ConsumerState<SignInPage> {
                                     },
                                   style: TextStyle(
                                     color: AppColors.primary,
-                                    fontSize: 14.sp,
+                                    fontSize: 14,
                                     fontWeight: FontWeight.w600,
                                   ),
                                 ),

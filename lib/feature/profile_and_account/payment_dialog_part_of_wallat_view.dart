@@ -92,44 +92,35 @@ void showPayCommissionDialog(
                       },
                 child: CommonText("Cancel"),
               ),
+
               SizedBox(
                 height: 45,
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.primary,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                  ),
-                  onPressed: isLoading
-                      ? null
-                      : () async {
-                          if (!formKey.currentState!.validate()) return;
+                child: ValueListenableBuilder(
+                  valueListenable: controller.isLoading,
+                  builder: (context, value, child) {
+                    return CommonButton(
+                      "Pay",
+                      width: 80,
+                      isLoading: value,
+                      onTap: () async {
+                        if (!formKey.currentState!.validate()) return;
 
-                          setState(() => isLoading = true);
+                        setState(() => isLoading = true);
 
-                          final amount = double.parse(
-                            amountController.text.trim(),
-                          );
+                        final amount = double.parse(
+                          amountController.text.trim(),
+                        );
 
-                          await controller.payCommission(
-                            amount: amount,
-                            description: descriptionController.text.trim(),
-                            midCallFunction: () {
-                              Navigator.pop(context);
-                            },
-                          );
-                        },
-                  child: isLoading
-                      ? const SizedBox(
-                          height: 18,
-                          width: 18,
-                          child: CircularProgressIndicator(
-                            strokeWidth: 2,
-                            color: Colors.white,
-                          ),
-                        )
-                      : CommonText("Pay", color: AppColors.white),
+                        await controller.payCommission(
+                          amount: amount,
+                          description: descriptionController.text.trim(),
+                          midCallFunction: () {
+                            Navigator.pop(context);
+                          },
+                        );
+                      },
+                    );
+                  },
                 ),
               ),
             ],

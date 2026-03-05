@@ -53,7 +53,7 @@ class SignUpPage extends ConsumerWidget {
                         Center(
                           child: CommonText(
                             AppLocalizations.of(context)!.create_account,
-                            size: 18.sp,
+                            size: 18,
                             fontWeight: FontWeight.w600,
                             color: AppColors.primary,
                           ),
@@ -125,7 +125,7 @@ class SignUpPage extends ConsumerWidget {
                                       )!.i_accept_the,
                                       style: TextStyle(
                                         color: AppColors.textPrimary,
-                                        fontSize: 14.sp,
+                                        fontSize: 14,
                                       ),
                                     ),
                                     TextSpan(
@@ -136,7 +136,7 @@ class SignUpPage extends ConsumerWidget {
                                         ..onTap = () {},
                                       style: TextStyle(
                                         color: AppColors.primary,
-                                        fontSize: 14.sp,
+                                        fontSize: 14,
                                         fontWeight: FontWeight.w600,
                                       ),
                                     ),
@@ -185,7 +185,7 @@ class SignUpPage extends ConsumerWidget {
                                   )!.already_have_an_account,
                                   style: TextStyle(
                                     color: AppColors.textPrimary,
-                                    fontSize: 14.sp,
+                                    fontSize: 14,
                                   ),
                                 ),
                                 TextSpan(text: "  "),
@@ -204,7 +204,7 @@ class SignUpPage extends ConsumerWidget {
                                     },
                                   style: TextStyle(
                                     color: AppColors.primary,
-                                    fontSize: 14.sp,
+                                    fontSize: 14,
                                     fontWeight: FontWeight.w600,
                                   ),
                                 ),

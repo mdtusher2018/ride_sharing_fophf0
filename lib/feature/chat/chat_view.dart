@@ -37,11 +37,11 @@ class _ChatPageState extends ConsumerState<ChatPage> {
       ref
           .read(conversationControllerProvider.notifier)
           .loadaSpacificConversation(id: widget.bookingId);
+      ref.read(conversationControllerProvider.notifier).newMessage();
     });
     scrollController.addListener(() {
-      if (scrollController.position.pixels >
-          scrollController.position.maxScrollExtent - 200) {
-        ref.watch(conversationControllerProvider.notifier).loadMore();
+      if (scrollController.position.pixels <= 100) {
+        ref.read(conversationControllerProvider.notifier).loadMore();
       }
     });
   }
@@ -80,8 +80,8 @@ class _ChatPageState extends ConsumerState<ChatPage> {
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                CommonText('Support', size: 15.sp, fontWeight: FontWeight.w600),
-                CommonText('Online', size: 11.sp, color: Colors.green),
+                CommonText('Support', size: 15, fontWeight: FontWeight.w600),
+                CommonText('Online', size: 11, color: Colors.green),
               ],
             ),
           ],
@@ -103,22 +103,23 @@ class _ChatPageState extends ConsumerState<ChatPage> {
                 }
                 return ListView.builder(
                   controller: scrollController,
+                  reverse: true, // 👈 IMPORTANT
                   padding: EdgeInsets.symmetric(
                     horizontal: 16.w,
                     vertical: 12.h,
                   ),
-
                   itemCount: state.items.length + (state.isLoadingMore ? 1 : 0),
-                  reverse: true,
                   itemBuilder: (context, index) {
                     if (index >= state.items.length) {
                       return Center(child: CircularProgressIndicator());
                     }
-                    final msg = state.items.reversed.toList()[index];
+
+                    final msg = state.items[index]; // 👈 No more reversing
+
                     return _ChatBubble(
                       text: msg.content,
                       time: formatDateTime(msg.createdAt),
-                      isMe: msg.sender.id == widget.reciverId,
+                      isMe: msg.sender.id != widget.reciverId,
                     );
                   },
                 );
@@ -146,26 +147,6 @@ class _ChatPageState extends ConsumerState<ChatPage> {
             ),
             child: Row(
               children: [
-                /// 📷 Camera Icon
-                Container(
-                  width: 40.w,
-                  height: 40.w,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: AppColors.grey.withOpacity(0.15),
-                  ),
-                  child: IconButton(
-                    icon: Icon(
-                      Icons.camera_alt,
-                      size: 24.sp,
-                      color: AppColors.primary,
-                    ),
-                    onPressed: () {
-                      // TODO: Open camera or gallery
-                    },
-                  ),
-                ),
-
                 SizedBox(width: 8.w),
 
                 /// ✍️ Message Input
@@ -203,7 +184,7 @@ class _ChatPageState extends ConsumerState<ChatPage> {
                   child: IconButton(
                     icon: Icon(
                       Iconsax.send_2_bold,
-                      size: 18.sp,
+                      size: 18,
                       color: Colors.white,
                     ),
                     onPressed: () {
@@ -267,13 +248,13 @@ class _ChatBubble extends StatelessWidget {
           children: [
             CommonText(
               text,
-              size: 12.sp,
+              size: 12,
               color: isMe ? Colors.white : Colors.black,
             ),
 
             CommonText(
               time,
-              size: 10.sp,
+              size: 10,
               color: isMe ? Colors.white : Colors.grey,
             ),
           ],

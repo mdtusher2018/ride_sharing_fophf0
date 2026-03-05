@@ -12,10 +12,7 @@ import 'package:velozaje/core/services/localstorage/i_local_storage_service.dart
 import 'package:velozaje/controllers/auth_controller.dart';
 import 'package:velozaje/controllers/saved_location_controller.dart';
 import 'package:velozaje/controllers/trip/trips_search_controller.dart';
-import 'package:velozaje/core/services/localstorage/storage_key.dart';
-import 'package:velozaje/core/services/socket/socket_config.dart';
 import 'package:velozaje/core/services/socket/socket_service.dart';
-import 'package:velozaje/core/utils/api_end_points.dart';
 import 'package:velozaje/models/response/chat/messages_for_a_spacific_conversation_response.dart';
 import 'package:velozaje/models/response/trip/booking_response.dart';
 import 'package:velozaje/models/response/trip/driver_published_trips.dart';
@@ -49,11 +46,8 @@ final Provider<IApiService> apiServiceProvider = Provider<IApiService>((ref) {
   return ApiService(client, storage);
 });
 
-final socketServiceProvider = FutureProvider<SocketService>((ref) async {
-  final socketService = SocketService();
-  final storage = ref.read(localStorageProvider);
-  final token = await storage.getString(StorageKey.accessToken) ?? "";
-  socketService.init(SocketConfig(url: ApiEndpoints.baseUrl, token: token));
+final socketServiceProvider = Provider<SocketService>((ref) {
+  final socketService = SocketService(ref.read(localStorageProvider));
   return socketService;
 });
 
@@ -83,7 +77,7 @@ final passengerTripsControllerProvider =
       TripsSearchController,
       PaginationState<PassengerTripModel>
     >((ref) {
-      final apiService = ref.watch(apiServiceProvider);
+      final apiService = ref.read(apiServiceProvider);
       return TripsSearchController(apiService);
     });
 
@@ -92,7 +86,7 @@ final tripsBookingControllerProvider =
       TrippBookController,
       PaginationState<PassengerBookingModel>
     >((ref) {
-      final apiService = ref.watch(apiServiceProvider);
+      final apiService = ref.read(apiServiceProvider);
       return TrippBookController(apiService);
     });
 
@@ -101,7 +95,7 @@ final tripsPublishControllerProvider =
       TripsPublishController,
       PaginationState<DriverTripModel>
     >((ref) {
-      final apiService = ref.watch(apiServiceProvider);
+      final apiService = ref.read(apiServiceProvider);
       return TripsPublishController(apiService);
     });
 
@@ -140,7 +134,8 @@ final conversationControllerProvider =
       ref,
     ) {
       final apiService = ref.read(apiServiceProvider);
-      return ConversationController(apiService);
+      final socket = ref.read(socketServiceProvider);
+      return ConversationController(apiService, socket);
     });
 final reviewControllerProvider =
     StateNotifierProvider<ReviewController, PaginationState<ReviewModel>>((
@@ -158,5 +153,5 @@ final reportControllerProvider =
 final staticContentControllerProvider =
     StateNotifierProvider<StaticContentController, StaticContentState>(
       (ref) =>
-          StaticContentController(apiService: ref.watch(apiServiceProvider)),
+          StaticContentController(apiService: ref.read(apiServiceProvider)),
     );

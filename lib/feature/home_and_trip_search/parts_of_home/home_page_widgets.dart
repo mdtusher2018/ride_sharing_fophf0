@@ -25,7 +25,7 @@ Widget tabButton(String text, bool selected, VoidCallback onTap) {
         ),
         child: CommonText(
           text,
-          size: 14.sp,
+          size: 14,
           fontWeight: FontWeight.w600,
           color: selected ? AppColors.primary : Colors.grey,
         ),
@@ -83,13 +83,13 @@ Widget topBar(BuildContext context, WidgetRef ref) {
             children: [
               CommonText(
                 AppLocalizations.of(context)!.where_to,
-                size: 16.sp,
+                size: 16,
                 fontWeight: FontWeight.w600,
                 color: Colors.white,
               ),
               CommonText(
                 AppLocalizations.of(context)!.find_a_ride_or_send_a_package,
-                size: 12.sp,
+                size: 12,
                 color: Colors.white70,
               ),
             ],
@@ -172,7 +172,7 @@ Widget savedPlaceButtonCard(BuildContext context) {
               children: [
                 CommonText(
                   AppLocalizations.of(context)!.saved_places,
-                  size: 14.sp,
+                  size: 14,
                   fontWeight: FontWeight.w500,
                 ),
               ],
@@ -199,10 +199,7 @@ Widget weightCard(int index, BuildContext context) {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                CommonText(
-                  AppLocalizations.of(context)!.weight_kg,
-                  size: 10.sp,
-                ),
+                CommonText(AppLocalizations.of(context)!.weight_kg, size: 10),
 
                 TextField(
                   keyboardType: TextInputType.number,

@@ -389,7 +389,7 @@ class _CancelRideBottomSheetState extends State<CancelRideBottomSheet> {
 
             CommonText(
               AppLocalizations.of(context)!.cancel_ride,
-              size: 18.sp,
+              size: 18,
               fontWeight: FontWeight.w600,
             ),
 

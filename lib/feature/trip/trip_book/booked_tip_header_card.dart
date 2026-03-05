@@ -110,7 +110,7 @@ class TipHeaderCard extends StatelessWidget {
                         CommonText(
                           AppLocalizations.of(context)!.start_code,
                           color: AppColors.white,
-                          size: 12.sp,
+                          size: 12,
                         ),
                         if (bookingDetails.status == BookingStatus.pending)
                           Row(

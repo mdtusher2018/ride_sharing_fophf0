@@ -45,7 +45,7 @@ class _AllConversationViewState extends ConsumerState<AllConversationView> {
         centerTitle: true,
         title: CommonText(
           AppLocalizations.of(context)!.inbox,
-          size: 21.sp,
+          size: 21,
           fontWeight: FontWeight.w600,
         ),
       ),
@@ -153,7 +153,7 @@ class _ChatTile extends StatelessWidget {
         /// 🧑 Name
         title: CommonText(
           conversation.otherUser.name,
-          size: 15.sp,
+          size: 14,
           fontWeight: FontWeight.w600,
         ),
 
@@ -162,34 +162,39 @@ class _ChatTile extends StatelessWidget {
           padding: EdgeInsets.only(top: 4.h),
           child: CommonText(
             conversation.lastMessage.content,
-            size: 13.sp,
+
             color: AppColors.textSecondary,
             maxline: 1,
           ),
         ),
 
         /// ⏰ Time + 🔔 Unread Badge
-        trailing: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            if (!conversation.lastMessage.isRead)
-              Container(
-                padding: EdgeInsets.all(6),
-                decoration: BoxDecoration(
-                  color: AppColors.error,
-                  shape: BoxShape.circle,
+        trailing: Container(
+          width: 50,
+
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              if (!conversation.lastMessage.isRead)
+                Container(
+                  padding: EdgeInsets.all(6),
+                  decoration: BoxDecoration(
+                    color: AppColors.error,
+                    shape: BoxShape.circle,
+                  ),
+                  child: CommonText(
+                    conversation.unreadCount.toString(),
+                    size: 10,
+                    color: Colors.white,
+                  ),
                 ),
-                child: CommonText(
-                  "".toString(),
-                  size: 10.sp,
-                  color: Colors.white,
-                ),
+              CommonText(
+                conversation.lastMessage.createdAt.customFormat(),
+                size: 11,
+                maxline: 1,
               ),
-            CommonText(
-              conversation.lastMessage.createdAt.customFormat(),
-              size: 11.sp,
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

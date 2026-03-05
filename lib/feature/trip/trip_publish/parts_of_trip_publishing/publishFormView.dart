@@ -99,7 +99,7 @@ class _PublishFormViewState extends State<PublishFormView> {
                         dateTimeController.text.isNotEmpty
                             ? dateTimeController.text
                             : AppLocalizations.of(context)!.time_date,
-                        size: 13.sp,
+                        size: 13,
                       ),
                     ),
                   ],

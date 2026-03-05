@@ -53,7 +53,7 @@ class _RateDriverBottomSheetState extends State<RateDriverBottomSheet> {
             /// Title
             CommonText(
               AppLocalizations.of(context)!.rate_your_driver,
-              size: 18.sp,
+              size: 18,
               fontWeight: FontWeight.w600,
             ),
 
@@ -74,7 +74,7 @@ class _RateDriverBottomSheetState extends State<RateDriverBottomSheet> {
 
             SizedBox(height: 8.h),
 
-            CommonText('Leo Messi', size: 14.sp, fontWeight: FontWeight.w500),
+            CommonText('Leo Messi', size: 14, fontWeight: FontWeight.w500),
 
             SizedBox(height: 20.h),
 
@@ -93,7 +93,7 @@ class _RateDriverBottomSheetState extends State<RateDriverBottomSheet> {
                     padding: EdgeInsets.symmetric(horizontal: 6.w),
                     child: Icon(
                       Icons.star,
-                      size: 32.sp,
+                      size: 32,
                       color: index < selectedRating
                           ? const Color(0xFFF5B400)
                           : Colors.grey.shade500,

@@ -24,6 +24,21 @@ class ConversationModel {
       bookingId: JsonHelper.stringVal(json['bookingId']),
     );
   }
+  ConversationModel copyWith({
+    String? id,
+    _Message? lastMessage,
+    _User? otherUser,
+    int? unreadCount,
+    String? bookingId,
+  }) {
+    return ConversationModel(
+      id: id ?? this.id,
+      lastMessage: lastMessage ?? this.lastMessage,
+      otherUser: otherUser ?? this.otherUser,
+      unreadCount: unreadCount ?? this.unreadCount,
+      bookingId: bookingId ?? this.bookingId,
+    );
+  }
 }
 
 class _Message {

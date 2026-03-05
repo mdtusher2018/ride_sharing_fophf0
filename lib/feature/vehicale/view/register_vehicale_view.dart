@@ -124,7 +124,7 @@ class _RegisterVehiclePageState extends ConsumerState<RegisterVehiclePage> {
                                 AppLocalizations.of(
                                   context,
                                 )!.upload_your_vehicle_image,
-                                size: 12.sp,
+                                size: 12,
                                 color: AppColors.grey,
                               ),
                             ],
@@ -137,7 +137,7 @@ class _RegisterVehiclePageState extends ConsumerState<RegisterVehiclePage> {
 
             CommonText(
               AppLocalizations.of(context)!.select_vehicle_type,
-              size: 14.sp,
+              size: 14,
               fontWeight: FontWeight.w500,
             ),
             SizedBox(height: 8.h),

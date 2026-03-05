@@ -38,7 +38,7 @@ class ReferralsPage extends StatelessWidget {
             Center(
               child: CommonText(
                 AppLocalizations.of(context)!.percent_commission_free,
-                size: 18.sp, // Scalable font size
+                size: 18, // Scalable font size
                 color: AppColors.primary,
                 isBold: true,
               ),
@@ -94,7 +94,7 @@ class ReferralsPage extends StatelessWidget {
                     CommonText(AppLocalizations.of(context)!.your_code),
                     CommonText(
                       referrals.isEmpty ? "N/A" : referrals,
-                      size: 24.sp, // Scalable font size
+                      size: 24, // Scalable font size
                       color: AppColors.primary,
                       isBold: true,
                     ),
@@ -148,7 +148,7 @@ class ReferralsPage extends StatelessWidget {
           child: Icon(
             icon,
             color: AppColors.primary,
-            size: 20.sp, // Scalable icon size
+            size: 20, // Scalable icon size
           ),
         ),
         SizedBox(width: 10.w), // Scalable width

@@ -2,7 +2,10 @@ import 'dart:developer';
 
 import 'package:velozaje/controllers/paginated_controller.dart';
 import 'package:velozaje/core/services/api/i_api_service.dart';
+import 'package:velozaje/core/services/socket/socket_events.dart';
+import 'package:velozaje/core/services/socket/socket_service.dart';
 import 'package:velozaje/core/utils/api_end_points.dart';
+import 'package:velozaje/feature/root_view.dart';
 import 'package:velozaje/models/conversation_model.dart';
 import 'package:velozaje/models/pagenation_meta_model.dart';
 
@@ -10,6 +13,7 @@ import 'package:velozaje/models/response/chat/all_conversation_response.dart';
 import 'package:velozaje/models/response/chat/messages_for_a_spacific_conversation_response.dart';
 import 'package:velozaje/models/response/chat/send_message_response.dart';
 import 'package:velozaje/models/response/chat/unread_message_count_response.dart';
+import 'package:velozaje/models/response/socket_response/new_message_model_response.dart';
 
 class ConversationState {
   final List<ConversationModel> allConversations;
@@ -45,12 +49,11 @@ class ConversationState {
 
 class ConversationController extends PaginationNotifier<Message> {
   final IApiService apiService;
+  final SocketService socketService;
 
-  // Constructor
-  ConversationController(this.apiService)
+  ConversationController(this.apiService, this.socketService)
     : super(extraState: ConversationState.initial());
 
-  // Fetch all conversations
   Future<void> getAllConversations() async {
     safeCall(
       task: () async {
@@ -103,7 +106,6 @@ class ConversationController extends PaginationNotifier<Message> {
     return (messagesResponse.data.messages, messagesResponse.data.pagination);
   }
 
-  // Fetch unread message count
   Future<void> getUnreadMessageCount() async {
     final response = await apiService.get(ApiEndpoints.unreadMessage);
     final result = UnreadMessageCountResponse.fromJson(response);
@@ -122,16 +124,22 @@ class ConversationController extends PaginationNotifier<Message> {
       showSuccessSnack: false,
       task: () async {
         final currentState = state.extraState as ConversationState?;
-        await apiService.get(
+        await apiService.patch(
           ApiEndpoints.conversationMarkAsRead(
             currentState?.selectedConversation ?? "",
           ),
+          {},
         );
       },
     );
   }
 
-  // Send message for a specific booking
+  void makeAllRead() {
+    final currentState = state.extraState as ConversationState?;
+    if (currentState == null) return;
+    state = state.copyWith(extraState: currentState.copyWith(unreadCount: 0));
+  }
+
   Future<void> sendMessage({
     required String content,
     required String bookingId,
@@ -152,8 +160,8 @@ class ConversationController extends PaginationNotifier<Message> {
         final result = SendMessageResponse.fromJson(response);
         state = state.copyWith(
           items: [
-            ...state.items,
             ...[result.data],
+            ...state.items,
           ],
         );
       },
@@ -161,28 +169,41 @@ class ConversationController extends PaginationNotifier<Message> {
     );
   }
 
-  // // Get conversation details for a specific booking
-  // Future<void> getConversationForBooking(String bookingId) async {
-  //   final response = await apiService.get(
-  //     ApiEndpoints.conversationForSpacificBooking(bookingId),
-  //   );
-  //   final result = ConversationDetailsResponse.fromJson(response);
-  //   final conversation = result.data;
+  void joinPrivateRoom(String userId) {
+    socketService.on(SocketEvents.joined, (data) {
+      log(data.toString());
+    });
+    socketService.emit(SocketEvents.join, userId);
+    newMessage();
+  }
 
-  //   // Set conversation details in the state
-  //   setState(
-  //     (state) => state.copyWith(
-  //       allConversations: [conversation], // Assuming one booking conversation
-  //     ),
-  //   );
-  // }
+  //have a issue unread count increase multiple times
+  void newMessage() {
+    socketService.on(SocketEvents.newMessage, (data) {
+      final response = NewMessageSocketResponse.fromJson(data);
 
-  // // Mark messages as read
-  // Future<void> markMessagesAsRead(String bookingId) async {
-  //   final response = await apiService.post(ApiEndpoints.readMessage(bookingId));
-  //   final result = MarkMessagesReadResponse.fromJson(response);
+      final currentState = state.extraState as ConversationState?;
 
-  //   // Update unread count and state
-  //   setState((state) => state.copyWith(unreadCount: 0));
-  // }
+      if (currentState == null) return;
+      log("current page= ${RootPage.currentIndex}");
+
+      final updatedConversations = currentState.allConversations.map((
+        conversation,
+      ) {
+        if (conversation.bookingId == response.bookingId) {
+          return conversation.copyWith(
+            unreadCount: (conversation.unreadCount + 1),
+          );
+        }
+        return conversation;
+      }).toList();
+
+      state = state.copyWith(
+        extraState: currentState.copyWith(
+          allConversations: updatedConversations,
+          unreadCount: RootPage.currentIndex != 2 ? 1 : 0,
+        ),
+      );
+    });
+  }
 }

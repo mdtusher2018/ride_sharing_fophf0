@@ -42,7 +42,7 @@ class _TipsViewState extends State<TipsView> {
         centerTitle: true,
         title: CommonText(
           AppLocalizations.of(context)!.my_tips,
-          size: 18.sp,
+          size: 18,
           fontWeight: FontWeight.w600,
         ),
       ),

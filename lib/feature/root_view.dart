@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:velozaje/controllers/conversation_controller.dart';
 import 'package:velozaje/controllers/profile_controller.dart';
 import 'package:velozaje/core/providers.dart';
 import 'package:velozaje/core/utils/extention.dart';
@@ -28,12 +29,16 @@ class _RootPageState extends ConsumerState<RootPage> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPersistentFrameCallback((timeStamp) async {
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
       if (ref.read(profileControllerProvider).user == null) {
-        ref.read(profileControllerProvider.notifier).getProfile();
-        final socket = await ref.read(socketServiceProvider.future);
-        socket.connect();
+        await ref.read(profileControllerProvider.notifier).getProfile();
       }
+      final socket = ref.read(socketServiceProvider);
+
+      await socket.connect();
+      ref
+          .read(conversationControllerProvider.notifier)
+          .joinPrivateRoom(ref.read(profileControllerProvider).user!.id);
     });
   }
 
@@ -65,10 +70,22 @@ class _RootPageState extends ConsumerState<RootPage> {
               unselected: 'assest/nav/calendar_unselected.png',
             ),
             SizedBox(),
-            _navItem(
-              index: 2,
-              selected: 'assest/nav/chat_selected.png',
-              unselected: 'assest/nav/chat_unselected.png',
+            Badge(
+              isLabelVisible:
+                  (ref.watch(conversationControllerProvider).extraState
+                          as ConversationState)
+                      .unreadCount >
+                  0,
+              smallSize: 16,
+
+              child: Padding(
+                padding: const EdgeInsets.all(6.0),
+                child: _navItem(
+                  index: 2,
+                  selected: 'assest/nav/chat_selected.png',
+                  unselected: 'assest/nav/chat_unselected.png',
+                ),
+              ),
             ),
             _navItem(
               index: 3,
@@ -133,6 +150,9 @@ class _RootPageState extends ConsumerState<RootPage> {
   }) {
     return GestureDetector(
       onTap: () {
+        if (RootPage.currentIndex == 2) {
+          ref.read(conversationControllerProvider.notifier).makeAllRead();
+        }
         setState(() => RootPage.currentIndex = index);
       },
       child: Image.asset(

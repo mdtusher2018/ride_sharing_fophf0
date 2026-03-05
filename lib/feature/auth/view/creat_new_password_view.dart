@@ -55,7 +55,7 @@ class _CreateNewPasswordPageState extends State<CreateNewPasswordPage> {
                         Center(
                           child: CommonText(
                             AppLocalizations.of(context)!.create_new_password,
-                            size: 18.sp,
+                            size: 18,
                             fontWeight: FontWeight.w600,
                             color: AppColors.primary,
                           ),
