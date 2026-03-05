@@ -24,7 +24,12 @@ part 'booked_tip_header_card.dart';
 
 class BookedTipDetailsView extends ConsumerStatefulWidget {
   final String id;
-  const BookedTipDetailsView({super.key, required this.id});
+  final String tripId;
+  const BookedTipDetailsView({
+    super.key,
+    required this.id,
+    required this.tripId,
+  });
 
   @override
   ConsumerState<BookedTipDetailsView> createState() =>
@@ -42,6 +47,9 @@ class _BookedTipDetailsViewState extends ConsumerState<BookedTipDetailsView> {
       ref
           .read(tripsBookingControllerProvider.notifier)
           .bookedTripDetailsById(id: widget.id);
+      ref
+          .read(passengerTripsControllerProvider.notifier)
+          .getTripDetails(tripId: widget.tripId);
     });
   }
 
@@ -75,6 +83,9 @@ class _BookedTipDetailsViewState extends ConsumerState<BookedTipDetailsView> {
   @override
   Widget build(BuildContext context) {
     final controller = ref.watch(tripsBookingControllerProvider.notifier);
+    final passengerController = ref.watch(
+      passengerTripsControllerProvider.notifier,
+    );
     return Scaffold(
       body: Column(
         children: [
@@ -155,6 +166,9 @@ class _BookedTipDetailsViewState extends ConsumerState<BookedTipDetailsView> {
                     ref
                         .read(tripsBookingControllerProvider.notifier)
                         .bookedTripDetailsById(id: widget.id);
+                    ref
+                        .read(passengerTripsControllerProvider.notifier)
+                        .getTripDetails(tripId: widget.tripId);
                   },
                   child: SingleChildScrollView(
                     physics: AlwaysScrollableScrollPhysics(),
@@ -191,95 +205,103 @@ class _BookedTipDetailsViewState extends ConsumerState<BookedTipDetailsView> {
                             ),
                             SizedBox(height: 16.h),
 
-                            Card(
-                              color: AppColors.white,
-                              child: Padding(
-                                padding: EdgeInsets.all(16),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    CommonText(
-                                      AppLocalizations.of(context)!.passengers,
-                                      size: 16,
-                                      isBold: true,
+                            ValueListenableBuilder(
+                              valueListenable: passengerController.isLoading,
+                              builder: (context, value, child) {
+                                if (value) {
+                                  return Center(
+                                    child: CircularProgressIndicator(),
+                                  );
+                                }
+                                if (passengerController.tripDetails == null) {
+                                  return Center(
+                                    child: CommonText(
+                                      "Faield to fetch Passenger details",
                                     ),
-                                    SizedBox(height: 8.h),
+                                  );
+                                }
 
-                                    ...List.generate(4, (index) {
-                                      return InkWell(
-                                        onTap: () {},
-                                        child: Container(
-                                          margin: EdgeInsets.symmetric(
-                                            vertical: 8,
-                                          ),
-                                          child: Row(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.center,
-                                            children: [
-                                              // Leading image container
-                                              Container(
-                                                width: 40,
-                                                height: 40,
-                                                margin: EdgeInsets.only(
-                                                  right: 10,
-                                                ),
-                                                decoration: BoxDecoration(
-                                                  image: DecorationImage(
-                                                    image: NetworkImage(
-                                                      "https://randomuser.me/api/portraits/men/32.jpg",
-                                                    ),
-                                                    fit: BoxFit.cover,
-                                                  ),
-                                                  borderRadius:
-                                                      BorderRadius.circular(8),
-                                                ),
+                                final passengers = passengerController
+                                    .tripDetails!
+                                    .data
+                                    .passengers;
+                                if (passengers.isEmpty) return SizedBox();
+                                return Card(
+                                  color: AppColors.white,
+                                  child: Padding(
+                                    padding: EdgeInsets.all(16),
+                                    child: Column(
+                                      children: [
+                                        CommonText(
+                                          AppLocalizations.of(
+                                            context,
+                                          )!.passengers,
+                                          size: 16,
+                                          isBold: true,
+                                        ),
+                                        SizedBox(height: 8.h),
+                                        Column(
+                                          children: List.generate(passengers.length, (
+                                            index,
+                                          ) {
+                                            return Container(
+                                              margin: EdgeInsets.symmetric(
+                                                vertical: 8,
                                               ),
-
-                                              // Title and Subtitle section
-                                              Expanded(
-                                                child: Column(
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
-                                                  children: [
-                                                    // Title text
-                                                    CommonText(
-                                                      "text",
-                                                      size: 14,
-                                                      isBold: true,
-                                                    ),
-
-                                                    // Subtitle row with rating
-                                                    Row(
+                                              child: Row(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.center,
+                                                children: [
+                                                  CommonImage(
+                                                    path: passengers[index]
+                                                        .passenger
+                                                        .image,
+                                                    width: 40,
+                                                    height: 40,
+                                                  ),
+                                                  SizedBox(width: 12),
+                                                  Expanded(
+                                                    child: Column(
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .start,
                                                       children: [
-                                                        Icon(
-                                                          Icons.star,
-                                                          color: Colors.orange,
-                                                          size: 16,
+                                                        CommonText(
+                                                          passengers[index]
+                                                              .passenger
+                                                              .fullName,
+                                                          size: 14,
+                                                          maxline: 1,
+                                                          isBold: true,
                                                         ),
-                                                        SizedBox(width: 8),
-                                                        CommonText("4.9"),
+
+                                                        // Subtitle row with rating
+                                                        CommonText(
+                                                          "Booked at: ${formatDateTime(passengers[index].bookedAt)}",
+                                                          maxline: 1,
+                                                        ),
                                                       ],
                                                     ),
-                                                  ],
-                                                ),
-                                              ),
+                                                  ),
 
-                                              // Trailing arrow icon
-                                              Icon(
-                                                Icons
-                                                    .arrow_forward_ios_outlined,
-                                                size: 16,
+                                                  // Trailing arrow icon
+                                                  Icon(
+                                                    Icons
+                                                        .arrow_forward_ios_outlined,
+                                                    size: 16,
+                                                  ),
+                                                ],
                                               ),
-                                            ],
-                                          ),
+                                            );
+                                          }),
                                         ),
-                                      );
-                                    }),
-                                  ],
-                                ),
-                              ),
+                                      ],
+                                    ),
+                                  ),
+                                );
+                              },
                             ),
+
                             SizedBox(height: 16.h),
                             Row(
                               spacing: 16.w,
@@ -289,17 +311,6 @@ class _BookedTipDetailsViewState extends ConsumerState<BookedTipDetailsView> {
                                     AppLocalizations.of(context)!.claim,
                                     color: Colors.transparent,
                                     boarder: Border.all(color: AppColors.error),
-
-                                    onTap: () {
-                                      // Navigator.push(
-                                      //   context,
-                                      //   MaterialPageRoute(
-                                      //     builder: (context) {
-                                      //       return StartTipDetailsPage();
-                                      //     },
-                                      //   ),
-                                      // );
-                                    },
 
                                     iconWidget: Icon(
                                       Icons.warning_amber,
