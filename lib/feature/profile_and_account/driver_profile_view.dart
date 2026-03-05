@@ -13,8 +13,13 @@ import 'package:velozaje/res/common_image.dart';
 import 'package:velozaje/res/common_text.dart';
 
 class DriverProfileView extends ConsumerStatefulWidget {
-  const DriverProfileView({super.key, required this.id});
-  final String id;
+  const DriverProfileView({
+    super.key,
+    required this.id,
+    required this.tripId,
+    required this.bookingId,
+  });
+  final String id, tripId, bookingId;
 
   @override
   ConsumerState<DriverProfileView> createState() => _DriverProfileViewState();
@@ -23,12 +28,14 @@ class DriverProfileView extends ConsumerStatefulWidget {
 class _DriverProfileViewState extends ConsumerState<DriverProfileView> {
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       ref
           .read(profileControllerProvider.notifier)
           .getProfileById(id: widget.id);
+      ref
+          .read(reportControllerProvider.notifier)
+          .canIReport(tripId: widget.tripId);
     });
   }
 
@@ -42,21 +49,43 @@ class _DriverProfileViewState extends ConsumerState<DriverProfileView> {
       appBar: commonAppBar(
         context,
         title: AppLocalizations.of(context)!.driver_profile,
-        actionWidget: InkWell(
-          onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) {
-                  return ReportUserPage(driverId: widget.id);
+        actionWidget: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            if (ref.watch(reportControllerProvider).canIReport)
+              InkWell(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) {
+                        return ReportUserPage(
+                          driverId: widget.id,
+                          bookingId: widget.bookingId,
+                          tripId: widget.tripId,
+                        );
+                      },
+                    ),
+                  );
                 },
+                child: Badge(
+                  label: Text(
+                    ref
+                        .watch(reportControllerProvider)
+                        .reportCount
+                        .toStringAsFixed(0),
+                  ),
+                  isLabelVisible:
+                      (ref.watch(reportControllerProvider).reportCount > 0),
+                  padding: EdgeInsets.all(0),
+                  child: Icon(
+                    Icons.warning_amber_rounded,
+                    color: Colors.red,
+                    size: 32,
+                  ),
+                ),
               ),
-            );
-          },
-          child: Padding(
-            padding: EdgeInsets.only(right: 16),
-            child: Icon(Icons.warning_amber_rounded, color: Colors.red),
-          ),
+          ],
         ),
       ),
 
@@ -72,6 +101,9 @@ class _DriverProfileViewState extends ConsumerState<DriverProfileView> {
           return RefreshIndicator(
             onRefresh: () async {
               controller.getProfileById(id: widget.id);
+              ref
+                  .read(reportControllerProvider.notifier)
+                  .canIReport(tripId: widget.tripId);
             },
             child: SingleChildScrollView(
               physics: AlwaysScrollableScrollPhysics(),

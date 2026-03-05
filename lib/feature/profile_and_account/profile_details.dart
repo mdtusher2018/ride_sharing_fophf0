@@ -25,7 +25,6 @@ class ProfileDetailsPage extends ConsumerStatefulWidget {
 class _ProfileDetailsPageState extends ConsumerState<ProfileDetailsPage> {
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       ref.read(profileControllerProvider.notifier).getProfile();
@@ -60,7 +59,7 @@ class _ProfileDetailsPageState extends ConsumerState<ProfileDetailsPage> {
           ),
         ),
       ),
-      floatingActionButton: (state.user!.vehicale == null)
+      floatingActionButton: (state.user == null || state.user!.vehicale == null)
           ? FloatingActionButton(
               onPressed: () {
                 Navigator.push(
@@ -82,7 +81,7 @@ class _ProfileDetailsPageState extends ConsumerState<ProfileDetailsPage> {
             return Center(child: CircularProgressIndicator());
           }
           if (!isLoading && state.user == null) {
-            return CommonText("Could not fetch user details");
+            return Center(child: CommonText("Could not fetch user details"));
           }
           return RefreshIndicator(
             onRefresh: () async {

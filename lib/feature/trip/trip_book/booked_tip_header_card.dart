@@ -312,7 +312,11 @@ class TipHeaderCard extends StatelessWidget {
               context,
               MaterialPageRoute(
                 builder: (context) {
-                  return DriverProfileView(id: bookingDetails.driver.id);
+                  return DriverProfileView(
+                    id: bookingDetails.driver.id,
+                    tripId: bookingDetails.trip.id,
+                    bookingId: bookingDetails.id,
+                  );
                 },
               ),
             );

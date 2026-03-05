@@ -7,12 +7,20 @@ import 'package:velozaje/core/utils/app_colors.dart';
 import 'package:velozaje/core/utils/extention.dart';
 import 'package:velozaje/res/common_appbar.dart';
 import 'package:velozaje/res/common_button.dart';
+import 'package:velozaje/res/common_image.dart';
 import 'package:velozaje/res/common_text.dart';
 import 'package:velozaje/res/common_text_field.dart';
 
 class ReportUserPage extends ConsumerStatefulWidget {
-  const ReportUserPage({super.key, required this.driverId});
+  const ReportUserPage({
+    super.key,
+    required this.driverId,
+    required this.bookingId,
+    required this.tripId,
+  });
   final String driverId;
+  final String bookingId;
+  final String tripId;
 
   @override
   ConsumerState<ReportUserPage> createState() => _ReportUserPageState();
@@ -28,6 +36,9 @@ class _ReportUserPageState extends ConsumerState<ReportUserPage> {
   void initState() {
     super.initState();
     ref.read(reportControllerProvider.notifier).fetchReportSubjects();
+    ref
+        .read(reportControllerProvider.notifier)
+        .reportsFromOthersUser(tripId: widget.tripId);
   }
 
   @override
@@ -42,115 +53,227 @@ class _ReportUserPageState extends ConsumerState<ReportUserPage> {
       ),
       body: Padding(
         padding: EdgeInsets.symmetric(horizontal: 20.w),
-        child: SingleChildScrollView(
-          physics: AlwaysScrollableScrollPhysics(),
+        child: RefreshIndicator(
+          onRefresh: () async {
+            controller.fetchReportSubjects();
+            controller.reportsFromOthersUser(tripId: widget.tripId);
+          },
+          child: SingleChildScrollView(
+            physics: AlwaysScrollableScrollPhysics(),
 
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              SizedBox(height: 16.h),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SizedBox(height: 16.h),
 
-              /// Warning box
-              Container(
-                padding: EdgeInsets.all(12.r),
-                decoration: BoxDecoration(
-                  color: const Color(0xFFFFDDDD),
-                  borderRadius: BorderRadius.circular(10.r),
+                /// Warning box
+                Container(
+                  padding: EdgeInsets.all(12.r),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFFFDDDD),
+                    borderRadius: BorderRadius.circular(10.r),
+                  ),
+                  child: CommonText(
+                    AppLocalizations.of(
+                      context,
+                    )!.please_select_a_reason_for_reporting_osbaldo_garcia_this_is_anonymous_and_helps_keep_our_community_safe,
+
+                    size: 12,
+                    color: const Color(0xFF910F0F),
+                  ),
                 ),
-                child: CommonText(
-                  AppLocalizations.of(
-                    context,
-                  )!.please_select_a_reason_for_reporting_osbaldo_garcia_this_is_anonymous_and_helps_keep_our_community_safe,
 
-                  size: 12,
-                  color: const Color(0xFF910F0F),
-                ),
-              ),
+                SizedBox(height: 20.h),
 
-              SizedBox(height: 20.h),
+                ...List.generate(state.reportsFromOthersUser.length, (index) {
+                  final report = state.reportsFromOthersUser[index];
+                  return Container(
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    padding: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        ListTile(
+                          contentPadding: EdgeInsets.all(0),
+                          leading: ClipRRect(
+                            borderRadius: BorderRadius.circular(8),
+                            child: CommonImage(
+                              path: report.reportedUserImage,
+                              sourceType: ImageSourceType.network,
+                              width: 50,
+                              height: 50,
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                          title: CommonText(report.reportedUserName, size: 14),
+                          subtitle: Row(
+                            children: [
+                              Container(
+                                padding: EdgeInsets.symmetric(
+                                  horizontal: 8,
+                                  vertical: 2,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: AppColors.primary,
+                                  borderRadius: BorderRadius.circular(50),
+                                ),
+                                child: CommonText(
+                                  report.reason,
 
-              /// Reasons (dynamic)
-              ValueListenableBuilder(
-                valueListenable: controller.isLoading,
-                builder: (_, isLoading, _) {
-                  if (isLoading) {
-                    return Center(child: CircularProgressIndicator());
-                  }
-                  if (!isLoading && state.data.isEmpty) {
-                    return CommonText("Could not fetch any report reason");
-                  }
-                  final reasons = state.data;
-                  return Column(
-                    children: [
-                      ...List.generate(reasons.length, (index) {
-                        return _ReportOption(
-                          title: reasons[index].title,
-                          isSelected: selectedIndex == index,
-                          onTap: () {
-                            setState(() {
-                              selectedIndex = index;
-                              selectedSubjectId = reasons[index].id;
-                            });
-                          },
-                        );
-                      }),
-                    ],
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        CommonText(report.additionalDetails),
+                        Row(
+                          spacing: 16,
+                          children: [
+                            Expanded(
+                              child: Row(
+                                spacing: 4,
+                                children: [
+                                  Icon(Icons.verified_user_outlined, size: 18),
+                                  CommonText(
+                                    "${report.verificationCount} Verifications",
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              spacing: 4,
+                              children: [
+                                SizedBox(
+                                  height: 24,
+                                  width: 70,
+
+                                  child: CommonButton(
+                                    "Unverify",
+                                    textSize: 12,
+                                    color: Colors.grey,
+                                    onTap: () {
+                                      controller.unverifyAReport(
+                                        reportId: report.id,
+                                        context: context,
+                                      );
+                                    },
+                                  ),
+                                ),
+                                SizedBox(
+                                  height: 24,
+                                  width: 70,
+
+                                  child: CommonButton(
+                                    "Verify",
+                                    textSize: 12,
+                                    onTap: () {
+                                      controller.verifyAReport(
+                                        reportId: report.id,
+                                        context: context,
+                                      );
+                                    },
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
                   );
-                },
-              ),
-              SizedBox(height: 24.h),
+                }),
 
-              CommonText(
-                AppLocalizations.of(context)!.additional_details,
-                size: 14,
-                fontWeight: FontWeight.w600,
-              ),
+                SizedBox(height: 24.h),
 
-              SizedBox(height: 10.h),
+                /// Reasons (dynamic)
+                ValueListenableBuilder(
+                  valueListenable: controller.isLoading,
+                  builder: (_, isLoading, _) {
+                    if (isLoading) {
+                      return Center(child: CircularProgressIndicator());
+                    }
+                    if (!isLoading && state.data.isEmpty) {
+                      return CommonText("Could not fetch any report reason");
+                    }
+                    final reasons = state.data;
+                    return Column(
+                      children: [
+                        ...List.generate(reasons.length, (index) {
+                          return _ReportOption(
+                            title: reasons[index].title,
+                            isSelected: selectedIndex == index,
+                            onTap: () {
+                              setState(() {
+                                selectedIndex = index;
+                                selectedSubjectId = reasons[index].id;
+                              });
+                            },
+                          );
+                        }),
+                      ],
+                    );
+                  },
+                ),
+                SizedBox(height: 24.h),
 
-              CommonTextField(
-                controller: detailsController,
-                hintText: AppLocalizations.of(
-                  context,
-                )!.please_describe_what_happened,
-                minLine: 4,
-                keyboardType: TextInputType.multiline,
-                boarderColor: Colors.transparent,
-              ),
-              SizedBox(height: 10.h),
+                CommonText(
+                  AppLocalizations.of(context)!.additional_details,
+                  size: 14,
+                  fontWeight: FontWeight.w600,
+                ),
 
-              /// Submit button
-              CommonButton(
-                AppLocalizations.of(context)!.submit_report,
-                color: Colors.red.shade600,
-                textColor: Colors.white,
-                isLoading: state.isLoading,
-                textalign: TextAlign.center,
-                height: 50,
-                onTap: (selectedSubjectId == null)
-                    ? () {
-                        context.showErrorSnackbar(
-                          title: "Validation Error",
-                          message: "Please select a report subject",
-                        );
-                      }
-                    : () async {
-                        await controller.submitAReport(
-                          reportedUserId: widget.driverId,
-                          reportSubjectId: selectedSubjectId!,
-                          additionalDetails: detailsController.text.trim(),
-                          onCompleate: () {
-                            selectedIndex = -1;
-                            selectedSubjectId = null;
-                            setState(() {});
-                          },
-                        );
-                        // _showReportSubmitDialog(context);
-                      },
-              ),
+                SizedBox(height: 10.h),
 
-              SizedBox(height: 20.h),
-            ],
+                CommonTextField(
+                  controller: detailsController,
+                  hintText: AppLocalizations.of(
+                    context,
+                  )!.please_describe_what_happened,
+                  minLine: 4,
+                  keyboardType: TextInputType.multiline,
+                  boarderColor: Colors.transparent,
+                ),
+                SizedBox(height: 20.h),
+
+                /// Submit button
+                CommonButton(
+                  AppLocalizations.of(context)!.submit_report,
+                  color: Colors.red.shade600,
+                  textColor: Colors.white,
+                  isLoading: state.isLoading,
+                  textalign: TextAlign.center,
+                  height: 50,
+                  onTap: (selectedSubjectId == null)
+                      ? () {
+                          context.showErrorSnackbar(
+                            title: "Validation Error",
+                            message: "Please select a report subject",
+                          );
+                        }
+                      : () async {
+                          await controller.submitAReport(
+                            reportedUserId: widget.driverId,
+                            reportSubjectId: selectedSubjectId!,
+                            bookingId: widget.bookingId,
+                            additionalDetails: detailsController.text.trim(),
+                            onCompleate: () {
+                              selectedIndex = -1;
+                              selectedSubjectId = null;
+                              setState(() {});
+                            },
+                          );
+                          // _showReportSubmitDialog(context);
+                        },
+                ),
+
+                SizedBox(height: 20.h),
+              ],
+            ),
           ),
         ),
       ),

@@ -291,7 +291,11 @@ class _HeaderCardState extends State<_HeaderCard> {
               context,
               MaterialPageRoute(
                 builder: (context) {
-                  return DriverProfileView(id: widget.trip.driver?.id ?? "");
+                  return DriverProfileView(
+                    id: widget.trip.driver?.id ?? "",
+                    tripId: widget.trip.id,
+                    bookingId: "",
+                  );
                 },
               ),
             );

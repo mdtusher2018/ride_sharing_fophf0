@@ -15,8 +15,8 @@ class ReportSubjectsResponse {
     return ReportSubjectsResponse(
       success: JsonHelper.boolVal(json['success']),
       message: JsonHelper.stringVal(json['message']),
-      data: JsonHelper.safeList(
-        json['notifications'],
+      data: JsonHelper.safeList<ReportSubject>(
+        json['data'],
         (e) => ReportSubject.fromJson(e),
       ),
     );

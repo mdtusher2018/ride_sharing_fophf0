@@ -73,7 +73,9 @@ class ApiEndpoints {
   static const String submitAReport = "reports";
   static String reportOfSpacificDriver(String userId) => "reports/user/$userId";
   static String reportOfSpacificDriverByTrip(String tripId) =>
-      "/reports/trip/$tripId";
+      "reports/trip/$tripId";
+  static String reportVerification(String reportId) =>
+      "reports/$reportId/verify";
 
   //static-content
   static const String getTermsAndCondition = "terms-and-conditions";
