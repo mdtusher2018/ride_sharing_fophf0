@@ -878,4 +878,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get save => 'Guardar';
+
+  @override
+  String get register_your_car => 'Registra tu coche en España';
 }

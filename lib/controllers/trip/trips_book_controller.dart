@@ -171,6 +171,22 @@ class TrippBookController extends PaginationNotifier<PassengerBookingModel> {
     );
   }
 
+  Future<void> cancelBookingByUser({
+    required String bookingId,
+    required String reason,
+  }) async {
+    await safeCall(
+      task: () async {
+        await apiService.patch(ApiEndpoints.cancelTripByUser(bookingId), {
+          "reason": reason,
+        });
+      },
+      successMessage: "Booking cancel successfully",
+      showSuccessSnack: true,
+      showLoading: false,
+    );
+  }
+
   Future<void> verifyOtpToStartRide({
     required String bookingId,
     required String otp,

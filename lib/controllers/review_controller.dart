@@ -32,7 +32,7 @@ class ReviewController extends PaginationNotifier<ReviewModel> {
     return await safeCall<bool>(
       task: () async {
         final res = await apiService.post(ApiEndpoints.giveReview, {
-          "bookingld": bookingld,
+          "bookingId": bookingld,
           "rating": rating,
           "review": review,
         });

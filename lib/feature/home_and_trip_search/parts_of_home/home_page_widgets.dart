@@ -65,7 +65,10 @@ Widget topBar(BuildContext context, WidgetRef ref) {
       ),
       decoration: BoxDecoration(
         color: AppColors.primary,
-        borderRadius: BorderRadius.circular(16.r),
+        borderRadius: BorderRadius.only(
+          bottomLeft: Radius.circular(16.r),
+          bottomRight: Radius.circular(16.r),
+        ),
       ),
       child: Row(
         children: [

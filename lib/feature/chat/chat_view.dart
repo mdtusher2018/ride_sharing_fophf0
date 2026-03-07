@@ -69,8 +69,7 @@ class _ChatPageState extends ConsumerState<ChatPage> {
             CircleAvatar(
               radius: 21.r,
               child: CommonImage(
-                path:
-                    "https://static.vecteezy.com/system/resources/previews/002/002/403/non_2x/man-with-beard-avatar-character-isolated-icon-free-vector.jpg",
+                path: widget.reciverImage,
                 sourceType: ImageSourceType.network,
                 width: 36.w,
                 height: 36.w,
@@ -80,7 +79,11 @@ class _ChatPageState extends ConsumerState<ChatPage> {
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                CommonText('Support', size: 15, fontWeight: FontWeight.w600),
+                CommonText(
+                  widget.reciverName,
+                  size: 15,
+                  fontWeight: FontWeight.w600,
+                ),
                 CommonText('Online', size: 11, color: Colors.green),
               ],
             ),

@@ -12,6 +12,7 @@ import 'package:velozaje/feature/profile_and_account/profile_details.dart';
 import 'package:velozaje/feature/profile_and_account/referal_view.dart';
 import 'package:velozaje/feature/profile_and_account/terms_and_conditions_view.dart';
 import 'package:velozaje/feature/profile_and_account/wallet_view.dart';
+import 'package:velozaje/feature/vehicale/view/register_vehicale_view.dart';
 import 'package:velozaje/feature/widget/common_confirmnation_dialog.dart';
 import 'package:velozaje/main.dart';
 import 'package:velozaje/core/utils/app_colors.dart';
@@ -134,21 +135,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
                     },
                   ),
                   _divider(),
-                  // _tile(
-                  //   AppLocalizations.of(context)!.payment_methods,
-                  //   "assest/icon/payment.png",
-                  //   ontap: () {
-                  //     Navigator.push(
-                  //       context,
-                  //       MaterialPageRoute(
-                  //         builder: (context) {
-                  //           return PaymentMethodPage();
-                  //         },
-                  //       ),
-                  //     );
-                  //   },
-                  // ),
-                  _divider(),
+
                   _tile(
                     AppLocalizations.of(context)!.change_password,
                     "assest/icon/changepassword.png",
@@ -190,21 +177,40 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
                       );
                     },
                   ),
-                  _divider(),
-                  _tile(
-                    AppLocalizations.of(context)!.wallet_transactions,
-                    "assest/icon/wallet.png",
-                    ontap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) {
-                            return WalletPage();
-                          },
-                        ),
-                      );
-                    },
-                  ),
+
+                  if (state.user?.driverVerified ?? false) ...[
+                    _divider(),
+
+                    _tile(
+                      AppLocalizations.of(context)!.wallet_transactions,
+                      "assest/icon/wallet.png",
+                      ontap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) {
+                              return WalletPage();
+                            },
+                          ),
+                        );
+                      },
+                    ),
+                  ] else ...[
+                    if (state.user == null || state.user!.vehicale == null)
+                      _divider(),
+                    _tile(
+                      AppLocalizations.of(context)!.register_your_car,
+                      "assest/icon/register_your_car.png",
+                      ontap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => RegisterVehiclePage(),
+                          ),
+                        );
+                      },
+                    ),
+                  ],
                 ],
               ),
             ),

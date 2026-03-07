@@ -4,7 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:velozaje/core/localization/app_localizations.dart';
 import 'package:velozaje/core/providers.dart';
 import 'package:velozaje/core/utils/app_colors.dart';
-import 'package:velozaje/feature/result_and_booking/widget/filter_widget.dart';
+import 'package:velozaje/feature/home_and_trip_search/parts_of_trip_search/filter_widget.dart';
 import 'package:velozaje/models/request/trip_search_request.dart';
 import 'package:velozaje/models/response/trip/passenger_trip_model.dart';
 import 'package:velozaje/res/common_appbar.dart';

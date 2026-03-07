@@ -1779,6 +1779,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Save'**
   String get save;
+
+  /// No description provided for @register_your_car.
+  ///
+  /// In en, this message translates to:
+  /// **'Register Your Car'**
+  String get register_your_car;
 }
 
 class _AppLocalizationsDelegate

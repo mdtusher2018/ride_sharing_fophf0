@@ -8,7 +8,6 @@ import 'package:velozaje/core/localization/app_localizations.dart';
 import 'package:velozaje/core/utils/app_colors.dart';
 import 'package:velozaje/core/utils/helper.dart';
 import 'package:velozaje/feature/profile_and_account/edit_profile.dart';
-import 'package:velozaje/feature/vehicale/view/register_vehicale_view.dart';
 import 'package:velozaje/feature/widget/vehicale_card.dart';
 import 'package:velozaje/models/user_model.dart';
 import 'package:velozaje/res/common_appbar.dart';
@@ -59,19 +58,6 @@ class _ProfileDetailsPageState extends ConsumerState<ProfileDetailsPage> {
           ),
         ),
       ),
-      floatingActionButton: (state.user == null || state.user!.vehicale == null)
-          ? FloatingActionButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => RegisterVehiclePage(),
-                  ),
-                );
-              },
-              child: Icon(Icons.add),
-            )
-          : null,
 
       body: ValueListenableBuilder(
         valueListenable: controller.isLoading,

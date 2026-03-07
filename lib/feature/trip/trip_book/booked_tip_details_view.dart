@@ -11,7 +11,9 @@ import 'package:velozaje/core/utils/app_colors.dart';
 import 'package:velozaje/core/utils/enums_with_enum_extentions.dart';
 import 'package:velozaje/core/utils/helper.dart';
 import 'package:velozaje/core/utils/map_helper.dart';
+import 'package:velozaje/feature/chat/chat_view.dart';
 import 'package:velozaje/feature/profile_and_account/driver_profile_view.dart';
+import 'package:velozaje/feature/report_and_feedback/feed_back_bottom_sheet.dart';
 import 'package:velozaje/feature/widget/back_button.dart';
 import 'package:velozaje/feature/widget/map_widget.dart';
 import 'package:velozaje/feature/widget/vehicale_card.dart';
@@ -303,31 +305,40 @@ class _BookedTipDetailsViewState extends ConsumerState<BookedTipDetailsView> {
                             ),
 
                             SizedBox(height: 16.h),
-                            Row(
-                              spacing: 16.w,
-                              children: [
-                                Expanded(
-                                  child: CommonButton(
-                                    AppLocalizations.of(context)!.claim,
-                                    color: Colors.transparent,
-                                    boarder: Border.all(color: AppColors.error),
-
-                                    iconWidget: Icon(
-                                      Icons.warning_amber,
-                                      color: AppColors.error,
-                                    ),
-                                    textColor: AppColors.error,
-                                  ),
+                            if (bookingDetails.status ==
+                                BookingStatus.completed)
+                              CommonButton(
+                                AppLocalizations.of(context)!.rate_your_driver,
+                                color: AppColors.primary,
+                                onTap: () {
+                                  showModalBottomSheet(
+                                    context: context,
+                                    isScrollControlled: true,
+                                    backgroundColor: Colors.transparent,
+                                    builder: (context) {
+                                      return RateDriverBottomSheet(
+                                        bookingId: bookingDetails.id,
+                                        driverName:
+                                            bookingDetails.driver.fullName,
+                                        image:
+                                            bookingDetails.driver.image ?? "",
+                                      );
+                                    },
+                                  );
+                                },
+                              ),
+                            if (bookingDetails.status !=
+                                    BookingStatus.completed &&
+                                bookingDetails.status !=
+                                    BookingStatus.cancelled)
+                              CommonButton(
+                                AppLocalizations.of(context)!.cancel_trip,
+                                color: AppColors.error,
+                                onTap: () => showCancelRideSheet(
+                                  context,
+                                  bookingId: bookingDetails.id,
                                 ),
-                                Expanded(
-                                  child: CommonButton(
-                                    AppLocalizations.of(context)!.cancel_trip,
-                                    color: AppColors.error,
-                                    onTap: () => showCancelRideSheet(context),
-                                  ),
-                                ),
-                              ],
-                            ),
+                              ),
                             SizedBox(height: 40.h),
                           ],
                         ),
@@ -343,7 +354,7 @@ class _BookedTipDetailsViewState extends ConsumerState<BookedTipDetailsView> {
     );
   }
 
-  void showCancelRideSheet(BuildContext context) {
+  void showCancelRideSheet(BuildContext context, {required String bookingId}) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -351,19 +362,21 @@ class _BookedTipDetailsViewState extends ConsumerState<BookedTipDetailsView> {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
-      builder: (_) => const CancelRideBottomSheet(),
+      builder: (_) => CancelRideBottomSheet(bookingId: bookingId),
     );
   }
 }
 
-class CancelRideBottomSheet extends StatefulWidget {
-  const CancelRideBottomSheet({super.key});
+class CancelRideBottomSheet extends ConsumerStatefulWidget {
+  final String bookingId;
+  const CancelRideBottomSheet({super.key, required this.bookingId});
 
   @override
-  State<CancelRideBottomSheet> createState() => _CancelRideBottomSheetState();
+  ConsumerState<CancelRideBottomSheet> createState() =>
+      _CancelRideBottomSheetState();
 }
 
-class _CancelRideBottomSheetState extends State<CancelRideBottomSheet> {
+class _CancelRideBottomSheetState extends ConsumerState<CancelRideBottomSheet> {
   int selectedIndex = 0;
 
   final List<String> reasons = [
@@ -439,7 +452,12 @@ class _CancelRideBottomSheetState extends State<CancelRideBottomSheet> {
               textColor: Colors.black,
               boarder: Border.all(color: Colors.red, width: 2),
               onTap: () {
-                // TODO: handle cancellation with reason
+                ref
+                    .read(tripsBookingControllerProvider.notifier)
+                    .cancelBookingByUser(
+                      bookingId: widget.bookingId,
+                      reason: reasons[selectedIndex],
+                    );
                 Navigator.pop(context);
               },
             ),

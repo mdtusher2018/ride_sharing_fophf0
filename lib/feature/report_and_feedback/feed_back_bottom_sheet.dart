@@ -1,13 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:velozaje/core/localization/app_localizations.dart';
+import 'package:velozaje/core/providers.dart';
 import 'package:velozaje/res/common_button.dart';
 import 'package:velozaje/res/common_image.dart';
 import 'package:velozaje/res/common_text.dart';
 import 'package:velozaje/res/common_text_field.dart';
 
 class RateDriverBottomSheet extends StatefulWidget {
-  const RateDriverBottomSheet({super.key});
+  const RateDriverBottomSheet({
+    super.key,
+    required this.bookingId,
+    required this.driverName,
+    required this.image,
+  });
+  final String driverName, image, bookingId;
 
   @override
   State<RateDriverBottomSheet> createState() => _RateDriverBottomSheetState();
@@ -65,16 +73,21 @@ class _RateDriverBottomSheetState extends State<RateDriverBottomSheet> {
               backgroundColor: Colors.grey.shade200,
               child: ClipOval(
                 child: CommonImage(
-                  path: 'assets/images/profile_placeholder.png',
+                  path: widget.image,
                   width: 60,
                   height: 60,
+                  sourceType: ImageSourceType.network,
                 ),
               ),
             ),
 
             SizedBox(height: 8.h),
 
-            CommonText('Leo Messi', size: 14, fontWeight: FontWeight.w500),
+            CommonText(
+              widget.driverName,
+              size: 14,
+              fontWeight: FontWeight.w500,
+            ),
 
             SizedBox(height: 20.h),
 
@@ -132,14 +145,32 @@ class _RateDriverBottomSheetState extends State<RateDriverBottomSheet> {
                 ),
                 SizedBox(width: 12.w),
                 Expanded(
-                  child: CommonButton(
-                    AppLocalizations.of(context)!.submit,
-                    color: Colors.green,
-                    textColor: Colors.white,
-                    textalign: TextAlign.center,
-                    onTap: () {
-                      // handle submit
-                      Navigator.pop(context);
+                  child: Consumer(
+                    builder: (context, ref, child) {
+                      final controller = ref.read(
+                        reviewControllerProvider.notifier,
+                      );
+
+                      return ValueListenableBuilder(
+                        valueListenable: controller.isLoading,
+                        builder: (context, value, child) {
+                          return CommonButton(
+                            AppLocalizations.of(context)!.submit,
+                            color: Colors.green,
+                            isLoading: value,
+                            textColor: Colors.white,
+                            textalign: TextAlign.center,
+                            onTap: () {
+                              controller.giveReview(
+                                bookingld: widget.bookingId,
+                                rating: selectedRating.toString(),
+                                review: reviewController.text.trim(),
+                              );
+                              Navigator.pop(context);
+                            },
+                          );
+                        },
+                      );
                     },
                   ),
                 ),

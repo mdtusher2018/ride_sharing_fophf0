@@ -298,12 +298,29 @@ class TipHeaderCard extends StatelessWidget {
             ],
           ),
         ),
-        Card(
-          elevation: 2,
-          color: AppColors.white,
-          child: Padding(
-            padding: EdgeInsets.all(8),
-            child: Icon(Icons.email, color: AppColors.primary),
+        InkWell(
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) {
+                  return ChatPage(
+                    reciverId: bookingDetails.driver.id,
+                    reciverImage: bookingDetails.driver.image ?? "",
+                    reciverName: bookingDetails.driver.fullName,
+                    bookingId: bookingDetails.id,
+                  );
+                },
+              ),
+            );
+          },
+          child: Card(
+            elevation: 2,
+            color: AppColors.white,
+            child: Padding(
+              padding: EdgeInsets.all(8),
+              child: Icon(Icons.email, color: AppColors.primary),
+            ),
           ),
         ),
         InkWell(

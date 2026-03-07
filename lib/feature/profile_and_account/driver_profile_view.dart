@@ -4,7 +4,7 @@ import 'package:velozaje/controllers/profile_controller.dart';
 import 'package:velozaje/core/localization/app_localizations.dart';
 import 'package:velozaje/core/providers.dart';
 import 'package:velozaje/core/utils/helper.dart';
-import 'package:velozaje/feature/result_and_booking/report_user.dart';
+import 'package:velozaje/feature/report_and_feedback/report_user.dart';
 import 'package:velozaje/core/utils/app_colors.dart';
 import 'package:velozaje/models/review_model.dart';
 import 'package:velozaje/models/user_model.dart';

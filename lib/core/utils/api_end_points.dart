@@ -47,6 +47,8 @@ class ApiEndpoints {
   static String verifyOtpToEndRide(String id) => "bookings/$id/complete";
   static String generateDropOffOtp(String id) =>
       "bookings/$id/generate-dropoff-otp";
+  static String cancelTripByUser(String bookingId) =>
+      "bookings/$bookingId/cancel";
 
   //Chat
   static const String allConversation = "messages/conversations";
