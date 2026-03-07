@@ -1,7 +1,9 @@
+import 'package:velozaje/core/utils/enums_with_enum_extentions.dart';
 import 'package:velozaje/models/pagenation_meta_model.dart';
 import 'package:velozaje/controllers/paginated_controller.dart';
 import 'package:velozaje/core/services/api/i_api_service.dart';
 import 'package:velozaje/core/utils/api_end_points.dart';
+import 'package:velozaje/models/request/trip_search_request.dart';
 import 'package:velozaje/models/response/trip/passenger_trip_details_response.dart';
 import 'package:velozaje/models/response/trip/passenger_trip_model.dart';
 import 'package:velozaje/models/response/trip/passenger_trips_response.dart';
@@ -12,33 +14,43 @@ class TripsSearchController extends PaginationNotifier<PassengerTripModel> {
   PassengerTripDetailsResponse? tripDetails;
 
   TripsSearchController(this.apiService);
+  static TripSearchRequest? request;
 
   @override
   Future<(List<PassengerTripModel>, PaginationMetaModel)> fetchPage({
     required int page,
     int limit = 10,
-    double? pickupLat,
-    double? pickupLng,
-    double? dropoffLat,
-    double? dropoffLng,
-    int? minSeats,
-    String? sort,
-    String? order,
-    String? tripType, // Optional: you can add other parameters here
   }) async {
     final response = await apiService.get(
       ApiEndpoints.passengerTrips,
       queryParameters: {
         "page": page.toString(),
         "limit": limit.toString(),
-        if (pickupLat != null) "pickupLat": pickupLat.toString(),
-        if (pickupLng != null) "pickupLng": pickupLng.toString(),
-        if (dropoffLat != null) "dropoffLat": dropoffLat.toString(),
-        if (dropoffLng != null) "dropoffLng": dropoffLng.toString(),
-        if (minSeats != null) "minSeats": minSeats.toString(),
-        if (sort != null) "sort": sort,
-        if (order != null) "order": order,
-        if (tripType != null) "tripType": tripType,
+
+        // if (pickupLat != null) "pickupLat": pickupLat.toString(),
+        // if (pickupLng != null) "pickupLng": pickupLng.toString(),
+        // if (dropoffLat != null) "dropoffLat": dropoffLat.toString(),
+        // if (dropoffLng != null) "dropoffLng": dropoffLng.toString(),
+        // if (minSeats != null) "minSeats": minSeats.toString(),
+        // if (sort != null) "sort": sort.toString(),
+        // if (order != null) "order": order.toString(),
+        // if (tripType != null) "tripType": tripType.toString(),
+        if (request?.pickupLatLng != null)
+          "pickupLat": request!.pickupLatLng!.latitude.toString(),
+        if (request?.pickupLatLng != null)
+          "pickupLng": request!.pickupLatLng!.longitude.toString(),
+
+        if (request?.destinationLatLng != null)
+          "dropoffLat": request!.destinationLatLng!.latitude.toString(),
+        if (request?.destinationLatLng != null)
+          "dropoffLng": request!.destinationLatLng!.longitude.toString(),
+
+        "tripType": request?.bookingType.name ?? BookingType.travel.name,
+
+        if (request != null) "minSeats": request!.passengersCount.toString(),
+
+        if (request != null)
+          "departureTime": request!.departureTime.toIso8601String(),
       },
     );
 

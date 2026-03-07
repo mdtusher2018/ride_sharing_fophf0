@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:velozaje/controllers/trip/trips_search_controller.dart';
 import 'package:velozaje/core/localization/app_localizations.dart';
 import 'package:velozaje/core/providers.dart';
 import 'package:velozaje/core/utils/map_helper.dart';
@@ -26,6 +27,7 @@ class _FindingDriversPageState extends ConsumerState<SearchingDriversView> {
   @override
   void initState() {
     super.initState();
+    TripsSearchController.request = widget.request;
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       _drawRoutesIfReady();
       _loadTrips();
