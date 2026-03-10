@@ -9,6 +9,7 @@ Widget ReusableMapWidget({
   Set<Polyline>? polylines,
   double initialZoom = 10.0,
   List<LatLng> additionalMarkets = const [],
+  List<Marker> additionalCustomMarkets = const [],
   Function(GoogleMapController)? onMapCreated,
 }) {
   return GoogleMap(
@@ -28,6 +29,7 @@ Widget ReusableMapWidget({
       pickupLocation: pickupLocation,
       destinationLocation: destinationLocation,
       additionalMarkets: additionalMarkets,
+      additionalCustomMarkets: additionalCustomMarkets,
     ),
   );
 }
@@ -36,6 +38,7 @@ Set<Marker> _buildMarkers({
   LatLng? pickupLocation,
   LatLng? destinationLocation,
   required List<LatLng> additionalMarkets,
+  required List<Marker> additionalCustomMarkets,
 }) {
   final markers = <Marker>{};
 
@@ -68,6 +71,7 @@ Set<Marker> _buildMarkers({
       ),
     );
   }
+  markers.addAll(additionalCustomMarkets);
 
   return markers;
 }

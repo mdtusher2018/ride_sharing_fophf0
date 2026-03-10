@@ -52,6 +52,13 @@ class _BottomButtonsState extends State<_BottomButtons> {
   }
 
   @override
+  void dispose() {
+    log("dispose called=====");
+    _locationTimer?.cancel();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Row(
       children: [

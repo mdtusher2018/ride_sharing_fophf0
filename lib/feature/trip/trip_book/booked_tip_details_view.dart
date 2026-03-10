@@ -44,6 +44,23 @@ class _BookedTipDetailsViewState extends ConsumerState<BookedTipDetailsView> {
   GoogleMapController? _mapController;
   Set<Polyline>? polylines;
 
+  Future<Marker?> _buildDriverMarker(LatLng? location) async {
+    if (location == null) return null;
+
+    final icon = await BitmapDescriptor.asset(
+      const ImageConfiguration(size: Size(48, 48)),
+      'assest/image/car_in_map.png', // 🚗 your custom car image
+    );
+
+    return Marker(
+      markerId: const MarkerId('driver_location'),
+      position: location,
+      icon: icon,
+      infoWindow: const InfoWindow(title: 'Driver'),
+      anchor: const Offset(0.5, 0.5), // ✅ centers the icon on the point
+    );
+  }
+
   @override
   void initState() {
     super.initState();
@@ -122,26 +139,36 @@ class _BookedTipDetailsViewState extends ConsumerState<BookedTipDetailsView> {
                     if (bookingDetails.id != widget.bookingId) {
                       return Center(child: CircularProgressIndicator());
                     }
-                    return ReusableMapWidget(
-                      context: context,
-                      destinationLocation: LatLng(
-                        bookingDetails.dropoffLocation.coordinates.latitude,
-                        bookingDetails.dropoffLocation.coordinates.longitude,
-                      ),
-                      pickupLocation: LatLng(
-                        bookingDetails.pickupLocation.coordinates.latitude,
-                        bookingDetails.pickupLocation.coordinates.longitude,
-                      ),
-                      additionalMarkets: [
+                    return FutureBuilder<Marker?>(
+                      future: _buildDriverMarker(
                         (bookingState.extraState as TripsBookingState)
                             .driverCurrentLocation,
-                      ].whereType<LatLng>().toList(),
-                      onMapCreated: (controller) {
-                        _mapController = controller;
-
-                        _drawRoutesIfReady(bookingDetails);
+                      ),
+                      builder: (context, snapshot) {
+                        return ReusableMapWidget(
+                          context: context,
+                          destinationLocation: LatLng(
+                            bookingDetails.dropoffLocation.coordinates.latitude,
+                            bookingDetails
+                                .dropoffLocation
+                                .coordinates
+                                .longitude,
+                          ),
+                          pickupLocation: LatLng(
+                            bookingDetails.pickupLocation.coordinates.latitude,
+                            bookingDetails.pickupLocation.coordinates.longitude,
+                          ),
+                          // ✅ Use the marker from FutureBuilder
+                          additionalCustomMarkets: [
+                            if (snapshot.data != null) snapshot.data!,
+                          ],
+                          onMapCreated: (controller) {
+                            _mapController = controller;
+                            _drawRoutesIfReady(bookingDetails);
+                          },
+                          polylines: polylines,
+                        );
                       },
-                      polylines: polylines,
                     );
                   },
                 ),
