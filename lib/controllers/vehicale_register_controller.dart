@@ -1,4 +1,3 @@
-import 'dart:developer';
 import 'dart:io';
 
 import 'package:velozaje/core/base_notifier.dart';
@@ -8,7 +7,6 @@ import 'package:velozaje/core/utils/api_end_points.dart';
 import 'package:velozaje/models/response/vehicale_response/my_vehicale_response.dart';
 import 'package:velozaje/models/vehicale_model.dart';
 import 'package:velozaje/models/response/vehicale_response/vehicale_resistration_response.dart';
-
 
 class VehicaleState {
   final Vehicle? vehicale;
@@ -54,7 +52,6 @@ class VehicaleController extends BaseNotifier<VehicaleState> {
   }) async {
     return await safeCall<bool>(
       task: () async {
-        log(vehicleType);
         final response = await apiService.multipart(
           ApiEndpoints.registerVehicale,
           method: "post",

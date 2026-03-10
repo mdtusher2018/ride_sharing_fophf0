@@ -1,8 +1,8 @@
-import 'dart:developer';
+import 'dart:convert';
 import 'dart:io';
-
 import 'package:flutter_riverpod/legacy.dart';
 import 'package:velozaje/core/base_notifier.dart';
+import 'package:velozaje/core/services/localstorage/storage_key.dart';
 import 'package:velozaje/models/user_model.dart';
 import 'package:velozaje/core/services/api/i_api_service.dart';
 import 'package:velozaje/core/services/localstorage/i_local_storage_service.dart';
@@ -76,7 +76,6 @@ class ProfileController extends BaseNotifier<ProfileState> {
   }) async {
     return await safeCall<bool>(
       task: () async {
-        log("${image?.path}");
         final response = await apiService.multipart(
           ApiEndpoints.profile,
           method: "PATCH",
@@ -123,5 +122,25 @@ class ProfileController extends BaseNotifier<ProfileState> {
         }
       },
     );
+  }
+
+  Future<String?> getUserId() async {
+    try {
+      final token = await localStorageService.getString(StorageKey.accessToken);
+
+      if (token == null || token.isEmpty) return null;
+
+      final parts = token.split('.');
+      if (parts.length != 3) return null;
+
+      final normalized = base64Url.normalize(parts[1]);
+      final decoded = utf8.decode(base64Url.decode(normalized));
+
+      final payload = json.decode(decoded) as Map<String, dynamic>;
+
+      return payload['_id']?.toString();
+    } catch (e) {
+      return null;
+    }
   }
 }

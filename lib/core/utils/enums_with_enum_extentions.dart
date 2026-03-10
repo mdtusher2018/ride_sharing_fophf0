@@ -79,6 +79,9 @@ extension BookingStatusParser on String? {
       case 'inprogress':
         return BookingStatus.inProgress;
 
+      case 'arrived':
+        return BookingStatus.arrived;
+
       case 'completed':
         return BookingStatus.completed;
 

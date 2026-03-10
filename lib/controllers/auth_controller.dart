@@ -12,7 +12,7 @@ import 'package:velozaje/feature/auth/view/otp_verification_view.dart';
 import 'package:velozaje/models/response/auth_response/otp_verification_response.dart';
 import 'package:velozaje/feature/auth/view/creat_new_password_view.dart';
 import 'package:velozaje/feature/auth/view/signin_view.dart';
-import 'dart:developer';
+
 import 'package:velozaje/models/response/auth_response/signin_response.dart';
 import 'package:velozaje/feature/root_view.dart';
 import 'package:velozaje/models/response/auth_response/signup_response.dart';
@@ -158,8 +158,6 @@ class AuthController extends BaseNotifier {
   Future<void> signIn({required String email, required String password}) async {
     safeCall(
       task: () async {
-        log("==========>>>>>>> $email");
-
         final response = await apiService.post(ApiEndpoints.signin, {
           'email': email,
           'password': password,
@@ -193,8 +191,6 @@ class AuthController extends BaseNotifier {
   }) async {
     safeCall(
       task: () async {
-        log("==========>>>>>>> $email");
-
         final response = await apiService.post(ApiEndpoints.signup, {
           'fullName': name,
           'email': email,

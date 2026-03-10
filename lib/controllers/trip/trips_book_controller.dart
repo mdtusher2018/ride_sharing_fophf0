@@ -1,4 +1,8 @@
+import 'dart:developer';
 import 'dart:io';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:velozaje/core/services/socket/socket_events.dart';
+import 'package:velozaje/core/services/socket/socket_service.dart';
 import 'package:velozaje/core/utils/enums_with_enum_extentions.dart';
 import 'package:velozaje/models/pagenation_meta_model.dart';
 import 'package:velozaje/controllers/paginated_controller.dart';
@@ -13,10 +17,12 @@ import 'package:velozaje/models/response/trip/published_trip_details_response.da
 class TripsBookingState {
   final List<BookingsOfPublishedTrip> pendingBookings;
   final List<BookingsOfPublishedTrip> confirmedBookings;
+  final LatLng? driverCurrentLocation;
 
   const TripsBookingState({
     this.pendingBookings = const [],
     this.confirmedBookings = const [],
+    this.driverCurrentLocation,
   });
 
   factory TripsBookingState.initial() {
@@ -26,18 +32,23 @@ class TripsBookingState {
   TripsBookingState copyWith({
     List<BookingsOfPublishedTrip>? pendingBookings,
     List<BookingsOfPublishedTrip>? confirmedBookings,
+    LatLng? driverCurrentLocation,
   }) {
     return TripsBookingState(
       pendingBookings: pendingBookings ?? this.pendingBookings,
       confirmedBookings: confirmedBookings ?? this.confirmedBookings,
+      driverCurrentLocation:
+          driverCurrentLocation ?? this.driverCurrentLocation,
     );
   }
 }
 
 class TrippBookController extends PaginationNotifier<PassengerBookingModel> {
   final IApiService apiService;
+  final SocketService socketService;
 
-  TrippBookController(this.apiService) : super(extraState: TripsBookingState());
+  TrippBookController(this.apiService, this.socketService)
+    : super(extraState: TripsBookingState());
 
   PassengerBookingDetailsModel? bookingDetail;
 
@@ -211,5 +222,27 @@ class TrippBookController extends PaginationNotifier<PassengerBookingModel> {
         });
       },
     );
+  }
+
+  void listenDriverCurrentLocation() {
+    socketService.on(SocketEvents.driverLocations, (data) {
+      log(data.toString());
+      final lat = data["location"]["latitude"];
+      final lng = data["location"]["longitude"];
+
+      final currentExtra = (state.extraState as TripsBookingState);
+      state = state.copyWith(
+        extraState: currentExtra.copyWith(
+          driverCurrentLocation: LatLng(lat, lng),
+        ),
+      );
+    });
+  }
+
+  void joinTripRoom({required String bookingId, required String userId}) {
+    socketService.emit(SocketEvents.joinTripRoom, {
+      {"bookingId": bookingId, "userId": userId, "userRole": "user"},
+    });
+    listenDriverCurrentLocation();
   }
 }

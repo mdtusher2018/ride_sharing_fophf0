@@ -62,7 +62,7 @@ class _MyTipsPageState extends ConsumerState<BookedTipsPage> {
                     MaterialPageRoute(
                       builder: (context) {
                         return BookedTipDetailsView(
-                          id: pagination.items[index].id,
+                          bookingId: pagination.items[index].id,
                           tripId: pagination.items[index].trip.id,
                         );
                       },

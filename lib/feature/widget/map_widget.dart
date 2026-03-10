@@ -8,6 +8,7 @@ Widget ReusableMapWidget({
   LatLng? destinationLocation,
   Set<Polyline>? polylines,
   double initialZoom = 10.0,
+  List<LatLng> additionalMarkets = const [],
   Function(GoogleMapController)? onMapCreated,
 }) {
   return GoogleMap(
@@ -16,6 +17,8 @@ Widget ReusableMapWidget({
       zoom: initialZoom,
     ),
     polylines: polylines ?? <Polyline>{},
+
+    myLocationEnabled: true,
     onMapCreated: (controller) {
       if (onMapCreated != null) {
         onMapCreated(controller);
@@ -24,6 +27,7 @@ Widget ReusableMapWidget({
     markers: _buildMarkers(
       pickupLocation: pickupLocation,
       destinationLocation: destinationLocation,
+      additionalMarkets: additionalMarkets,
     ),
   );
 }
@@ -31,6 +35,7 @@ Widget ReusableMapWidget({
 Set<Marker> _buildMarkers({
   LatLng? pickupLocation,
   LatLng? destinationLocation,
+  required List<LatLng> additionalMarkets,
 }) {
   final markers = <Marker>{};
 
@@ -50,6 +55,16 @@ Set<Marker> _buildMarkers({
         markerId: const MarkerId('dropoff'),
         position: destinationLocation,
         infoWindow: const InfoWindow(title: 'Dropoff Location'),
+      ),
+    );
+  }
+  // Add additional markers
+  for (int i = 0; i < additionalMarkets.length; i++) {
+    markers.add(
+      Marker(
+        markerId: MarkerId('additional_$i'),
+        position: additionalMarkets[i],
+        infoWindow: InfoWindow(title: 'Stop ${i + 1}'),
       ),
     );
   }

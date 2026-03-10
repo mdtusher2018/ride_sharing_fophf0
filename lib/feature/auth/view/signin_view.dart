@@ -25,11 +25,11 @@ class SignInPage extends ConsumerStatefulWidget {
 
 class _SignInPageState extends ConsumerState<SignInPage> {
   final TextEditingController emailController = TextEditingController(
-    text: kDebugMode ? "magegoh888@2insp.com" : null,
+    text: kDebugMode ? "vipeyo8033@deposin.com" : null,
   );
 
   final TextEditingController passwordController = TextEditingController(
-    text: kDebugMode ? "magegoh888@2insp.com" : null,
+    text: kDebugMode ? "vipeyo8033@deposin.com" : null,
   );
 
   ValueNotifier<bool> isPasswordVisible = ValueNotifier(true);

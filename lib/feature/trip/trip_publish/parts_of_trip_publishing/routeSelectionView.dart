@@ -71,9 +71,7 @@ class _RouteSelectionViewState extends State<RouteSelectionView> {
                   );
                   return;
                 }
-                log(
-                  widget.routes[selectedRouteIndex].polylineEncoded.toString(),
-                );
+
                 widget.onContinue(
                   widget.routes[selectedRouteIndex].polylineEncoded,
                 );

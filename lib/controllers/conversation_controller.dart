@@ -1,4 +1,3 @@
-import 'dart:developer';
 
 import 'package:velozaje/controllers/paginated_controller.dart';
 import 'package:velozaje/core/services/api/i_api_service.dart';
@@ -61,7 +60,7 @@ class ConversationController extends PaginationNotifier<Message> {
 
         final result = AllConversationResponse.fromJson(response);
         final currentState = state.extraState as ConversationState?;
-        log(result.data.length.toString());
+       
         if (currentState == null) return;
 
         state = state.copyWith(
@@ -171,7 +170,7 @@ class ConversationController extends PaginationNotifier<Message> {
 
   void joinPrivateRoom(String userId) {
     socketService.on(SocketEvents.joined, (data) {
-      log(data.toString());
+
     });
     socketService.emit(SocketEvents.join, userId);
     newMessage();
@@ -185,7 +184,7 @@ class ConversationController extends PaginationNotifier<Message> {
       final currentState = state.extraState as ConversationState?;
 
       if (currentState == null) return;
-      log("current page= ${RootPage.currentIndex}");
+ 
 
       final updatedConversations = currentState.allConversations.map((
         conversation,

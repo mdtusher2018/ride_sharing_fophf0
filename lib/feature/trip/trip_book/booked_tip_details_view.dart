@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:velozaje/controllers/profile_controller.dart';
+import 'package:velozaje/controllers/trip/trips_book_controller.dart';
 import 'package:velozaje/core/localization/app_localizations.dart';
 import 'package:velozaje/core/providers.dart';
 import 'package:velozaje/core/utils/app_colors.dart';
@@ -25,11 +27,11 @@ import 'package:velozaje/res/common_text.dart';
 part 'booked_tip_header_card.dart';
 
 class BookedTipDetailsView extends ConsumerStatefulWidget {
-  final String id;
+  final String bookingId;
   final String tripId;
   const BookedTipDetailsView({
     super.key,
-    required this.id,
+    required this.bookingId,
     required this.tripId,
   });
 
@@ -45,13 +47,20 @@ class _BookedTipDetailsViewState extends ConsumerState<BookedTipDetailsView> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
       ref
           .read(tripsBookingControllerProvider.notifier)
-          .bookedTripDetailsById(id: widget.id);
+          .bookedTripDetailsById(id: widget.bookingId);
       ref
           .read(passengerTripsControllerProvider.notifier)
           .getTripDetails(tripId: widget.tripId);
+      final userId = await ref
+          .read(profileControllerProvider.notifier)
+          .getUserId();
+      if (userId == null) return;
+      ref
+          .read(tripsBookingControllerProvider.notifier)
+          .joinTripRoom(bookingId: widget.bookingId, userId: userId);
     });
   }
 
@@ -85,6 +94,7 @@ class _BookedTipDetailsViewState extends ConsumerState<BookedTipDetailsView> {
   @override
   Widget build(BuildContext context) {
     final controller = ref.watch(tripsBookingControllerProvider.notifier);
+    final bookingState = ref.watch(tripsBookingControllerProvider);
     final passengerController = ref.watch(
       passengerTripsControllerProvider.notifier,
     );
@@ -109,7 +119,7 @@ class _BookedTipDetailsViewState extends ConsumerState<BookedTipDetailsView> {
                     }
                     final PassengerBookingDetailsModel bookingDetails =
                         controller.bookingDetail!;
-                    if (bookingDetails.id != widget.id) {
+                    if (bookingDetails.id != widget.bookingId) {
                       return Center(child: CircularProgressIndicator());
                     }
                     return ReusableMapWidget(
@@ -122,6 +132,10 @@ class _BookedTipDetailsViewState extends ConsumerState<BookedTipDetailsView> {
                         bookingDetails.pickupLocation.coordinates.latitude,
                         bookingDetails.pickupLocation.coordinates.longitude,
                       ),
+                      additionalMarkets: [
+                        (bookingState.extraState as TripsBookingState)
+                            .driverCurrentLocation,
+                      ].whereType<LatLng>().toList(),
                       onMapCreated: (controller) {
                         _mapController = controller;
 
@@ -159,7 +173,7 @@ class _BookedTipDetailsViewState extends ConsumerState<BookedTipDetailsView> {
                 }
                 final PassengerBookingDetailsModel bookingDetails =
                     controller.bookingDetail!;
-                if (bookingDetails.id != widget.id) {
+                if (bookingDetails.id != widget.bookingId) {
                   return Center(child: CircularProgressIndicator());
                 }
 
@@ -167,7 +181,7 @@ class _BookedTipDetailsViewState extends ConsumerState<BookedTipDetailsView> {
                   onRefresh: () async {
                     ref
                         .read(tripsBookingControllerProvider.notifier)
-                        .bookedTripDetailsById(id: widget.id);
+                        .bookedTripDetailsById(id: widget.bookingId);
                     ref
                         .read(passengerTripsControllerProvider.notifier)
                         .getTripDetails(tripId: widget.tripId);

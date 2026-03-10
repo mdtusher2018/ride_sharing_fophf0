@@ -87,7 +87,8 @@ final tripsBookingControllerProvider =
       PaginationState<PassengerBookingModel>
     >((ref) {
       final apiService = ref.read(apiServiceProvider);
-      return TrippBookController(apiService);
+      final socketService = ref.read(socketServiceProvider);
+      return TrippBookController(apiService, socketService);
     });
 
 final tripsPublishControllerProvider =
@@ -96,7 +97,8 @@ final tripsPublishControllerProvider =
       PaginationState<DriverTripModel>
     >((ref) {
       final apiService = ref.read(apiServiceProvider);
-      return TripsPublishController(apiService);
+      final socketService = ref.read(socketServiceProvider);
+      return TripsPublishController(apiService, socketService);
     });
 
 final StateNotifierProvider<VehicaleController, VehicaleState>

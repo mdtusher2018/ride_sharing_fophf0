@@ -1,7 +1,5 @@
 // ignore_for_file: must_be_immutable
 
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -71,10 +69,7 @@ class _TripOnMapViewState extends State<TripOnMapView> {
     int selectedIndex = -1;
 
     for (int i = 0; i < result.routes.length; i++) {
-      log("Encoded String1 :${result.routes[i].polylineEncoded}\n");
-      log("Encoded String2 : $encodedString\n\n\n");
       if (result.routes[i].polylineEncoded == encodedString) {
-        log("==============>>>>>> matched");
         selectedIndex = i;
       }
     }

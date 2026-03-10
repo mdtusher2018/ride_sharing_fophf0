@@ -1,5 +1,4 @@
-import 'dart:developer';
-
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -43,6 +42,11 @@ class _MyPublishedDetailsPageState
     super.initState();
 
     loadInitialData();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
   }
 
   GoogleMapController? _mapController;
@@ -106,10 +110,7 @@ class _MyPublishedDetailsPageState
     int selectedIndex = -1;
 
     for (int i = 0; i < result.routes.length; i++) {
-      log("Encoded String1 :${result.routes[i].polylineEncoded}\n");
-      log("Encoded String2 : $encodedString\n\n\n");
       if (result.routes[i].polylineEncoded == encodedString) {
-        log("==============>>>>>> matched");
         selectedIndex = i;
       }
     }
@@ -180,6 +181,27 @@ class _MyPublishedDetailsPageState
                       );
                     }
                     final trip = publisheState.tripDetails!.data.trip;
+                    List<LatLng> additionalMarkers =
+                        (bookingState.extraState as TripsBookingState)
+                            .confirmedBookings
+                            .map((e) {
+                              if (e.status == BookingStatus.confirmed) {
+                                return LatLng(
+                                  e.pickupLocation.coordinates.latitude,
+                                  e.pickupLocation.coordinates.longitude,
+                                );
+                              } else if (e.status == BookingStatus.inProgress ||
+                                  e.status == BookingStatus.arrived) {
+                                return LatLng(
+                                  e.dropoffLocation.coordinates.latitude,
+                                  e.dropoffLocation.coordinates.longitude,
+                                );
+                              } else {
+                                return null;
+                              }
+                            })
+                            .whereType<LatLng>()
+                            .toList();
                     return ReusableMapWidget(
                       context: context,
                       destinationLocation: LatLng(
@@ -196,6 +218,7 @@ class _MyPublishedDetailsPageState
                         _drawRoutesIfReady(trip);
                       },
                       polylines: polylines,
+                      additionalMarkets: additionalMarkers,
                     );
                   },
                 ),
@@ -303,7 +326,19 @@ class _MyPublishedDetailsPageState
 
                         SizedBox(height: 20.h),
 
-                        _BottomButtons(),
+                        _BottomButtons(
+                          bookingIds:
+                              (bookingState.extraState as TripsBookingState)
+                                  .confirmedBookings
+                                  .map((e) {
+                                    return e.id;
+                                  })
+                                  .toList(),
+                          driverId: publisheState.tripDetails!.data.trip.id,
+                          tripsPublishController: ref.read(
+                            tripsPublishControllerProvider.notifier,
+                          ),
+                        ),
                         SizedBox(height: 20.h),
                       ],
                     ),
@@ -371,9 +406,9 @@ class _PassengerCardState extends ConsumerState<_PassengerCard> {
               pendingView(context, ref),
             if (widget.bookings.status == BookingStatus.confirmed)
               pickupCode(context, ref),
-            // if (widget.bookings.status == BookingStatus.inProgress)
-            //   onTheWay(ref),
-            if (widget.bookings.status == BookingStatus.inProgress) finalCode(),
+            if (widget.bookings.status == BookingStatus.inProgress)
+              onTheWay(ref),
+            if (widget.bookings.status == BookingStatus.arrived) finalCode(),
             if (widget.bookings.status == BookingStatus.completed)
               compleate(context),
           ],
@@ -422,10 +457,6 @@ class _PassengerCardState extends ConsumerState<_PassengerCard> {
               ),
               Row(
                 children: [
-                  Icon(Icons.star, size: 20, color: Colors.orange),
-                  SizedBox(width: 4),
-                  CommonText("4.9"),
-                  SizedBox(width: 8),
                   if (widget.bookings.bookingType == BookingType.travel) ...[
                     Icon(Icons.group_outlined, size: 20),
                     SizedBox(width: 4),

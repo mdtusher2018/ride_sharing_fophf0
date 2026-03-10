@@ -69,9 +69,10 @@ class SocketService {
 
   // ------------------ EMIT ------------------
   void emit(String event, dynamic data) async {
+    log("Socet Brfore Emit: $event with $data=============");
     try {
-      _socket!.emit(event, data);
-      log("Socet Emit: $event with $data=============");
+      _socket!.emitWithAck(event, data);
+      log("Socet After Emit: $event with $data=============");
     } catch (e) {
       log("Socet EmitFaild: $event with $data=============");
       navigatorKey.currentContext?.showErrorSnackbar(

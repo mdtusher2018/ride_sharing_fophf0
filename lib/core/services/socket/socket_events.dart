@@ -30,6 +30,7 @@ class SocketEvents {
   // =========================
   static const String passengerLocationUpdate = 'passenger-location-update';
   static const String passengerLocations = 'passenger-locations';
+  static const String driverLocations = 'driver-location';
   static const String driverLocationUpdate = 'driver-location-update';
 
   // =========================

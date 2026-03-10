@@ -1,4 +1,6 @@
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:velozaje/core/services/socket/socket_events.dart';
+import 'package:velozaje/core/services/socket/socket_service.dart';
 import 'package:velozaje/core/utils/extention.dart';
 import 'package:velozaje/core/utils/constants.dart';
 import 'package:velozaje/models/pagenation_meta_model.dart';
@@ -34,8 +36,9 @@ class TripsPublishState {
 
 class TripsPublishController extends PaginationNotifier<DriverTripModel> {
   final IApiService apiService;
+  final SocketService socketService;
 
-  TripsPublishController(this.apiService)
+  TripsPublishController(this.apiService, this.socketService)
     : super(extraState: TripsPublishState());
 
   @override
@@ -139,6 +142,30 @@ class TripsPublishController extends PaginationNotifier<DriverTripModel> {
         await apiService.patch(ApiEndpoints.generateDropOffOtp(id), {});
       },
     );
+  }
+
+  void driverUpdateLocation({
+    required String bookingId,
+    required String driverId,
+    required double latitude,
+    required double longitude,
+    double? accuracy,
+    double? heading,
+    double? speed,
+    String? timestamp,
+  }) {
+    socketService.emit(SocketEvents.driverLocationUpdate, {
+      "bookingId": bookingId,
+      "driverId": driverId,
+      "location": {
+        "latitude": latitude,
+        "longitude": longitude,
+        "accuracy": accuracy,
+        "heading": heading,
+        "speed": speed,
+        "timestamp": timestamp ?? DateTime.now().toUtc().toIso8601String(),
+      },
+    });
   }
 
   // -------------------------------
