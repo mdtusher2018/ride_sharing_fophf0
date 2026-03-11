@@ -101,13 +101,13 @@ final tripsPublishControllerProvider =
       return TripsPublishController(apiService, socketService);
     });
 
-final StateNotifierProvider<VehicaleController, VehicaleState>
+final StateNotifierProvider<VehicaleAndReferralController, VehicaleState>
 vehicaleControllerProvider =
-    StateNotifierProvider<VehicaleController, VehicaleState>((ref) {
+    StateNotifierProvider<VehicaleAndReferralController, VehicaleState>((ref) {
       final apiService = ref.read(apiServiceProvider);
       final localStorageService = ref.read(localStorageProvider);
 
-      return VehicaleController(
+      return VehicaleAndReferralController(
         apiService: apiService,
         localStorageService: localStorageService,
       );

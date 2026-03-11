@@ -26,6 +26,7 @@ class ApiEndpoints {
   //Vehicale
   static const String registerVehicale = "vehicles/register";
   static const String myVehicle = "vehicles/my-vehicle";
+  static const String applyReferralCode = "vehicles/apply-referral-code";
 
   //Saved Place
   static const String mySavedLocations = "saved-places";

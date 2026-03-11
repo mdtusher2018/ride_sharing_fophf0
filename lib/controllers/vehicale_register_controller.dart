@@ -18,10 +18,10 @@ class VehicaleState {
   }
 }
 
-class VehicaleController extends BaseNotifier<VehicaleState> {
+class VehicaleAndReferralController extends BaseNotifier<VehicaleState> {
   final IApiService apiService;
   final ILocalStorageService localStorageService;
-  VehicaleController({
+  VehicaleAndReferralController({
     required this.apiService,
     required this.localStorageService,
   }) : super(VehicaleState());
@@ -76,6 +76,25 @@ class VehicaleController extends BaseNotifier<VehicaleState> {
           return true;
         } else {
           throw Exception(response['message'] ?? 'Vehicle submission failed');
+        }
+      },
+    );
+  }
+
+  Future<bool?> applyReferralCode({required String referralCode}) async {
+    return await safeCall<bool>(
+      task: () async {
+        if (referralCode.length != 4) {
+          throw Exception('Invalid referral code');
+        }
+        final response = await apiService.post(ApiEndpoints.applyReferralCode, {
+          "referralCode": referralCode,
+        });
+
+        if (response['success'] == true) {
+          return true;
+        } else {
+          throw Exception(response['message'] ?? 'Failed to use referral code');
         }
       },
     );

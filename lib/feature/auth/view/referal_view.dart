@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:velozaje/core/localization/app_localizations.dart';
+import 'package:velozaje/core/providers.dart';
+import 'package:velozaje/feature/auth/view/signin_view.dart';
 import 'package:velozaje/feature/root_view.dart';
 import 'package:velozaje/core/utils/app_colors.dart';
 import 'package:velozaje/res/common_button.dart';
@@ -8,7 +11,7 @@ import 'package:velozaje/res/common_image.dart';
 import 'package:velozaje/res/common_otp_field.dart';
 import 'package:velozaje/res/common_text.dart';
 
-class ReferalPage extends StatelessWidget {
+class ReferalPage extends ConsumerWidget {
   ReferalPage({super.key});
 
   final List<TextEditingController> _controllers = List.generate(
@@ -26,7 +29,7 @@ class ReferalPage extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       appBar: AppBar(
         actions: [
@@ -90,10 +93,27 @@ class ReferalPage extends StatelessWidget {
               ),
               SizedBox(height: 50.h),
 
-              CommonButton(
-                AppLocalizations.of(context)!.submite,
-                onTap: () {
-                  _showSuccessDialog(context);
+              ValueListenableBuilder(
+                valueListenable: ref
+                    .watch(vehicaleControllerProvider.notifier)
+                    .isLoading,
+                builder: (context, value, child) {
+                  return CommonButton(
+                    AppLocalizations.of(context)!.submite,
+                    isLoading: value,
+                    onTap: () async {
+                      final result = await ref
+                          .read(vehicaleControllerProvider.notifier)
+                          .applyReferralCode(
+                            referralCode: _controllers
+                                .map((e) => e.text)
+                                .join(),
+                          );
+                      if (result ?? false) {
+                        _showSuccessDialog(context);
+                      }
+                    },
+                  );
                 },
               ),
 
@@ -140,6 +160,26 @@ class ReferalPage extends StatelessWidget {
                 ),
 
                 SizedBox(height: 10.h),
+                SizedBox(
+                  height: 35,
+                  width: 100,
+                  child: CommonButton(
+                    "Ok",
+                    textSize: 12,
+                    onTap: () {
+                      Navigator.pushAndRemoveUntil(
+                        context,
+
+                        MaterialPageRoute(
+                          builder: (context) {
+                            return SignInPage();
+                          },
+                        ),
+                        (route) => false,
+                      );
+                    },
+                  ),
+                ),
               ],
             ),
           ),

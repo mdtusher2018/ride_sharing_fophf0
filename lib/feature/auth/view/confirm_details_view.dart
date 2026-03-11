@@ -151,7 +151,7 @@ class _ConfirmDetailsPageState extends ConsumerState<ConfirmDetailsPage> {
 
             LocationSearchField(
               title: AppLocalizations.of(context)!.address,
-              hint: AppLocalizations.of(context)!.select_your_date_of_birth,
+              hint: AppLocalizations.of(context)!.enter_your_address,
               controller: addressController,
               onAddressSelected: (address, latLng) {
                 addressController.text = address;
