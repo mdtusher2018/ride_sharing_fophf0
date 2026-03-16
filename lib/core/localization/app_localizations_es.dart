@@ -140,7 +140,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get enter_model => 'Introduce el modelo';
 
   @override
-  String get car_license_plate_number => 'Número de matrícula del coche';
+  String get vehicle_license_plate_number => 'Número de matrícula del vehículo';
 
   @override
   String get enter_license_number => 'Introduce el número de matrícula';
@@ -693,7 +693,10 @@ class AppLocalizationsEs extends AppLocalizations {
   String get confirmed_passengers => 'Pasajeros confirmados';
 
   @override
-  String get pending_requests_2 => 'Solicitudes pendientes (2)';
+  String get pending_requests => 'Solicitudes pendientes';
+
+  @override
+  String get no_pending_requests => 'no hay solicitudes pendientes';
 
   @override
   String get active_trip => 'Viaje activo';

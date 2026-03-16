@@ -126,6 +126,7 @@ class _SavedPlacePageState extends ConsumerState<SavedPlacePage> {
                   CommonTextField(
                     controller: placeNameController,
                     hintText: AppLocalizations.of(context)!.place_name,
+                    
                   ),
 
                   SizedBox(height: 16.h),

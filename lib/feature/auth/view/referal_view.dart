@@ -35,13 +35,14 @@ class ReferalPage extends ConsumerWidget {
         actions: [
           InkWell(
             onTap: () {
-              Navigator.push(
+              Navigator.pushAndRemoveUntil(
                 context,
                 MaterialPageRoute(
                   builder: (context) {
                     return RootPage();
                   },
                 ),
+                (route) => false,
               );
             },
             child: CommonText(

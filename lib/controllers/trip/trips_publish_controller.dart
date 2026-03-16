@@ -123,6 +123,9 @@ class TripsPublishController extends PaginationNotifier<DriverTripModel> {
       task: () async {
         final res = await apiService.get(
           ApiEndpoints.publishedTripDetailsById(id),
+          queryParameters: {
+            "status": "pending,confirmed,in-progress,arrived,completed",
+          },
         );
         final tempPublishedTrip = BookingsOfPublishedTripResponse.fromJson(res);
         final extra = state.extraState as TripsPublishState;

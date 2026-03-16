@@ -301,6 +301,9 @@ class _BookedTipDetailsViewState extends ConsumerState<BookedTipDetailsView> {
                                                         .image,
                                                     width: 40,
                                                     height: 40,
+                                                    fit: BoxFit.cover,
+                                                    sourceType:
+                                                        ImageSourceType.network,
                                                   ),
                                                   SizedBox(width: 12),
                                                   Expanded(

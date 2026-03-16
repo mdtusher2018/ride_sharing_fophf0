@@ -173,7 +173,7 @@ class AuthController extends BaseNotifier {
 
           // await localStorageService.saveLogin(email, password);
 
-          navigatorKey.currentContext?.navigateTo(RootPage());
+          navigatorKey.currentContext?.navigateTo(RootPage(), clearStack: true);
         } else {
           throw Exception(response['message'] ?? 'Login failed');
         }

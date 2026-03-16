@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:velozaje/core/utils/enums_with_enum_extentions.dart';
 import 'package:velozaje/models/pagenation_meta_model.dart';
 import 'package:velozaje/controllers/paginated_controller.dart';
@@ -21,6 +23,9 @@ class TripsSearchController extends PaginationNotifier<PassengerTripModel> {
     required int page,
     int limit = 10,
   }) async {
+    log(
+      "=========>>>>>>>>>>>>" + request!.departureTime.toIso8601String() + "Z",
+    );
     final response = await apiService.get(
       ApiEndpoints.passengerTrips,
       queryParameters: {
@@ -50,7 +55,7 @@ class TripsSearchController extends PaginationNotifier<PassengerTripModel> {
         if (request != null) "minSeats": request!.passengersCount.toString(),
 
         if (request != null)
-          "departureTime": request!.departureTime.toIso8601String(),
+          "date": "${request!.departureTime.toIso8601String()}Z",
       },
     );
 

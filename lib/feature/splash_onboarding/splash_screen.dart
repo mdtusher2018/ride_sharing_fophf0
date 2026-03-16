@@ -30,9 +30,10 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
       log(token.toString());
 
       if (token != null && token.isNotEmpty) {
-        Navigator.pushReplacement(
+        Navigator.pushAndRemoveUntil(
           context,
           MaterialPageRoute(builder: (context) => RootPage()),
+          (route) => false,
         );
       } else {
         Navigator.pushReplacement(

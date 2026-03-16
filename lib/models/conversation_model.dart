@@ -82,7 +82,7 @@ class _User {
     return _User(
       id: JsonHelper.stringVal(json['_id']),
       name: JsonHelper.stringVal(json['name']),
-      image: JsonHelper.stringVal(json['image']),
+      image: JsonHelper.stringVal(json['profileImage']),
       roles: List<String>.from(json['roles']),
     );
   }

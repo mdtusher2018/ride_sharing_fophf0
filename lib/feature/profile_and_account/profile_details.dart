@@ -6,7 +6,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:velozaje/controllers/profile_controller.dart';
 import 'package:velozaje/core/localization/app_localizations.dart';
 import 'package:velozaje/core/utils/app_colors.dart';
-import 'package:velozaje/core/utils/helper.dart';
 import 'package:velozaje/feature/profile_and_account/edit_profile.dart';
 import 'package:velozaje/feature/widget/vehicale_card.dart';
 import 'package:velozaje/models/user_model.dart';
@@ -133,7 +132,7 @@ class _AboutSection extends StatelessWidget {
             user.driverVerified,
           ),
           _VerificationItem(
-            AppLocalizations.of(context)!.car_license_plate_number,
+            AppLocalizations.of(context)!.vehicle_license_plate_number,
             user.driverVerified,
           ),
           _VerificationItem(
@@ -227,9 +226,10 @@ class _HeaderCard extends StatelessWidget {
                         child: ClipRRect(
                           borderRadius: BorderRadiusGeometry.circular(8),
                           child: CommonImage(
-                            path: getFullImagePath(user.image),
+                            path: user.image,
                             width: 50,
                             height: 50,
+                            sourceType: ImageSourceType.network,
                           ),
                         ),
                       ),

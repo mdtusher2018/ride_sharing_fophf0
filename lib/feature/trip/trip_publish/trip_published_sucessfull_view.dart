@@ -46,7 +46,7 @@ class TripPublishedSucessfullView extends StatelessWidget {
             CommonButton(
               AppLocalizations.of(context)!.view_my_trips,
               onTap: () {
-                RootPage.currentIndex = 2;
+                RootPage.currentIndex = 1;
                 Navigator.pushAndRemoveUntil(
                   context,
                   MaterialPageRoute(

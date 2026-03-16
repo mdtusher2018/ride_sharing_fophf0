@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:icons_plus/icons_plus.dart';
+import 'package:velozaje/controllers/profile_controller.dart';
 import 'package:velozaje/core/localization/app_localizations.dart';
 import 'package:velozaje/core/providers.dart';
 import 'package:velozaje/core/utils/enums_with_enum_extentions.dart';
@@ -20,6 +21,7 @@ import 'package:velozaje/feature/widget/date_time_picker.dart';
 import 'package:velozaje/feature/widget/map_widget.dart';
 import 'package:velozaje/models/request/trip_search_request.dart';
 import 'package:velozaje/res/common_button.dart';
+import 'package:velozaje/res/common_image.dart';
 import 'package:velozaje/res/common_text.dart';
 import 'package:velozaje/res/location_search_textfield.dart';
 

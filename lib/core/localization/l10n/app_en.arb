@@ -45,7 +45,7 @@
   "enter_brand": "Enter brand",
   "model": "Model",
   "enter_model": "Enter model",
-  "car_license_plate_number": "Car License Plate Number",
+ "vehicle_license_plate_number": "Número de matrícula del vehículo",
   "enter_license_number": "Enter license number",
 
   "welcome_back": "Welcome Back",
@@ -144,7 +144,6 @@
   "verifications": "Verifications",
   "verified_id": "Verified ID",
   "confirmed_email": "Confirmed email",
-  "car_license_plate_number": "Car license plate number",
   "photo": "Photo",
   "vehicle": "Vehicle",
   "completed_trips": "Completed Trips",
@@ -268,7 +267,8 @@
 
 
   "confirmed_passengers": "Confirmed Passengers",
-  "pending_requests_2": "Pending Requests (2)",
+  "pending_requests": "Pending Requests",
+  "no_pending_requests": "No pending requests",
   "active_trip": "Active Trip",
   "barcelona_to_madrid": "Barcelona to Madrid",
   "earning": "Earning",

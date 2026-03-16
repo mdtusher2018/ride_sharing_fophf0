@@ -214,7 +214,7 @@ class DriverModel {
       fullName: JsonHelper.stringVal(json['fullName']),
       email: JsonHelper.stringVal(json['email']),
       rating: JsonHelper.doubleVal(json['ratting']),
-      image: JsonHelper.stringVal(json['image']),
+      image: JsonHelper.stringVal(json['driverImage']),
       phone: JsonHelper.stringVal(json['phone']),
     );
   }

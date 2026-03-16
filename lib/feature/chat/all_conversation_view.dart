@@ -130,7 +130,7 @@ class _ChatTile extends StatelessWidget {
               return ChatPage(
                 bookingId: conversation.bookingId,
                 reciverId: conversation.otherUser.id,
-                reciverImage: conversation.otherUser.id,
+                reciverImage: conversation.otherUser.image,
                 reciverName: conversation.otherUser.name,
               );
             },
@@ -140,13 +140,15 @@ class _ChatTile extends StatelessWidget {
       child: ListTile(
         /// 👤 Avatar
         contentPadding: EdgeInsets.symmetric(vertical: 4, horizontal: 16),
-        leading: CircleAvatar(
-          radius: 30.r,
+        leading: ClipRRect(
+          borderRadius: BorderRadius.circular(100.r),
+
           child: CommonImage(
             path: conversation.otherUser.image,
             sourceType: ImageSourceType.network,
-
-            height: 52.w,
+            width: 50,
+            height: 50,
+            fit: BoxFit.cover,
           ),
         ),
 

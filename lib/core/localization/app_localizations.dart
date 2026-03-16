@@ -347,11 +347,11 @@ abstract class AppLocalizations {
   /// **'Enter model'**
   String get enter_model;
 
-  /// No description provided for @car_license_plate_number.
+  /// No description provided for @vehicle_license_plate_number.
   ///
   /// In en, this message translates to:
-  /// **'Car license plate number'**
-  String get car_license_plate_number;
+  /// **'Número de matrícula del vehículo'**
+  String get vehicle_license_plate_number;
 
   /// No description provided for @enter_license_number.
   ///
@@ -1414,11 +1414,17 @@ abstract class AppLocalizations {
   /// **'Confirmed Passengers'**
   String get confirmed_passengers;
 
-  /// No description provided for @pending_requests_2.
+  /// No description provided for @pending_requests.
   ///
   /// In en, this message translates to:
-  /// **'Pending Requests (2)'**
-  String get pending_requests_2;
+  /// **'Pending Requests'**
+  String get pending_requests;
+
+  /// No description provided for @no_pending_requests.
+  ///
+  /// In en, this message translates to:
+  /// **'No pending requests'**
+  String get no_pending_requests;
 
   /// No description provided for @active_trip.
   ///

@@ -253,6 +253,7 @@ class TipHeaderCard extends StatelessWidget {
                   path: bookingDetails.driver.image,
                   width: 60,
                   height: 60,
+                  sourceType: ImageSourceType.network,
                 ),
               ),
             ),

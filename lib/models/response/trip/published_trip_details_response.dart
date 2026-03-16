@@ -116,11 +116,13 @@ class TripPassenger {
   final String id;
   final String fullName;
   final String email;
+  final String image;
 
   TripPassenger({
     required this.id,
     required this.fullName,
     required this.email,
+    required this.image,
   });
 
   factory TripPassenger.fromJson(Map<String, dynamic> json) {
@@ -128,6 +130,7 @@ class TripPassenger {
       id: json['_id'] ?? '',
       fullName: json['fullName'] ?? '',
       email: json['email'] ?? '',
+      image: json['image'] ?? '',
     );
   }
 }

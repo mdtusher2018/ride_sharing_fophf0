@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:velozaje/core/utils/app_colors.dart';
 
-
 class CommonTextField extends StatelessWidget {
   final TextEditingController? controller;
   final String? hintText;
@@ -22,7 +21,7 @@ class CommonTextField extends StatelessWidget {
     this.enabled,
     this.boarderColor = Colors.black,
     this.boarderWidth = 1.0,
-    this.keyboardType = TextInputType.number,
+    this.keyboardType = TextInputType.text,
     this.onChanged,
     this.readOnly = false,
   });

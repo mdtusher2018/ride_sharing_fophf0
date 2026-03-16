@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:velozaje/controllers/profile_controller.dart';
@@ -16,10 +18,11 @@ class DriverProfileView extends ConsumerStatefulWidget {
   const DriverProfileView({
     super.key,
     required this.id,
-    required this.tripId,
-    required this.bookingId,
+    this.tripId,
+    this.bookingId,
   });
-  final String id, tripId, bookingId;
+  final String id;
+  final String? tripId, bookingId;
 
   @override
   ConsumerState<DriverProfileView> createState() => _DriverProfileViewState();
@@ -33,9 +36,17 @@ class _DriverProfileViewState extends ConsumerState<DriverProfileView> {
       ref
           .read(profileControllerProvider.notifier)
           .getProfileById(id: widget.id);
-      ref
-          .read(reportControllerProvider.notifier)
-          .canIReport(tripId: widget.tripId);
+
+      if (widget.tripId != null &&
+          widget.bookingId != null &&
+          widget.bookingId!.isNotEmpty) {
+        log(
+          "=======>>>>>>>>Booking id:${widget.bookingId.toString()}    \nuser id:${widget.id.toString()}   \ntip id: ${widget.tripId.toString()}",
+        );
+        ref
+            .read(reportControllerProvider.notifier)
+            .canIReport(tripId: widget.tripId!);
+      }
     });
   }
 
@@ -52,7 +63,9 @@ class _DriverProfileViewState extends ConsumerState<DriverProfileView> {
         actionWidget: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            if (ref.watch(reportControllerProvider).canIReport)
+            if (ref.watch(reportControllerProvider).canIReport &&
+                widget.tripId != null &&
+                widget.bookingId != null)
               InkWell(
                 onTap: () {
                   Navigator.push(
@@ -61,8 +74,8 @@ class _DriverProfileViewState extends ConsumerState<DriverProfileView> {
                       builder: (context) {
                         return ReportUserPage(
                           driverId: widget.id,
-                          bookingId: widget.bookingId,
-                          tripId: widget.tripId,
+                          bookingId: widget.bookingId!,
+                          tripId: widget.tripId!,
                         );
                       },
                     ),
@@ -100,10 +113,15 @@ class _DriverProfileViewState extends ConsumerState<DriverProfileView> {
           }
           return RefreshIndicator(
             onRefresh: () async {
+              log(
+                "=======>>>>>>>>Booking id:${widget.bookingId.toString()}    \nuser id:${widget.id.toString()}   \ntip id: ${widget.tripId.toString()}",
+              );
               controller.getProfileById(id: widget.id);
-              ref
-                  .read(reportControllerProvider.notifier)
-                  .canIReport(tripId: widget.tripId);
+              if (widget.tripId != null) {
+                ref
+                    .read(reportControllerProvider.notifier)
+                    .canIReport(tripId: widget.tripId!);
+              }
             },
             child: SingleChildScrollView(
               physics: AlwaysScrollableScrollPhysics(),
@@ -274,7 +292,7 @@ class _AboutSection extends StatelessWidget {
             driver.driverVerified,
           ),
           _VerificationItem(
-            AppLocalizations.of(context)!.car_license_plate_number,
+            AppLocalizations.of(context)!.vehicle_license_plate_number,
             driver.driverVerified,
           ),
           _VerificationItem(

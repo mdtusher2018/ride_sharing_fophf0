@@ -66,13 +66,14 @@ class _ChatPageState extends ConsumerState<ChatPage> {
         ),
         title: Row(
           children: [
-            CircleAvatar(
-              radius: 21.r,
+            ClipRRect(
+              borderRadius: BorderRadius.circular(100.r),
               child: CommonImage(
                 path: widget.reciverImage,
                 sourceType: ImageSourceType.network,
                 width: 36.w,
                 height: 36.w,
+                fit: BoxFit.cover,
               ),
             ),
             SizedBox(width: 10.w),

@@ -216,7 +216,7 @@ class _RegisterVehiclePageState extends ConsumerState<RegisterVehiclePage> {
 
             /// Car License plate number
             CommonTextfieldWithTitle(
-              AppLocalizations.of(context)!.car_license_plate_number,
+              AppLocalizations.of(context)!.vehicle_license_plate_number,
               licenseController,
               hintText: AppLocalizations.of(context)!.enter_license_number,
             ),

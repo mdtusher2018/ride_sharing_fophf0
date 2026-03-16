@@ -53,6 +53,7 @@ Widget infoBox(IconData icon, String text) {
 }
 
 Widget topBar(BuildContext context, WidgetRef ref) {
+  final state = ref.watch(profileControllerProvider);
   return Positioned(
     left: 0,
     right: 0,
@@ -72,12 +73,22 @@ Widget topBar(BuildContext context, WidgetRef ref) {
       ),
       child: Row(
         children: [
-          InkWell(
-            onTap: () {},
-            child: CircleAvatar(
-              radius: 22.r,
-              backgroundColor: Colors.white,
-              child: Icon(Icons.person, color: AppColors.primary),
+          Container(
+            width: 50.w,
+            height: 50.w,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+
+              border: Border.all(color: AppColors.primary, width: 1),
+            ),
+            child: ClipOval(
+              child: CommonImage(
+                path: state.user?.image ?? "",
+                width: 80.w,
+                sourceType: ImageSourceType.network,
+                height: 80.w,
+                fit: BoxFit.cover,
+              ),
             ),
           ),
           SizedBox(width: 12.w),

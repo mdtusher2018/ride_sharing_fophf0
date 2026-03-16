@@ -45,7 +45,7 @@
   "enter_brand": "Introduce la marca",
   "model": "Modelo",
   "enter_model": "Introduce el modelo",
-  "car_license_plate_number": "Número de matrícula del coche",
+ "vehicle_license_plate_number": "Número de matrícula del vehículo",
   "enter_license_number": "Introduce el número de matrícula",
 
   "welcome_back": "¡Bienvenido de nuevo!",
@@ -142,7 +142,6 @@
   "verifications": "Verificaciones",
   "verified_id": "ID verificada",
   "confirmed_email": "Correo electrónico confirmado",
-  "car_license_plate_number": "Número de matrícula del coche",
   "photo": "Foto",
   "vehicle": "Vehículo",
   "completed_trips": "Viajes completados",
@@ -266,7 +265,8 @@
 
 
   "confirmed_passengers": "Pasajeros confirmados",
-  "pending_requests_2": "Solicitudes pendientes (2)",
+  "pending_requests": "Solicitudes pendientes",
+  "no_pending_requests":"no hay solicitudes pendientes",
   "active_trip": "Viaje activo",
   "barcelona_to_madrid": "Barcelona a Madrid",
   "earning": "Ganancias",
