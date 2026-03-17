@@ -55,7 +55,7 @@ class TripsSearchController extends PaginationNotifier<PassengerTripModel> {
         if (request != null) "minSeats": request!.passengersCount.toString(),
 
         if (request != null)
-          "date": "${request!.departureTime.toIso8601String()}Z",
+          "date-temp": "${request!.departureTime.toIso8601String()}Z",
       },
     );
 
