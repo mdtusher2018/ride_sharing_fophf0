@@ -56,7 +56,7 @@ class _TipsSearchResultsViewState extends ConsumerState<TipsSearchResultsView> {
         title: AppLocalizations.of(context)!.results,
         actionWidget: InkWell(
           onTap: () {
-            showFilterBottomSheet(context);
+            showFilterBottomSheet(ref);
           },
           child: const Icon(Icons.filter_alt_rounded),
         ),
@@ -67,9 +67,19 @@ class _TipsSearchResultsViewState extends ConsumerState<TipsSearchResultsView> {
           if (isLoading && pagination.items.isEmpty) {
             return const Center(child: CircularProgressIndicator());
           }
-
           if (pagination.items.isEmpty) {
-            return CommonText("No search found");
+            return const Center(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(Icons.search_off, size: 48, color: Colors.grey),
+                  SizedBox(height: 10),
+                  CommonText("No trips found"),
+                  SizedBox(height: 4),
+                  CommonText("Please try again later"),
+                ],
+              ),
+            );
           }
 
           return Padding(

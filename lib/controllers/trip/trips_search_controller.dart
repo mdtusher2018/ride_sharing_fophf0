@@ -23,39 +23,33 @@ class TripsSearchController extends PaginationNotifier<PassengerTripModel> {
     required int page,
     int limit = 10,
   }) async {
-    log(
-      "=========>>>>>>>>>>>>" + request!.departureTime.toIso8601String() + "Z",
-    );
+    final datetime = request!.departureTime.toIso8601String() + "Z";
+    log("=========>>>>>>>>>>>>" + datetime);
     final response = await apiService.get(
       ApiEndpoints.passengerTrips,
       queryParameters: {
         "page": page.toString(),
         "limit": limit.toString(),
-
-        // if (pickupLat != null) "pickupLat": pickupLat.toString(),
-        // if (pickupLng != null) "pickupLng": pickupLng.toString(),
-        // if (dropoffLat != null) "dropoffLat": dropoffLat.toString(),
-        // if (dropoffLng != null) "dropoffLng": dropoffLng.toString(),
-        // if (minSeats != null) "minSeats": minSeats.toString(),
-        // if (sort != null) "sort": sort.toString(),
-        // if (order != null) "order": order.toString(),
-        // if (tripType != null) "tripType": tripType.toString(),
         if (request?.pickupLatLng != null)
           "pickupLat": request!.pickupLatLng!.latitude.toString(),
         if (request?.pickupLatLng != null)
           "pickupLng": request!.pickupLatLng!.longitude.toString(),
-
         if (request?.destinationLatLng != null)
           "dropoffLat": request!.destinationLatLng!.latitude.toString(),
         if (request?.destinationLatLng != null)
           "dropoffLng": request!.destinationLatLng!.longitude.toString(),
-
         "tripType": request?.bookingType.name ?? BookingType.travel.name,
-
         if (request != null) "minSeats": request!.passengersCount.toString(),
-
-        if (request != null)
-          "date-temp": "${request!.departureTime.toIso8601String()}Z",
+        if (request != null) "date": datetime,
+        if (request != null && request!.badge != null) "badge": request!.badge!,
+        if (request != null && request!.vehicaleType != null)
+          "vehicleType": request!.vehicaleType!,
+        if (request != null && request!.ratting != null)
+          "rating": request!.ratting!,
+        if (request != null && request!.verifiedProfile != null)
+          "driverVerified": request!.verifiedProfile.toString(),
+        if (request != null && request!.autoReservation != null)
+          "automaticReservation": request!.autoReservation.toString(),
       },
     );
 

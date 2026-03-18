@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'dart:developer' as appLogger;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -212,6 +213,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                                     await showDateTimePickerDialog(context);
 
                                 if (result != null) {
+                                  appLogger.log(result.toString());
                                   setState(() {
                                     dateTime = result;
                                     dateTimeController.text =

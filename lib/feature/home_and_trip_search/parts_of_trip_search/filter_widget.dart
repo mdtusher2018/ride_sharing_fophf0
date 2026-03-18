@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:velozaje/controllers/trip/trips_search_controller.dart';
 import 'package:velozaje/core/localization/app_localizations.dart';
+import 'package:velozaje/core/providers.dart';
 import 'package:velozaje/core/utils/app_colors.dart';
 import 'package:velozaje/res/common_button.dart';
 import 'package:velozaje/res/common_image.dart';
@@ -8,7 +11,7 @@ import 'package:velozaje/res/common_text.dart';
 
 enum FeatureOption { verifiedProfile, automaticReservation }
 
-void showFilterBottomSheet(BuildContext context) {
+void showFilterBottomSheet(WidgetRef ref) {
   final List<String> vehicleImage = [
     'assest/image/car.png',
     'assest/image/taxi.png',
@@ -22,13 +25,16 @@ void showFilterBottomSheet(BuildContext context) {
     'assest/badge/diamond_fill.png',
   ];
 
+  final vehicleTypes = ['sedan', 'suv', 'bike', 'van'];
+  final levelTypes = ['rock', 'carbon', 'diamond'];
+
   int selectedVehicleIndex = -1;
   int selectedLevelIndex = -1;
   int selectedStars = 0;
   FeatureOption? selectedFeature;
 
   showModalBottomSheet(
-    context: context,
+    context: ref.context,
     isScrollControlled: true,
     shape: RoundedRectangleBorder(
       borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)),
@@ -239,10 +245,54 @@ void showFilterBottomSheet(BuildContext context) {
                     SizedBox(height: 24.h),
 
                     // Confirm Button
-                    CommonButton(
-                      AppLocalizations.of(context)!.confirm_filters,
-                      onTap: () {
-                        Navigator.pop(context);
+                    ValueListenableBuilder(
+                      valueListenable: ref
+                          .watch(passengerTripsControllerProvider.notifier)
+                          .isLoading,
+                      builder: (context, value, child) {
+                        return CommonButton(
+                          AppLocalizations.of(context)!.confirm_filters,
+                          isLoading: value,
+                          onTap: () async {
+                            String? vehicleType = selectedVehicleIndex != -1
+                                ? vehicleTypes[selectedVehicleIndex]
+                                : null;
+
+                            String? level = selectedLevelIndex != -1
+                                ? levelTypes[selectedLevelIndex]
+                                : null;
+
+                            String? rating = selectedStars > 0
+                                ? selectedStars.toString()
+                                : null;
+
+                            bool? verifiedProfile =
+                                selectedFeature == FeatureOption.verifiedProfile
+                                ? true
+                                : null;
+
+                            bool? autoReservation =
+                                selectedFeature ==
+                                    FeatureOption.automaticReservation
+                                ? true
+                                : null;
+
+                            TripsSearchController.request =
+                                TripsSearchController.request?.copyWith(
+                                  vehicaleType: vehicleType,
+                                  level: level,
+                                  ratting: rating,
+                                  verifiedProfile: verifiedProfile,
+                                  autoReservation: autoReservation,
+                                );
+                            final controller = ref.read(
+                              passengerTripsControllerProvider.notifier,
+                            );
+
+                            await controller.refresh();
+                            Navigator.pop(context);
+                          },
+                        );
                       },
                     ),
                     SizedBox(height: 16.h),
