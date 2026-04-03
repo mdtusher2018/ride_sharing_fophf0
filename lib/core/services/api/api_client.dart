@@ -2,6 +2,9 @@ import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
 import 'package:http/http.dart' as http;
+import 'package:velozaje/core/utils/constants.dart';
+import 'package:velozaje/core/utils/extention.dart';
+import 'package:velozaje/feature/auth/view/signin_view.dart';
 import 'api_exception.dart';
 
 class ApiClient {
@@ -112,6 +115,15 @@ class ApiClient {
   dynamic _processResponse(http.Response response) {
     final statusCode = response.statusCode;
     final body = response.body.isNotEmpty ? jsonDecode(response.body) : null;
+
+    if (statusCode == 401) {
+      navigatorKey.currentContext?.navigateTo(SignInPage());
+      throw ApiException(
+        statusCode,
+        "Session Expired",
+        data: "Please sign in again.",
+      );
+    }
     _logResponse(
       statusCode: statusCode,
       url: response.request?.url.toString(),

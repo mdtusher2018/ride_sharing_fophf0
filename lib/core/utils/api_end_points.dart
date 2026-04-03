@@ -1,7 +1,11 @@
 class ApiEndpoints {
-  static const String baseUrl = 'http://api.velozaje.com/api/v1/';
-  static const String socketUrl = 'http://api.velozaje.com/';
-  static const String baseImageUrl = 'http://api.velozaje.com/';
+  static const String baseUrl = 'https://api.velozaje.com/api/v1/';
+  static const String socketUrl = 'https://api.velozaje.com/';
+  static const String baseImageUrl = 'https://api.velozaje.com/';
+
+  // static const String baseUrl = 'http://10.10.10.70:3033/api/v1/';
+  // static const String socketUrl = 'http://10.10.10.70:3033/';
+  // static const String baseImageUrl = 'http://10.10.10.70:3033/';
   static const String mapKey = 'AIzaSyAQk0BDUcdmln3zCV4CbPDn7UF2Y1PjD7Q';
 
   //authentication
